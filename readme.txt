@@ -151,6 +151,10 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 0.0.4 =
+
+* Updated: screenshots.
+
 = 0.0.3 =
 
 * Added: uninstallation code to remove settings pertaining to the Blipper Widget to be removed from the database, leaving no trace of itself.
