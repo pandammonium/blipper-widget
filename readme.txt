@@ -4,7 +4,7 @@ Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,polaroid,widget,polaroid blipfoto,daily photo,photo display,image display,365 project
 Requires at least: 4.3
 Tested up to: 4.3
-Stable tag: 0.0.4
+Stable tag: 0.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,7 +37,7 @@ Currently, only English is supported.  I'm afraid I don't yet know how to make o
 
 [Polaroid|Blipfoto](https://www.polaroidblipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.  It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain these from Polaroid|Blipfoto.  This is a straightforward process and instructions are given below.
 
-This plugin is independent of and unendorsed by Polaroid|Blipfoto.
+This plugin is independent of and unendorsed by Polaroid|Blipfoto.  Use of this plugin means you consent to this plugin accessing your Polaroid|Blipfoto account and performing actions including publishing your blips on your WordPress website.
 
 = Requirements =
 
@@ -151,6 +151,13 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 0.0.5 =
+
+* Added: styling!  You can now change the border of the widget, including the line style, the thickness and the colour.  You can also change the background colour and the text colour of the widget.
+* Changed: the display of the date is now optional.  It is on by default for backwards compatibility.
+* Improved: handling of options.
+* Improved: exception handling.
+
 = 0.0.4 =
 
 * Updated: screenshots.
@@ -171,6 +178,14 @@ The widget settings are currently:
 = 0.0.1 =
 
 * Initial version.
+
+== Upgrade notice ==
+
+= 0.0.5 =
+
+Update now to style your widget.
+
+You can also hide the date of your blip in the widget.  The date is shown by default for backwards compatibility.
 
 == Known issues ==
 
