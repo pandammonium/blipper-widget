@@ -925,7 +925,7 @@ class Blipper_Widget extends WP_Widget {
           <option value="outset" <?php selected( 'outset', esc_attr( $instance['border-style'] ) ); ?>>outset line</option>
         </select>
       </p>
-      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'no line'.</p>
+      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'none'.</p>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
           <?php _e( 'Border width', 'blipper-widget' ); ?>
@@ -1075,7 +1075,7 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'border-style' ); ?>"
           name="<?php echo $this->get_field_name('border-style'); ?>">
           <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
-          <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>no line</option>
+          <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
           <option value="solid" <?php selected( 'solid', esc_attr( $instance['border-style'] ) ); ?>>solid line</option>
           <option value="dotted" <?php selected( 'dotted', esc_attr( $instance['border-style'] ) ); ?>>dotted line</option>
           <option value="dashed" <?php selected( 'dashed', esc_attr( $instance['border-style'] ) ); ?>>dashed line</option>
@@ -1086,7 +1086,7 @@ class Blipper_Widget extends WP_Widget {
           <option value="outset" <?php selected( 'outset', esc_attr( $instance['border-style'] ) ); ?>>outset line</option>
         </select>
       </p>
-      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'no line'.</p>
+      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'none'.</p>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
           <?php _e( 'Border width (px)', 'blipper-widget' ); ?>
@@ -1112,6 +1112,12 @@ class Blipper_Widget extends WP_Widget {
       </p>
       <p class="description">The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.</p>
 
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-color' ); ?>">
           <?php _e( 'Border colour', 'blipper-widget' ); ?>
@@ -1121,15 +1127,20 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'border-color' ); ?>"
           name="<?php echo $this->get_field_name( 'border-color' ); ?>"
           type="text"
-          value="<?php echo ( $instance['border-color'] ? esc_attr( $instance['border-color'] ) : 'default' ); ?>"
+          value="<?php echo esc_attr( $instance['border-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['border-color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['border-color']; ?>"
         >
       </p>
       <p class="description">
         Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'background-color' ); ?>">
           <?php _e( 'Background colour', 'blipper-widget' ); ?>
@@ -1139,15 +1150,20 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'background-color' ); ?>"
           name="<?php echo $this->get_field_name( 'background-color' ); ?>"
           type="text"
-          value="<?php echo $instance['background-color'] ? esc_attr( $instance['background-color'] ) : 'default'; ?>"
+          value="<?php echo esc_attr( $instance['background-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['background-color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['background-color']; ?>"
         >
       </p>
       <p class="description">
         Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'color' ); ?>">
           <?php _e( 'Text colour', 'blipper-widget' ); ?>
@@ -1157,13 +1173,36 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'color' ); ?>"
           name="<?php echo $this->get_field_name( 'color' ); ?>"
           type="text"
-          value="<?php echo $instance['color'] ? esc_attr( $instance['color'] ) : 'default'; ?>"
+          value="<?php echo esc_attr( $instance['color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['color']; ?>"
         >
       </p>
       <p class="description">
-        Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.
+        Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
+      </p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'link-color' ); ?>">
+          <?php _e( 'Link colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker"
+          id="<?php echo $this->get_field_id( 'link-color' ); ?>"
+          name="<?php echo $this->get_field_name( 'link-color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['link-color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['link-color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
       <p>
@@ -1183,6 +1222,7 @@ class Blipper_Widget extends WP_Widget {
       <p class="description">
         Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
+
       <p>
         <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
           <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
@@ -1194,12 +1234,12 @@ class Blipper_Widget extends WP_Widget {
           type="number"
           min="0"
           max="20"
-          step="0.5"
+          step="1"
           value="<?php echo $instance['padding'] ? esc_attr( $instance['padding'] ) : $this->default_setting_values['padding']; ?>"
         >
       </p>
       <p class="description">
-        Pick a number of pixels between zero and twenty.  Changing the padding will increease the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
+        Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
       </p>
       <?php
     }
