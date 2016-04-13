@@ -1025,24 +1025,6 @@ class Blipper_Widget extends WP_Widget {
       </p>
 
       <p>
-        <label for="<?php echo $this->get_field_id( 'link-color' ); ?>">
-          <?php _e( 'Link colour', 'blipper-widget' ); ?>
-        </label><br>
-        <input
-          class="blipper-widget-colour-picker"
-          id="<?php echo $this->get_field_id( 'link-color' ); ?>"
-          name="<?php echo $this->get_field_name( 'link-color' ); ?>"
-          type="text"
-          value="<?php echo $instance['link-color'] ? esc_attr( $instance['link-color'] ) : 'default'; ?>"
-          placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['link-color'] ?>"
-        >
-      </p>
-      <p class="description">
-        Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
-      </p>
-
-      <p>
         <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
           <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
         </label>
