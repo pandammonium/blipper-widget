@@ -1,0 +1,17 @@
+{
+	"name": "blipfoto/blipfoto",
+	"type": "library",
+	"description": "SDK for connecting to the Blipfoto API.",
+	"keywords": ["blipfoto"],
+	"homepage": "https://www.blipfoto.com/developer",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.4.0",
+		"ext-curl": "*"
+	},
+	"autoload": {
+		"psr-0": {
+			"Blipfoto": "src"
+		}
+	}
+}

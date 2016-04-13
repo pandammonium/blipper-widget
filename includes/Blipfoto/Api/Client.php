@@ -26,15 +26,15 @@ class blipper_widget_client {
 	protected $after;
 
 	// Endpoint constants
-	const URI_API 			= 'https://api.polaroidblipfoto.com/4/';
-	const URI_AUTHORIZE 	= 'https://www.polaroidblipfoto.com/blipper_widget_OAuth/authorize/';
+	const URI_API 			= 'https://api.blipfoto.com/4/';
+	const URI_AUTHORIZE 	= 'https://www.blipfoto.com/blipper_widget_OAuth/authorize/';
 
 	// scope constants
 	const SCOPE_READ 		= 'read';
 	const SCOPE_READ_WRITE	= 'read,write';
 
 	// misc constants
-	const SESSION_PREFIX 	= 'polaroidblipfoto_';
+	const SESSION_PREFIX 	= 'blipfoto_';
 
 	/**
 	 * Create new Client instance.

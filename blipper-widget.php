@@ -9,7 +9,7 @@
   * @wordpress-plugin
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
-  * Description:        Display your latest blip in a widget.  Requires a Polaroid|Blipfoto account.
+  * Description:        Display your latest blip in a widget.  Requires a Blipfoto account.
   * Version:            0.0.5
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
@@ -47,6 +47,7 @@ use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthExcept
 use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException;
 use blipper_widget\blipper_widget_settings;
 
+// --- Action hooks --------------------------------------------------------- //
 
 // Register the WP Blipper widget
 function register_blipper_widget() {
@@ -93,6 +94,8 @@ class Blipper_Widget extends WP_Widget {
     'powered-by'            => 'hide',
     'border-style'          => 'inherit',
     'border-width'          => 'inherit',
+    // Using 'inherit' for the default colour causes an error in the colour
+    // picker.  Leaving it blank has the same effect as using 'inherit'.
     'border-color'          => 'inherit',
     'background-color'      => 'inherit',
     'color'                 => 'inherit',
@@ -103,7 +106,7 @@ class Blipper_Widget extends WP_Widget {
 /**
   * @since    0.0.1
   * @access   private
-  * @var      blipper_widget_Client     $client   The Polaroid|Blipfoto client
+  * @var      blipper_widget_Client     $client   The Blipfoto client
   */
   private $client;
 
@@ -123,7 +126,7 @@ class Blipper_Widget extends WP_Widget {
   public function __construct() {
 
     $params = array(
-      'description' => __( 'The latest blip from your Polaroid|Blipfoto account.', 'blipper-widget' ),
+      'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
       'name'        => __( 'Blipper Widget', 'blipper-widget' ),
     );
     parent::__construct( 'blipper_widget', 'Blipper Widget', $params );
@@ -380,7 +383,7 @@ class Blipper_Widget extends WP_Widget {
   }
 
 /**
-  * Construct an instance of the Polaroid|Blipfoto client and test it's ok
+  * Construct an instance of the Blipfoto client and test it's ok
   * 
   * @since    0.0.1
   * @access   private
@@ -416,7 +419,7 @@ class Blipper_Widget extends WP_Widget {
 
       if ( empty( $this->client ) || ! isset( $this->client ) ) {
 
-        throw new blipper_widget_ApiResponseException( 'Failed to create the Polaroid|Blipfoto client.' );
+        throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
 
       } else {
 
@@ -433,7 +436,7 @@ class Blipper_Widget extends WP_Widget {
     } catch ( blipper_widget_ApiResponseException $e ) {
 
       if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>' . __( 'Polaroid|Blipfoto error.  ' . $e->getMessage() . 'Please try again later.', 'blipper-widget' ) . '</p>';
+        echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage() . 'Please try again later.', 'blipper-widget' ) . '</p>';
       }
 
     }
@@ -469,7 +472,7 @@ class Blipper_Widget extends WP_Widget {
       } catch ( blipper_widget_ApiResponseException $e ) {
 
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'Polaroid|Blipfoto error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
+          echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
         }
 
       } catch ( blipper_widget_BaseException $e ) {
@@ -503,14 +506,14 @@ class Blipper_Widget extends WP_Widget {
       $user_profile = $this->client->get( 'user/profile' );
 
       if ( $user_profile->error() ) {
-        throw new blipper_widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Polaroid|Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+        throw new blipper_widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
       } else {
         $continue = true;
       }
 
     } catch ( blipper_widget_ApiResponseException $e ) {
       if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>Polaroid|Blipfoto error.  ' . $e->getMessage() . '</p>';
+        echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
       }
     }
 
@@ -522,14 +525,14 @@ class Blipper_Widget extends WP_Widget {
         $user_settings = $this->client->get( 'user/settings' );
 
         if ( $user_settings->error() ) {
-          throw new blipper_widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Polaroid|Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+          throw new blipper_widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
         } else {
           $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Polaroid|Blipfoto error.  ' . $e->getMessage() . '</p>';
+          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -543,14 +546,14 @@ class Blipper_Widget extends WP_Widget {
         $user = $user_profile->data('user');
 
         if ( empty( $user ) ) {
-          throw new blipper_widget_ApiResponseException( 'Can\'t access your Polaroid|Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
+          throw new blipper_widget_ApiResponseException( 'Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
         } else {
           $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Polaroid|Blipfoto error.  ' . $e->getMessage() . '</p>';
+          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -581,7 +584,7 @@ class Blipper_Widget extends WP_Widget {
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Polaroid|Blipfoto error.  ' . $e->getMessage() . '</p>';
+          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -616,7 +619,7 @@ class Blipper_Widget extends WP_Widget {
 
         switch ( count( $blips ) ) {
           case 0:
-            throw new Exception( 'No blips found.  Do you have <a href="https://www.polaroidblipfoto.com/' . $user['username'] . '" rel="nofollow">any Polaroid|Blipfoto entries</a>?');
+            throw new Exception( 'No blips found.  Do you have <a href="https://www.blipfoto.com/' . $user['username'] . '" rel="nofollow">any Blipfoto entries</a>?');
           break;
           case 1:
             $continue = true;
@@ -660,7 +663,7 @@ class Blipper_Widget extends WP_Widget {
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Polaroid| Blipfoto error.  ' . $e->getMessage() . '</p>';
+          echo '<p> Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -669,7 +672,7 @@ class Blipper_Widget extends WP_Widget {
     if ( $continue ) {
       $continue = false;
 
-      // Polaroid|Blipfoto has different quality images, each with its own URL.
+      // Blipfoto has different quality images, each with its own URL.
       // Access is currently limited to standard, but I've optimistically
       // allowed for higher quality images to be selected if they're present.
       // The lowest quality image is obtained if the standard image isn't
@@ -710,13 +713,13 @@ class Blipper_Widget extends WP_Widget {
         . $this->blipper_widget_get_style( $instance, 'padding' )
         . '">';
 
-      // Link back to the blip on the Polaroid|Blipfoto site.
+      // Link back to the blip on the Blipfoto site.
       if ( ! array_key_exists( 'add-link-to-blip' , $instance ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $instance['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
       }
       if ( $instance['add-link-to-blip'] ) {
-        echo '<a href="https://www.polaroidblipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
+        echo '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
       }
       // Add the image.
       echo '<img src="' . $image_url . '" 
@@ -756,25 +759,25 @@ class Blipper_Widget extends WP_Widget {
         $instance['powered-by'] = $this->default_setting_values['powered-by'];
       }
       if ( $instance['display-journal-title'] == 'show' && $instance['powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%;">From <a href="https://www.polaroidblipfoto.com/' 
+        echo '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/' 
           . $user_settings->data( 'username' ) 
           . '" rel="nofollow" style="' 
           . $this->blipper_widget_get_style( $instance, 'link-color' ) 
           . '">' . $user_settings->data( 'journal_title' ) 
-          . '</a> | Powered by <a href="https://www.polaroidblipfoto.com/" rel="nofollow" style="' 
+          . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="' 
           . $this->blipper_widget_get_style( $instance, 'link-color' ) 
-          . '">Polaroid|Blipfoto</a></p></footer>';
+          . '">Blipfoto</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'show' && $instance['powered-by'] == 'hide' ) {
-        echo '<footer><p style="font-size:75%">From <a href="https://www.polaroidblipfoto.com/' 
+        echo '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/' 
           . $user_settings->data( 'username' ) 
           . '" rel="nofollow" style="' 
           . $this->blipper_widget_get_style( $instance, 'link-color' ) 
           . '">' . $user_settings->data( 'journal_title' ) 
           . '</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'hide' && $instance['powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%">Powered by <a href="https://www.polaroidblipfoto.com/" rel="nofollow" style="' 
+        echo '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="' 
           . $this->blipper_widget_get_style( $instance, 'link-color' ) 
-          . '">Polaroid|Blipfoto</a></p></footer>';
+          . '">Blipfoto</a></p></footer>';
       }
 
       echo '</figcaption></figure>';
@@ -799,7 +802,7 @@ class Blipper_Widget extends WP_Widget {
 
       ) {
 
-      echo '<p>You need to set the Polaroid|Blipfoto settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.</p>';
+      echo '<p>You need to set the Blipfoto settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.</p>';
 
     } else {
 
@@ -862,7 +865,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Display journal title and link', 'display-journal-title' ) ?>
         </label>
       </p>
-      <p class="description">Tick the box to show the name of your journal with a link back to your Polaroid|Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.</p>
+      <p class="description">Tick the box to show the name of your journal with a link back to your Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.</p>
 
       <p>
         <input
@@ -877,7 +880,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Include a \'powered by\' link', 'powered-by' ) ?>
         </label>
       </p>
-      <p class="description">Tick the box to include a 'powered by' link back to Polaroid|Blipfoto.  Leave it unticked if you don't want to include a 'powered by'-style link.  The box is unticked by default.</p>
+      <p class="description">Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by'-style link.  The box is unticked by default.</p>
 
       <h4>Styling</h4>
       <p class="description">You can style your widget if you like.  If you leave the default settings, the widget will be displayed using your normal sidebar style.</p>
@@ -891,7 +894,7 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'border-style' ); ?>" 
           name="<?php echo $this->get_field_name('border-style'); ?>">
           <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
-          <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>no line</option>
+          <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
           <option value="solid" <?php selected( 'solid', esc_attr( $instance['border-style'] ) ); ?>>solid line</option>
           <option value="dotted" <?php selected( 'dotted', esc_attr( $instance['border-style'] ) ); ?>>dotted line</option>
           <option value="dashed" <?php selected( 'dashed', esc_attr( $instance['border-style'] ) ); ?>>dashed line</option>
@@ -928,6 +931,12 @@ class Blipper_Widget extends WP_Widget {
       </p>
       <p class="description">The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.</p>
 
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-color' ); ?>">
           <?php _e( 'Border colour', 'blipper-widget' ); ?>
@@ -937,15 +946,20 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'border-color' ); ?>"
           name="<?php echo $this->get_field_name( 'border-color' ); ?>"
           type="text"
-          value="<?php echo ( $instance['border-color'] ? esc_attr( $instance['border-color'] ) : 'default' ); ?>"
+          value="<?php echo esc_attr( $instance['border-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['border-color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['border-color']; ?>"
         >
       </p>
       <p class="description">
         Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'background-color' ); ?>">
           <?php _e( 'Background colour', 'blipper-widget' ); ?>
@@ -955,15 +969,20 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'background-color' ); ?>"
           name="<?php echo $this->get_field_name( 'background-color' ); ?>"
           type="text"
-          value="<?php echo $instance['background-color'] ? esc_attr( $instance['background-color'] ) : 'default'; ?>"
+          value="<?php echo esc_attr( $instance['background-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['background-color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['background-color']; ?>"
         >
       </p>
       <p class="description">
         Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
       <p>
         <label for="<?php echo $this->get_field_id( 'color' ); ?>">
           <?php _e( 'Text colour', 'blipper-widget' ); ?>
@@ -973,13 +992,36 @@ class Blipper_Widget extends WP_Widget {
           id="<?php echo $this->get_field_id( 'color' ); ?>"
           name="<?php echo $this->get_field_name( 'color' ); ?>"
           type="text"
-          value="<?php echo $instance['color'] ? esc_attr( $instance['color'] ) : 'default'; ?>"
+          value="<?php echo esc_attr( $instance['color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['color'] ?>"
+          data-default-color="<?php //echo $this->default_setting_values['color']; ?>"
         >
       </p>
       <p class="description">
-        Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.
+        Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
+      </p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'link-color' ); ?>">
+          <?php _e( 'Link colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker"
+          id="<?php echo $this->get_field_id( 'link-color' ); ?>"
+          name="<?php echo $this->get_field_name( 'link-color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['link-color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['link-color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
 
       <p>
@@ -999,6 +1041,7 @@ class Blipper_Widget extends WP_Widget {
       <p class="description">
         Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
       </p>
+
       <p>
         <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
           <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
@@ -1010,12 +1053,12 @@ class Blipper_Widget extends WP_Widget {
           type="number"
           min="0"
           max="20"
-          step="0.5"
+          step="1"
           value="<?php echo $instance['padding'] ? esc_attr( $instance['padding'] ) : $this->default_setting_values['padding']; ?>"
         >
       </p>
       <p class="description">
-        Pick a number of pixels between zero and twenty.  Changing the padding will increease the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
+        Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
       </p>
       <?php
     }
@@ -1024,13 +1067,14 @@ class Blipper_Widget extends WP_Widget {
 
   private function blipper_widget_get_style( $instance, $style_element ) {
 
-    error_log( "Blipper_Widget::blipper_widget_get_style( $style_element )" );
+    $message =
       array_key_exists( $style_element, $instance ) 
       ? ( empty( $instance[$style_element] ) 
-        ? error_log( "\tkey has no value; using default: " . $this->default_setting_values[$style_element] . "\n" )
-        : error_log( "\tvalue: $instance[$style_element]" . "\n" )
+        ? ( "\tkey has no value; using default: " . $this->default_setting_values[$style_element] )
+        : ( "\tvalue: $instance[$style_element]" )
         ) 
-      : error_log( "\tno key, no value; using default: " . $this->default_setting_values[$style_element] . "\n" );
+      : ( "\tno key, no value; using default: " . $this->default_setting_values[$style_element] );
+    error_log( "Blipper_Widget::blipper_widget_get_style( $style_element )" . $message );
 
     $element = $style_element;
     $style = '';
@@ -1066,7 +1110,7 @@ class Blipper_Widget extends WP_Widget {
 
   // --- Action hooks ------------------------------------------------------- //
 
-  // Check the Polaroid|Blipfoto OAuth settings have been set, otherwise display
+  // Check the Blipfoto OAuth settings have been set, otherwise display
   // a message to the user.
   public function blipper_widget_settings_check() {
     $api = get_option('blipper-widget-settings-oauth');
@@ -1086,8 +1130,8 @@ class Blipper_Widget extends WP_Widget {
   }
 
   public function blipper_widget_enqueue_scripts( $hook_suffix ) {
-    error_log( "Blipper_Widget::blipper_widget_enqueue()" );
-    error_log( "\tHook suffix: $hook_suffix\n" );
+    // error_log( "Blipper_Widget::blipper_widget_enqueue()" );
+    // error_log( "\tHook suffix: $hook_suffix\n" );
     if ( 'widgets.php' === $hook_suffix ) {
       wp_enqueue_style( 'wp-color-picker' );
       wp_enqueue_script( 'wp-color-picker' );
