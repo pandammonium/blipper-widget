@@ -114,7 +114,7 @@ class blipper_widget_settings {
       // section id:
       'blipper-widget-oauth',
       // section title:
-      __( 'Polaroid|Blipfoto OAuth 2.0 Settings', 'blipper-widget' ),
+      __( 'Blipfoto OAuth 2.0 Settings', 'blipper-widget' ),
       // section callback function to render information and instructions about
       // this section:
       array( &$this, 'blipper_widget_oauth_instructions'),
@@ -126,7 +126,7 @@ class blipper_widget_settings {
       // field id:
       'blipper-widget-username',
       // field title:
-      __( 'Polaroid|Blipfoto Username', 'blipper-widget' ),
+      __( 'Blipfoto Username', 'blipper-widget' ),
       // callback function to render the field on the form:
       array( &$this, 'wp_blipper_field_render'),
       // page id (i.e. menu slug):
@@ -137,7 +137,7 @@ class blipper_widget_settings {
       array(
         'type'        => 'text',
         'name'        => 'blipper-widget-settings-oauth[username]',
-        'placeholder' => __( 'Enter your Polaroid|Blipfoto username here', 'blipper-widget' ),
+        'placeholder' => __( 'Enter your Blipfoto username here', 'blipper-widget' ),
         'id'          => 'blipper-widget-input-username',
         'setting'     => 'username',
       )
@@ -146,7 +146,7 @@ class blipper_widget_settings {
       // field id:
       'blipper-widget-oauth-access-token',
       // field title:
-      __( 'Polaroid|Blipfoto Access Token', 'blipper-widget' ),
+      __( 'Blipfoto Access Token', 'blipper-widget' ),
       // callback function to render the field on the form:
       array( &$this, 'wp_blipper_field_render'),
       // page id (i.e. menu slug):
@@ -157,7 +157,7 @@ class blipper_widget_settings {
       array(
         'type'        => 'text',
         'name'        => 'blipper-widget-settings-oauth[access-token]',
-        'placeholder' => __( 'Enter your Polaroid|Blipfoto access token here', 'blipper-widget' ),
+        'placeholder' => __( 'Enter your Blipfoto access token here', 'blipper-widget' ),
         'id'          => 'blipper-widget-input-access-token',
         'setting'     => 'access-token',
       )
@@ -305,11 +305,11 @@ class blipper_widget_settings {
 
     ?>
 
-      <p>You need to authorise access to your Polaroid|Blipfoto account before you can use this plugin.  <em>You can revoke access at any time.</em></p><p>Just follow the instructions below to authorise access and to revoke access.</p>
-      <h4>How to authorise your Polaroid|Blipfoto account</h4>
-      <p>To allow WordPress to access your Polaroid|Blipfoto account, you need to carry out a few simple steps:</p>
+      <p>You need to authorise access to your Blipfoto account before you can use this plugin.  <em>You can revoke access at any time.</em></p><p>Just follow the instructions below to authorise access and to revoke access.</p>
+      <h4>How to authorise your Blipfoto account</h4>
+      <p>To allow WordPress to access your Blipfoto account, you need to carry out a few simple steps:</p>
       <ol>
-        <li>Open the <a href="https://www.polaroidblipfoto.com/developer/apps" rel="nofollow">the Polaroid|Blipfoto apps page</a> in a new tab or window.</li>
+        <li>Open the <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">the Blipfoto apps page</a> in a new tab or window.</li>
         <li>Press the <i>Create new app</i> button.</li>
         <li>In the <i>Name</i> field, give your app any name you like, for example, <i>My super-duper app</i>.</li>
         <li>The <i>Type</i> field should be set to <i>Web application</i>.</li>
@@ -320,16 +320,16 @@ class blipper_widget_settings {
         <li>Press the <i>Create a new app</i> button.</li>
         <li>You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>.  Copy and paste your <i>Access Token</i> only into the corresponding field below.</li>
       </ol>
-      <p><abbr title="Nota Bene 'note well'">NB</abbr> Whereas authorisation gives Blipper Widget permission to access your Polaroid|Blipfoto account, it does not give Blipper Widget access to your password.</p>
-    <h4>How to revoke access to your Polaroid|Blipfoto account</h4>
+      <p><abbr title="Nota Bene 'note well'">NB</abbr> Whereas authorisation gives Blipper Widget permission to access your Blipfoto account, it does not give Blipper Widget access to your password.</p>
+    <h4>How to revoke access to your Blipfoto account</h4>
     <p>It's simple to revoke access.  We hope you don't want to do this, but if you do, the instructions are laid out below:</p>
     <ol>
-      <li>Go to <a href="https://www.polaroidblipfoto.com/settings/apps" rel="nofollow">your Polaroid|Blipfoto app settings</a>.</li>
+      <li>Go to <a href="https://www.blipfoto.com/settings/apps" rel="nofollow">your Blipfoto app settings</a>.</li>
       <li>Select the app whose access you want to revoke (the one you created using the above instructions).</li>
       <li>Press the <i>Save Changes</i> button.</li>
     </ol>
     <p>Note that your plugin will no longer work.</p>
-    <h4>Polaroid|Blipfoto username</h4>
+    <h4>Blipfoto username</h4>
     <p>You also need to enter your username in the appropriate field below.  The widget will check to see that the access token is valid for your account.
 
   <?php
@@ -340,7 +340,7 @@ class blipper_widget_settings {
    * Checks whether the OAuth credentials are valid or not.
    * A temporary client is created using the settings given.  If the settings
    * are invalid, an exception will be thrown when the client is used to get
-   * data from Polaroid|Blipfoto.
+   * data from Blipfoto.
    *
    * @since     0.0.2
    * @access    public
@@ -360,7 +360,7 @@ class blipper_widget_settings {
       add_settings_error( 
         'wp-blipper-settings-group',
         'invalid-oauth-credentials',
-        __( 'Unable to connect to Polaroid|Blipfoto.  Please check the OAuth settings.', 'blipper-widget' )
+        __( 'Unable to connect to Blipfoto.  Please check the OAuth settings.', 'blipper-widget' )
       );
     }
     if ( !empty( $client ) && isset( $client ) ) {
@@ -387,7 +387,7 @@ class blipper_widget_settings {
         add_settings_error( 
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
-          __( 'Unable to connect to your Polaroid|Blipfoto user profile.<br>Please check you have correctly copied <a href="https://www.polaroidblipfoto.com/developer/apps" rel="nofollow">your access token at Polaroid|Blipfoto</a> and pasted it into the settings below.<br>If you have refreshed your Polaroid|Blipfoto OAuth access token, you need to update it below.<br>If you have entered it correctly, try <a href="https://www.polaroidblipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Polaroid|Blipfoto</a>.', 'blipper-widget' )
+          __( 'Unable to connect to your Blipfoto user profile.<br>Please check you have correctly copied <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">your access token at Blipfoto</a> and pasted it into the settings below.<br>If you have refreshed your Blipfoto OAuth access token, you need to update it below.<br>If you have entered it correctly, try <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Blipfoto</a> and entering it below.', 'blipper-widget' )
         );
       }
     }
