@@ -273,3 +273,4 @@ This plug-in is loosely based on [BlipPress](https://wordpress.org/plugins/blipp
 I also used the excellent [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement the settings page and the widget back-end.
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
+You'll need your Blipfoto
