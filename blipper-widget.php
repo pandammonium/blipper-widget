@@ -49,14 +49,22 @@ use blipper_widget\blipper_widget_settings;
 
 // --- Action hooks --------------------------------------------------------- //
 
-// Register the WP Blipper widget
+/**
+  * Register the WP Blipper widget
+  *
+  * @since 0.0.1
+  */
 function register_blipper_widget() {
   register_widget( 'Blipper_Widget' );
 }
 add_action( 'widgets_init', 'register_blipper_widget' );
 
-// Add a link to the Blipper Widget Settings page from the installed plugins
-// list.
+/**
+  * Add a link to the Blipper Widget Settings page from the installed plugins
+  * list.
+  *
+  * @since 0.0.1
+  */
 function blipper_widget_add_settings_link( $links ) {
   $links[] = '<a href="' .
     esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) .
@@ -66,7 +74,11 @@ function blipper_widget_add_settings_link( $links ) {
 }
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'blipper_widget_add_settings_link' );
 
-// Generic error handling
+/**
+  * Generic error handling
+  *
+  * @since 0.0.1
+  */
 function blipper_widget_exception( $e ) {
   echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '  Sorry about that.  Please check your settings or try again later.</p>';
 }
@@ -795,6 +807,8 @@ class Blipper_Widget extends WP_Widget {
   */
   private function blipper_widget_display_form( $instance ) {
 
+    error_log( "Blipper_Widget::blipper_widget_display_form\nproperty " . var_export( $instance, true ) );
+
     $oauth_settings = $this->settings->blipper_widget_get_settings();
 
     if ( empty( $oauth_settings['username'] ) ||
@@ -942,7 +956,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Border colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'border-color' ); ?>"
           name="<?php echo $this->get_field_name( 'border-color' ); ?>"
           type="text"
@@ -965,7 +979,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Background colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'background-color' ); ?>"
           name="<?php echo $this->get_field_name( 'background-color' ); ?>"
           type="text"
@@ -988,7 +1002,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Text colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'color' ); ?>"
           name="<?php echo $this->get_field_name( 'color' ); ?>"
           type="text"
@@ -1011,7 +1025,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Link colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'link-color' ); ?>"
           name="<?php echo $this->get_field_name( 'link-color' ); ?>"
           type="text"
@@ -1042,6 +1056,7 @@ class Blipper_Widget extends WP_Widget {
       <p class="description">
         Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
       </p>
+
       <?php
     }
 
@@ -1123,7 +1138,7 @@ class Blipper_Widget extends WP_Widget {
   /**
    * Print scripts.
    *
-   * @since 1.0
+   * @since 0.0.5
    */
   public function blipper_widget_print_scripts() {
     ?>
