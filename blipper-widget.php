@@ -1123,7 +1123,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Border colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'border-color' ); ?>"
           name="<?php echo $this->get_field_name( 'border-color' ); ?>"
           type="text"
@@ -1146,7 +1146,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Background colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'background-color' ); ?>"
           name="<?php echo $this->get_field_name( 'background-color' ); ?>"
           type="text"
@@ -1169,7 +1169,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Text colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'color' ); ?>"
           name="<?php echo $this->get_field_name( 'color' ); ?>"
           type="text"
@@ -1192,7 +1192,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Link colour', 'blipper-widget' ); ?>
         </label><br>
         <input
-          class="blipper-widget-colour-picker"
+          class="blipper-widget-colour-picker widefat"
           id="<?php echo $this->get_field_id( 'link-color' ); ?>"
           name="<?php echo $this->get_field_name( 'link-color' ); ?>"
           type="text"
@@ -1223,6 +1223,7 @@ class Blipper_Widget extends WP_Widget {
       <p class="description">
         Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
       </p>
+
       <?php
     }
 
