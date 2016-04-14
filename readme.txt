@@ -191,9 +191,7 @@ The widget settings are currently:
 
 = 0.0.6 =
 
-Update now to ensure compatability with:
-* WordPress 4.5
-* the branding on the Blipfoto website.
+Update now to ensure compatability with WordPress 4.5.
 
 = 0.0.5 =
 
