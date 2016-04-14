@@ -12,7 +12,7 @@ Display your latest blip in a widget.  Requires a Blipfoto account.
 
 == Description ==
 
-Displays the latest entry on Blipfoto by a given user in a widget on your WordPress website.  Note: you must have an account with Blipfoto to use this widget.  If you don't have one, you can [get one for free](https://www.blipfoto.com/account/signu).
+Displays the latest entry on Blipfoto by a given user in a widget on your WordPress website.  Note: you must have an account with Blipfoto to use this widget.  If you don't have one, you can [get one for free](https://www.blipfoto.com/account/signup).
 
 Currently, Blipper Widget:
 
@@ -35,7 +35,7 @@ Currently, only English is supported.  I'm afraid I don't yet know how to make o
 
 = About Blipfoto =
 
-[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.  It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain these from Blipfoto.  This is a straightforward process and instructions are given below.
+[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.  It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain these from Blipfoto.  This is a straightforward process and instructions are given.
 
 This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account and performing actions including publishing your blips on your WordPress website.
 

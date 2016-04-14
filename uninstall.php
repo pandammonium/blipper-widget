@@ -11,11 +11,14 @@
   * WP-Spamshield plug-in.
   */
 
-// If uninstall not called from WordPress exit:
+// If uninstall not called from WordPress, exit:
 if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
   exit();
 }
 
+/**
+  * @since 0.0.3
+  */
 function blipper_widget_uninstall() {
 
   if ( current_user_can( 'edit_plugins' ) ) {
@@ -49,6 +52,11 @@ function blipper_widget_uninstall() {
     $all_options = wp_load_alloptions();
     foreach ( $all_options as $key => $value ) {
       if ( false !== strpos( $key, 'blipper_widget'  ) ) {
+        delete_option( $key );
+        // For site options in multi-site:
+        delete_site_option( $key );
+      }
+      if ( false !== strpos( $key, 'blipper-widget'  ) ) {
         delete_option( $key );
         // For site options in multi-site:
         delete_site_option( $key );
