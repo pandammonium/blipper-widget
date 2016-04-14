@@ -114,6 +114,7 @@ You'll need your Blipfoto username and an OAuth access token from Blipfoto to us
 Your username is the username you use to sign in to Blipfoto.  Blipper Widget uses this information only to verify your account.  Blipper Widget does not have access to your Blipfoto password.
 
 To obtain the access token, follow the instructions below:
+
 1. Open [the Blipfoto apps page](https://www.blipfoto.com/developer/apps) in a new tab or window.
 1. Press the 'Create new app' button.
 1. In the 'Name' field, give your app any name you like, for example, 'My super-duper app'.
@@ -210,3 +211,4 @@ This plug-in is loosely based on [BlipPress](https://wordpress.org/plugins/blipp
 I also used the excellent [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement the settings page and the widget back-end.
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
+You'll need your Blipfoto
