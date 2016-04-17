@@ -1,10 +1,10 @@
 === Blipper Widget ===
 Contributors: pandammonium
 Donate link: http://pandammonium.org/donate/
-Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project
+Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 4.5
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -150,9 +150,13 @@ The widget settings are currently:
 
 1. The Blipper Widget settings page.
 2. The widget form settings.
-3. An example of the widget in use on [pandammonium.org](http://pandammonium.org/), showing a link to my Blipfoto journal and a powered-by link.
+3. An example of the widget in use.
 
 == Changelog ==
+
+= 0.0.7 =
+
+* Fixed: bug that added link from the image to the blip on Blipfoto whether it was set or not.
 
 = 0.0.6 =
 
@@ -190,9 +194,13 @@ The widget settings are currently:
 
 == Upgrade notice ==
 
+= 0.0.7 =
+
+Update now to fix a bug linking the image back to Blipfoto when not desired. 
+
 = 0.0.6 =
 
-Update now to ensure compatability with WordPress 4.5.
+Update now to ensure compatability with WordPress 4.5 and the rebranding of the Blipfoto website.
 
 = 0.0.5 =
 
@@ -211,4 +219,3 @@ This plug-in is loosely based on [BlipPress](https://wordpress.org/plugins/blipp
 I also used the excellent [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement the settings page and the widget back-end.
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
-You'll need your Blipfoto
