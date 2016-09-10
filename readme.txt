@@ -3,8 +3,8 @@ Contributors: pandammonium
 Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 4.5
-Stable tag: 0.0.7
+Tested up to: 4.6.1
+Stable tag: 0.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
