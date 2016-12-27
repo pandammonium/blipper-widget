@@ -3,8 +3,8 @@ Contributors: pandammonium
 Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 4.6.1
-Stable tag: 0.0.8
+Tested up to: 4.7
+Stable tag: 0.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,14 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 0.0.9 =
+
+* Tested to ensure compatibility with WordPress 4.7.
+
+= 0.0.8 =
+
+* Tested to ensure compatibility with WordPress 4.6.1.
+
 = 0.0.7 =
 
 * Fixed: bug that added link from the image to the blip on Blipfoto whether it was set or not.
@@ -193,6 +201,10 @@ The widget settings are currently:
 * Initial version.
 
 == Upgrade notice ==
+
+= 0.0.8 =
+
+Update now to ensure compatability with WordPress 4.6.1.
 
 = 0.0.7 =
 
