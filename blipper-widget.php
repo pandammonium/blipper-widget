@@ -9,8 +9,13 @@
   * @wordpress-plugin
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
+<<<<<<< HEAD
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
   * Version:            1.0.4
+=======
+  * Description:        Display your latest blip in a widget.  Requires a Blipfoto account.
+  * Version:            0.0.10
+>>>>>>> 2f703f6... Tags version 0.0.10.
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
@@ -912,6 +917,7 @@ class Blipper_Widget extends WP_Widget {
         <select
           class="widefat"
           id="<?php echo $this->get_field_id( 'border-style' ); ?>"
+<<<<<<< HEAD
           name="<?php echo $this->get_field_name('border-style'); ?>">
           <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
           <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
@@ -1073,6 +1079,8 @@ class Blipper_Widget extends WP_Widget {
         <select
           class="widefat"
           id="<?php echo $this->get_field_id( 'border-style' ); ?>"
+=======
+>>>>>>> 2f703f6... Tags version 0.0.10.
           name="<?php echo $this->get_field_name('border-style'); ?>">
           <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
           <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
