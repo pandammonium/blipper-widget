@@ -3,8 +3,8 @@ Contributors: pandammonium
 Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 4.7
-Stable tag: 0.0.9
+Tested up to: 4.9.8
+Stable tag: 0.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,10 @@ By using this plugin, you consent to it performing actions involving your Blipfo
 You, the Blipfoto account holder, are responsible for the images shown on any website using the Blipper Widget with your OAuth credentials and access token.
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
+
+= GDPR compliance =
+
+Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish BLipper Widget to stor your Blipfoto username, please do not use this plugin.
 
 == Frequently Asked Questions ==
 
@@ -154,6 +158,10 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 0.0.10 =
+
+* Tested to ensure compatibility with WordPress 4.9.8.
+
 = 0.0.9 =
 
 * Tested to ensure compatibility with WordPress 4.7.
@@ -208,7 +216,7 @@ Update now to ensure compatability with WordPress 4.6.1.
 
 = 0.0.7 =
 
-Update now to fix a bug linking the image back to Blipfoto when not desired. 
+Update now to fix a bug linking the image back to Blipfoto when not desired.
 
 = 0.0.6 =
 
