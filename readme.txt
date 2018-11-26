@@ -164,6 +164,7 @@ The widget settings are currently:
 = 1.0.4 =
 
 * Updates some of the wording in the readme file.
+* Tested to ensure compatibility with WordPress 5.4.2.
 
 = 1.0.3 =
 
@@ -182,6 +183,10 @@ The widget settings are currently:
 = 0.0.10 =
 
 * Tested to ensure compatibility with WordPress 4.9.8.
+
+= 0.0.10 =
+
+* Tested to ensure compatibility with WordPress 5.0.
 
 = 0.0.9 =
 
