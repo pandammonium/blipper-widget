@@ -10,7 +10,7 @@
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account.
-  * Version:            0.0.9
+  * Version:            0.0.10
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
@@ -131,7 +131,7 @@ class Blipper_Widget extends WP_Widget {
 
 /**
   * Construct an instance of the widget.
-  * 
+  *
   * @since    0.0.1
   * @access   public
   */
@@ -144,7 +144,7 @@ class Blipper_Widget extends WP_Widget {
     parent::__construct( 'blipper_widget', 'Blipper Widget', $params );
 
     // Not using is_active_widget here because that function is only supposed to
-    // return true if the widget is on a sidebar.  The widget isn't necessarily 
+    // return true if the widget is on a sidebar.  The widget isn't necessarily
     // on a sidebar when the OAuth access settings are set.
     $this->load_dependencies();
     $this->settings = new blipper_widget_settings();
@@ -160,7 +160,7 @@ class Blipper_Widget extends WP_Widget {
 
 /**
   * Render the widget on the WP site.  This is the front-end of the widget.
-  * 
+  *
   * @since    0.0.1
   * @access   public
   */
@@ -200,7 +200,7 @@ class Blipper_Widget extends WP_Widget {
 /**
   * Update the widget settings that were set using the form in the admin
   * panel/customiser.
-  * 
+  *
   * @since    0.0.1
   * @access   public
   * @param    array     $new_instance     The settings the user wants to change
@@ -396,7 +396,7 @@ class Blipper_Widget extends WP_Widget {
 
 /**
   * Construct an instance of the Blipfoto client and test it's ok
-  * 
+  *
   * @since    0.0.1
   * @access   private
   * @param    array     $instance         The settings just saved in the
@@ -717,10 +717,10 @@ class Blipper_Widget extends WP_Widget {
 
       // Display the blip.
 
-      echo '<figure style="' 
-        . $this->blipper_widget_get_style( $instance, 'border-style') 
+      echo '<figure style="'
+        . $this->blipper_widget_get_style( $instance, 'border-style')
         . $this->blipper_widget_get_style( $instance, 'border-width')
-        . $this->blipper_widget_get_style( $instance, 'border-color') 
+        . $this->blipper_widget_get_style( $instance, 'border-color')
         . $this->blipper_widget_get_style( $instance, 'background-color' )
         . $this->blipper_widget_get_style( $instance, 'padding' )
         . '">';
@@ -735,10 +735,10 @@ class Blipper_Widget extends WP_Widget {
         echo '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
       }
       // Add the image.
-      echo '<img src="' . $image_url . '" 
+      echo '<img src="' . $image_url . '"
         class="blipper-widget-image"
-        alt="' . $blip['title'] . '" 
-        height="auto" 
+        alt="' . $blip['title'] . '"
+        height="auto"
         width="auto">
       ';
       // Close the link (anchor) tag.
@@ -775,24 +775,24 @@ class Blipper_Widget extends WP_Widget {
         $instance['display-powered-by'] = $this->default_setting_values['display-powered-by'];
       }
       if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/' 
-          . $user_settings->data( 'username' ) 
-          . '" rel="nofollow" style="' 
-          . $this->blipper_widget_get_style( $instance, 'link-color' ) 
-          . '">' . $user_settings->data( 'journal_title' ) 
-          . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="' 
-          . $this->blipper_widget_get_style( $instance, 'link-color' ) 
+        echo '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/'
+          . $user_settings->data( 'username' )
+          . '" rel="nofollow" style="'
+          . $this->blipper_widget_get_style( $instance, 'link-color' )
+          . '">' . $user_settings->data( 'journal_title' )
+          . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+          . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'hide' ) {
-        echo '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/' 
-          . $user_settings->data( 'username' ) 
-          . '" rel="nofollow" style="' 
-          . $this->blipper_widget_get_style( $instance, 'link-color' ) 
-          . '">' . $user_settings->data( 'journal_title' ) 
+        echo '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/'
+          . $user_settings->data( 'username' )
+          . '" rel="nofollow" style="'
+          . $this->blipper_widget_get_style( $instance, 'link-color' )
+          . '">' . $user_settings->data( 'journal_title' )
           . '</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'hide' && $instance['display-powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="' 
-          . $this->blipper_widget_get_style( $instance, 'link-color' ) 
+        echo '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+          . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else {
         error_log( "Blipper_Widget::blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed" );
@@ -831,11 +831,11 @@ class Blipper_Widget extends WP_Widget {
         <label for="<?php echo $this->get_field_id( 'title' ); ?>">
           <?php _e( 'Widget title', 'blipper-widget' ); ?>
         </label>
-        <input 
+        <input
           class="widefat"
-          id="<?php echo $this->get_field_id( 'title' ) ?>" 
-          name="<?php echo $this->get_field_name( 'title' ); ?>" 
-          type="text" 
+          id="<?php echo $this->get_field_id( 'title' ) ?>"
+          name="<?php echo $this->get_field_name( 'title' ); ?>"
+          type="text"
           value="<?php echo esc_attr( $instance['title'] ); ?>"
           placeholder="The title will be blank"
         >
@@ -909,9 +909,9 @@ class Blipper_Widget extends WP_Widget {
         <label for="<?php echo $this->get_field_id( 'border-style' ); ?>">
           <?php _e( 'Border style', 'blipper-widget' ) ?>
         </label>
-        <select 
-          class="widefat" 
-          id="<?php echo $this->get_field_id( 'border-style' ); ?>" 
+        <select
+          class="widefat"
+          id="<?php echo $this->get_field_id( 'border-style' ); ?>"
           name="<?php echo $this->get_field_name('border-style'); ?>">
           <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
           <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
@@ -1078,26 +1078,26 @@ class Blipper_Widget extends WP_Widget {
     switch( $style_element ) {
       case 'link-color':
         $element = 'color';
-        return array_key_exists( $style_element, $instance ) 
-          ? ( empty( $instance[$style_element] ) 
+        return array_key_exists( $style_element, $instance )
+          ? ( empty( $instance[$style_element] )
             ? $element . ':' . $this->default_setting_values[$style_element]
             : $element . ':' . $instance[$style_element] . ';'
-            ) 
+            )
           : $element . ':' . $this->default_setting_values[$style_element] . ';';
       case 'padding':
-        return array_key_exists( $style_element, $instance ) 
-          ? ( empty( $instance[$style_element] ) 
+        return array_key_exists( $style_element, $instance )
+          ? ( empty( $instance[$style_element] )
             ? $element . ':' . $this->default_setting_values[$style_element]
             : $element . ':' . $instance[$style_element] . 'px' . ';'
-            ) 
+            )
           : $element . ':' . $this->default_setting_values[$style_element] . 'px' . ';';
 
       default:
-        return array_key_exists( $style_element, $instance ) 
-          ? ( empty( $instance[$style_element] ) 
+        return array_key_exists( $style_element, $instance )
+          ? ( empty( $instance[$style_element] )
             ? $element . ':' . $this->default_setting_values[$style_element]
             : $element . ':' . $instance[$style_element] . ';'
-            ) 
+            )
           : $element . ':' . $this->default_setting_values[$style_element] . ';';
     }
 
@@ -1105,11 +1105,11 @@ class Blipper_Widget extends WP_Widget {
 
   private function blipper_widget_log_display_values( $instance, $display_element, $function_name ) {
       $message =
-        array_key_exists( $display_element, $instance ) 
-        ? ( empty( $instance[$display_element] ) 
+        array_key_exists( $display_element, $instance )
+        ? ( empty( $instance[$display_element] )
           ? ( "Key has no value; using default: " . $this->default_setting_values[$display_element] )
           : ( "Value: " . $instance[$display_element] )
-          ) 
+          )
         : ( "No key, no value; adding default: " . $this->default_setting_values['display-journal-title'] );
       error_log( "Blipper_Widget::$function_name( $display_element )" );
       error_log( "\t" . $message . "\n" );
