@@ -54,6 +54,10 @@ You, the Blipfoto account holder, are responsible for the images shown on any we
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
 
+= GDPR compliance =
+
+Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish BLipper Widget to stor your Blipfoto username, please do not use this plugin.
+
 == Frequently Asked Questions ==
 
 = Does the widget need my Blipfoto username and password? =
@@ -156,7 +160,7 @@ The widget settings are currently:
 
 = 0.0.10 =
 
-* Tested to ensure compatibility with WordPress 5.0.
+* Tested to ensure compatibility with WordPress 4.9.8.
 
 = 0.0.9 =
 
