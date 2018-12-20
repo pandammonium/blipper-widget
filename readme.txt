@@ -132,7 +132,7 @@ To obtain the access token, follow the instructions below:
 
 Note that if you refresh your access token, you must update it in Blipper Widget.
 
-You can revoke access from Blipper Widget to your Polaroind|Blipfoto account easily:
+You can revoke access from Blipper Widget to your Blipfoto account easily:
 
 1. Sign in to your Blipfoto account.
 1. Go to [your Blipfoto app settings](https://www.blipfoto.com/settings/apps).
