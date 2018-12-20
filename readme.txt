@@ -1,6 +1,6 @@
 === Blipper Widget ===
 Contributors: pandammonium
-Donate link: http://pandammonium.org/donate/
+Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.0.2
@@ -25,13 +25,13 @@ The image in the blip is not stored on your server: the widget links to the imag
 
 = View the plugin =
 
-If you'd like to see the plugin in action, you can visit [my WordPress site](http://pandammonium.org/) to see Blipper Widget showing my latest blip.
+If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/) to see Blipper Widget showing my latest blip.
 
 If you'd like to see the plugin code, [it's available on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know in the comments on [my Blipper Plugin page](http://pandammonium.org/wordpress-dev/blipper-widget/).
+Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know in the comments on [my Blipper Plugin page](https://pandammonium.org/wordpress-dev/blipper-widget/).
 
 = About Blipfoto =
 
@@ -72,7 +72,7 @@ The widget asks for your username for verification purposes, but does not requir
 
 = Where can I get support for Blipper Widget? =
 
-You can use [the Blipper Widget page](http://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
+You can use [the Blipper Widget page](https://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
 
 = Is the image stored on my web server? =
 
