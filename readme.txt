@@ -31,7 +31,7 @@ If you'd like to see the latest plugin code, [it's available on GitHub](https://
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
+Currently, only (British) English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = About Blipfoto =
 
