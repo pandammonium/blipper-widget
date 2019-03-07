@@ -168,11 +168,11 @@ The widget settings are currently:
 
 = 1.0.3 =
 
+* Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
+
 = 1.0.2 =
 
-Updates version to 1.0.2 for technical reasons.
-
-* Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
+* Updates version to 1.0.2 for technical reasons.
 
 = 1.0.1 =
 
