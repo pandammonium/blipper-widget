@@ -224,7 +224,7 @@ The widget settings are currently:
 
 == Upgrade notice ==
 
-= 1.1.0 =
+= 1.0.2 =
 
 Update now to ensure compatibility with WordPress 5.1.
 
