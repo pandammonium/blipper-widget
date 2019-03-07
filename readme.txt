@@ -172,7 +172,7 @@ The widget settings are currently:
 
 = 1.0.1 =
 
-* Corrections to documentation.
+* Fixes a couple of typos.
 
 = 1.0 =
 
