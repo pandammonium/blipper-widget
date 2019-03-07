@@ -158,10 +158,13 @@ The widget settings are currently:
 
 == Changelog ==
 
+<<<<<<< HEAD
 = 1.0.2 =
 
 * Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
 
+=======
+>>>>>>> b5d031855e598cc5d3c7995743a64185c54299e0
 = 1.0.1 =
 
 * Fixes a couple of typos.
