@@ -4,25 +4,7 @@ Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.1
-<<<<<<< HEAD
-<<<<<<< HEAD
 Stable tag: 1.0.3
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 1ecdffdcc6e389909edb4c5ddca7e758bb3fc64e
-<<<<<<< HEAD
-Stable tag: 1.0.2
-=======
-Stable tag: 1.1.0
->>>>>>> Updates version to 1.0.2, thus fixing the incorrect version number in blipper-widget.php.  Couldn't copy the SVN trunk into Git using git svn tag "1.0.1" because of error: 'branch 1.0.1 already exists'.
-=======
-Stable tag: 1.0.2
->>>>>>> Corrects stable tag to 1.0.2 in readme.txt.
-<<<<<<< HEAD
->>>>>>> Corrects stable tag to 1.0.2 in readme.txt.
-=======
->>>>>>> 1ecdffdcc6e389909edb4c5ddca7e758bb3fc64e
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
