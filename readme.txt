@@ -4,7 +4,7 @@ Donate link: http://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,9 +35,11 @@ Currently, only English is supported.  I'm afraid I don't yet know how to make o
 
 = About Blipfoto =
 
-[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.  It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain these from Blipfoto.  This is a straightforward process and instructions are given.
+[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.
 
-This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account and performing actions including publishing your blips on your WordPress website.
+It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain OAuth 2.0 credentials from Blipfoto.
+
+NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
 
 = Requirements =
 
@@ -62,9 +64,10 @@ Only your Blipfoto username, which is public information, is required, collected
 
 = Does the widget need my Blipfoto username and password? =
 
-The widget asks for your username for verification purposes, but does not require your password.  It does not ask for your password and it does not have access to your password.  The widget uses an OAuth 2.0 access token to authorise access to your Blipfoto account, eliminating the need for your password.
+Yes and no.  The widget asks for your username for verification purposes, but does not require your password.  It does not ask for your password and it does not have access to your password.  The widget uses an OAuth 2.0 access token to authorise access to your Blipfoto account, eliminating the need for your password.
 
 = Why doesn't the plugin seem to do anything? =
+
 * If you haven't added any blips to your Blipfoto journal, you won't see any blips in your widget.  Please make sure you have at least one blip in your Blipfoto account.
 * If you are logged in and are able to change your site's options and settings, you should see an error message indicating the problem.  It is most likely that you have mistyped your username or that you haven't copied your access token correctly.  Amend these details, and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
@@ -80,7 +83,7 @@ No.  The image in the blip is not stored on your server: the widget links to the
 
 = Does the widget use the original image? =
 
-The widget uses the URL of the best quality image made available to it; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
+Unlikely.  The widget uses the URL of the best quality image made available to it by Blipfoto; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
 
 = Can I display the blips from another account with my access token in my widget? =
 
@@ -139,7 +142,7 @@ You can revoke access from Blipper Widget to your Blipfoto account easily:
 1. Select the app whose access you want to revoke, for example, 'My super-duper app'.
 1. Press the 'Save changes' button.
 
-Note that your plugin will no longer work.
+Note that Blipper Widget will no longer work.
 
 Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, and set up the settings on the widget form as you wish.  When you view your webpage, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
 
@@ -157,6 +160,10 @@ The widget settings are currently:
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.0.4 =
+
+* Updates some of the wording in the readme file.
 
 = 1.0.3 =
 
