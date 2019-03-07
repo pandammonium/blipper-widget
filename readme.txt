@@ -158,10 +158,6 @@ The widget settings are currently:
 
 == Changelog ==
 
-= 1.0.1 =
-
-* Fixes a couple of typos.
-
 = 1.0 =
 
 * It's about time it got to a proper version number given that it seems pretty stable.  Let me know if it isn't!
