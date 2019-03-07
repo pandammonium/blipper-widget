@@ -10,7 +10,19 @@
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account.
+<<<<<<< HEAD
   * Version:            1.0.2
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+  * Version:            1.0.2
+=======
+  * Version:            1.0.1
+>>>>>>> b5d031855e598cc5d3c7995743a64185c54299e0
+=======
+  * Version:            1.0.2
+>>>>>>> Updates version to 1.0.2, thus fixing the incorrect version number in blipper-widget.php.  Couldn't copy the SVN trunk into Git using git svn tag "1.0.1" because of error: 'branch 1.0.1 already exists'.
+>>>>>>> 49392087d75643497035ccd16c2e15c4f2b581df
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
