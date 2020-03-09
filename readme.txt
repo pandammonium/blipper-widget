@@ -1,9 +1,9 @@
 === Blipper Widget ===
 Contributors: pandammonium
-Donate link: http://pandammonium.org/donate/
+Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.1
+Tested up to: 5.3.2
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -16,36 +16,36 @@ Displays the latest entry on Blipfoto by a given user in a widget on your WordPr
 
 Currently, Blipper Widget:
 
-* displays the latest blip (image, title and date) in your Blipfoto account in a widget;
-* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default);
-* displays your journal name and a link to your Blipfoto account (optional; off by default); and
+* displays the latest blip (image, title and date) in your Blipfoto account in a widget
+* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default)
+* displays your journal name and a link to your Blipfoto account (optional; off by default)
 * displays a link to the Blipfoto website (optional; off by default).
 
 The image in the blip is not stored on your server: the widget links to the image on Blipfoto.
 
 = View the plugin =
 
-If you'd like to see the plugin in action, you can visit [my WordPress site](http://pandammonium.org/) to see Blipper Widget showing my latest blip.
+If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/) to see Blipper Widget showing my latest blip.
 
-If you'd like to see the plugin code, [it's available on GitHub](https://github.com/pandammonium/blipper-widget).
+If you'd like to see the latest plugin code, [it's available on GitHub](https://github.com/pandammonium/blipper-widget).  Note that this might be ahead of the current release of Blipper Widget.  The code for the current release is available in WordPress' SVN repository.
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know in the comments on [my Blipper Plugin page](http://pandammonium.org/wordpress-dev/blipper-widget/).
+Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget Plugin page on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = About Blipfoto =
 
 [Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.
 
-It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain OAuth 2.0 credentials from Blipfoto.
+This plugin uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain your OAuth 2.0 credentials from Blipfoto.  This is a straightforward process, and instructions are given.
 
-NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
+NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions on your behalf, including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
 
 = Requirements =
 
 * Blipfoto account
-* WordPress 4.3
-* PHP 5
+* WordPress 4.3+
+* PHP 5+
 * PHP [Client URL (cURL) library](http://php.net/manual/en/book.curl.php)
 
 = Disclaimer =
@@ -83,7 +83,7 @@ No.  The image in the blip is not stored on your server: the widget links to the
 
 = Does the widget use the original image? =
 
-Unlikely.  The widget uses the URL of the best quality image made available to it by Blipfoto; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
+This is not determined by Blipper Widget, but by Blipfoto itself.  The widget uses the URL of the best quality image made available to it by Blipfoto; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
 
 = Can I display the blips from another account with my access token in my widget? =
 
@@ -133,7 +133,7 @@ To obtain the access token, follow the instructions below:
 1. Press the 'Create a new app' button.
 1. You should now see your Credentials (Client ID and Client Secret) and Access Token.  Copy and paste the access token into the corresponding field on the Blipper Widget settings page.
 
-Note that if you refresh your access token, you must update it in Blipper Widget.
+*Note that if you refresh your access token, you must update it in Blipper Widget.*
 
 You can revoke access from Blipper Widget to your Blipfoto account easily:
 
@@ -142,7 +142,7 @@ You can revoke access from Blipper Widget to your Blipfoto account easily:
 1. Select the app whose access you want to revoke, for example, 'My super-duper app'.
 1. Press the 'Save changes' button.
 
-Note that Blipper Widget will no longer work.
+*Note that Blipper Widget will no longer work.*
 
 Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, and set up the settings on the widget form as you wish.  When you view your webpage, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
 
@@ -171,11 +171,11 @@ The widget settings are currently:
 
 = 1.0.1 =
 
-* Fixes a couple of typos.
+* Corrections to documentation.
 
 = 1.0 =
 
-* It's about time it got to a proper version number given that it seems pretty stable.  Let me know if it isn't!
+* It's about time it got to a proper version number given that it seems pretty stable.  Let me know in the comments on [my Blipper Plugin GitHub page](https://github.com/pandammonium/blipper-widget) if it isn't!
 
 * Tested to ensure compatibility with WordPress 5.0.2.
 
