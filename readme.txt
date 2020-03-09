@@ -3,8 +3,8 @@ Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.0.2
-Stable tag: 1.0.1
+Tested up to: 5.3.2
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,10 +16,10 @@ Displays the latest entry on Blipfoto by a given user in a widget on your WordPr
 
 Currently, Blipper Widget:
 
-* displays the latest blip (image, title and date) in your Blipfoto account in a widget;
-* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional);
-* displays your journal name and a link to your Blipfoto account (optional); and
-* displays a link to the Blipfoto website (optional).
+* displays the latest blip (image, title and date) in your Blipfoto account in a widget
+* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default)
+* displays your journal name and a link to your Blipfoto account (optional; off by default)
+* displays a link to the Blipfoto website (optional; off by default).
 
 The image in the blip is not stored on your server: the widget links to the image on Blipfoto.
 
@@ -31,19 +31,21 @@ If you'd like to see the latest plugin code, [it's available on GitHub](https://
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know in the comments on [my Blipper Plugin page](https://pandammonium.org/wordpress-dev/blipper-widget/).
+Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget Plugin page on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = About Blipfoto =
 
-[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.  It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain these from Blipfoto.  This is a straightforward process and instructions are given.
+[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.
 
-This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account and performing actions including publishing your blips on your WordPress website.
+This plugin uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain your OAuth 2.0 credentials from Blipfoto.  This is a straightforward process, and instructions are given.
+
+NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions on your behalf, including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
 
 = Requirements =
 
 * Blipfoto account
-* WordPress 4.3
-* PHP 5
+* WordPress 4.3+
+* PHP 5+
 * PHP [Client URL (cURL) library](http://php.net/manual/en/book.curl.php)
 
 = Disclaimer =
@@ -56,15 +58,16 @@ The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/lice
 
 = GDPR compliance =
 
-Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish BLipper Widget to stor your Blipfoto username, please do not use this plugin.
+Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
 
 == Frequently Asked Questions ==
 
 = Does the widget need my Blipfoto username and password? =
 
-The widget asks for your username for verification purposes, but does not require your password.  It does not ask for your password and it does not have access to your password.  The widget uses an OAuth 2.0 access token to authorise access to your Blipfoto account, eliminating the need for your password.
+Yes and no.  The widget asks for your username for verification purposes, but does not require your password.  It does not ask for your password and it does not have access to your password.  The widget uses an OAuth 2.0 access token to authorise access to your Blipfoto account, eliminating the need for your password.
 
 = Why doesn't the plugin seem to do anything? =
+
 * If you haven't added any blips to your Blipfoto journal, you won't see any blips in your widget.  Please make sure you have at least one blip in your Blipfoto account.
 * If you are logged in and are able to change your site's options and settings, you should see an error message indicating the problem.  It is most likely that you have mistyped your username or that you haven't copied your access token correctly.  Amend these details, and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
@@ -80,7 +83,7 @@ No.  The image in the blip is not stored on your server: the widget links to the
 
 = Does the widget use the original image? =
 
-The widget uses the URL of the best quality image made available to it; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
+This is not determined by Blipper Widget, but by Blipfoto itself.  The widget uses the URL of the best quality image made available to it by Blipfoto; typically, this is standard resolution.  Standard resolution is normally good enough for display in a widget.
 
 = Can I display the blips from another account with my access token in my widget? =
 
@@ -130,7 +133,7 @@ To obtain the access token, follow the instructions below:
 1. Press the 'Create a new app' button.
 1. You should now see your Credentials (Client ID and Client Secret) and Access Token.  Copy and paste the access token into the corresponding field on the Blipper Widget settings page.
 
-Note that if you refresh your access token, you must update it in Blipper Widget.
+*Note that if you refresh your access token, you must update it in Blipper Widget.*
 
 You can revoke access from Blipper Widget to your Blipfoto account easily:
 
@@ -139,7 +142,7 @@ You can revoke access from Blipper Widget to your Blipfoto account easily:
 1. Select the app whose access you want to revoke, for example, 'My super-duper app'.
 1. Press the 'Save changes' button.
 
-*Note that your plugin will no longer work.*
+*Note that Blipper Widget will no longer work.*
 
 Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, and set up the settings on the widget form as you wish.  When you view your webpage, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
 
@@ -158,13 +161,21 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 1.0.4 =
+
+* Updates some of the wording in the readme file.
+
+= 1.0.3 =
+
+* Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
+
 = 1.0.1 =
 
 * Corrections to documentation.
 
 = 1.0 =
 
-* It's about time it got to a proper version number given that it seems pretty stable.  Let me know in the comments on [my Blipper Plugin page](https://pandammonium.org/wordpress-dev/blipper-widget/) if it isn't!
+* It's about time it got to a proper version number given that it seems pretty stable.  Let me know in the comments on [my Blipper Plugin GitHub page](https://github.com/pandammonium/blipper-widget) if it isn't!
 
 * Tested to ensure compatibility with WordPress 5.0.2.
 
@@ -219,6 +230,10 @@ The widget settings are currently:
 * Initial version.
 
 == Upgrade notice ==
+
+= 1.0.3 =
+
+Update now to ensure compatibility with WordPress 5.1.
 
 = 0.0.8 =
 
