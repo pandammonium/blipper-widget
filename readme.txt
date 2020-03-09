@@ -4,7 +4,7 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.0.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,7 @@ The image in the blip is not stored on your server: the widget links to the imag
 
 If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/) to see Blipper Widget showing my latest blip.
 
-If you'd like to see the plugin code, [it's available on GitHub](https://github.com/pandammonium/blipper-widget).
+If you'd like to see the latest plugin code, [it's available on GitHub](https://github.com/pandammonium/blipper-widget).  Note that this might be ahead of the current release of Blipper Widget.  The code for the current release is available in WordPress' SVN repository.
 
 = Languages =
 
@@ -139,7 +139,7 @@ You can revoke access from Blipper Widget to your Blipfoto account easily:
 1. Select the app whose access you want to revoke, for example, 'My super-duper app'.
 1. Press the 'Save changes' button.
 
-Note that your plugin will no longer work.
+*Note that your plugin will no longer work.*
 
 Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, and set up the settings on the widget form as you wish.  When you view your webpage, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
 
@@ -158,9 +158,13 @@ The widget settings are currently:
 
 == Changelog ==
 
+= 1.0.1 =
+
+* Corrections to documentation.
+
 = 1.0 =
 
-* It's about time it got to a proper version number given that it seems pretty stable.  Let me know if it isn't!
+* It's about time it got to a proper version number given that it seems pretty stable.  Let me know in the comments on [my Blipper Plugin page](https://pandammonium.org/wordpress-dev/blipper-widget/) if it isn't!
 
 * Tested to ensure compatibility with WordPress 5.0.2.
 
