@@ -16,9 +16,9 @@ Displays the latest entry on Blipfoto by a given user in a widget on your WordPr
 
 Currently, Blipper Widget:
 
-* displays the latest blip (image, title and date) in your Blipfoto account in a widget
-* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default)
-* displays your journal name and a link to your Blipfoto account (optional; off by default)
+* displays the latest blip (image, title and date) in your Blipfoto account in a widget;
+* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default);
+* displays your journal name and a link to your Blipfoto account (optional; off by default); and
 * displays a link to the Blipfoto website (optional; off by default).
 
 The image in the blip is not stored on your server: the widget links to the image on Blipfoto.
@@ -37,28 +37,38 @@ Currently, only English is supported.  I'm afraid I don't yet know how to make o
 
 [Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.
 
+<<<<<<< HEAD
 This plugin uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain your OAuth 2.0 credentials from Blipfoto.  This is a straightforward process, and instructions are given.
 
 NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions on your behalf, including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
+=======
+It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain OAuth 2.0 credentials from Blipfoto.
+
+NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
+>>>>>>> c514c8b39af3abe8c24f01fcc0a8208091c4f799
 
 = Requirements =
 
 * Blipfoto account
-* WordPress 4.3+
-* PHP 5+
+* WordPress 4.3 or higher
+* PHP 5 or higher
 * PHP [Client URL (cURL) library](http://php.net/manual/en/book.curl.php)
 
 = Disclaimer =
 
-By using this plugin, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (excluding your password).
+By using this plugin, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password).
 
 You, the Blipfoto account holder, are responsible for the images shown on any website using the Blipper Widget with your OAuth credentials and access token.
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
 
+Use of this widget does not affect the copyright of the photo.
+
 = GDPR compliance =
 
 Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
+
+Your use of the plugin is not monitored by the plugin.
 
 == Frequently Asked Questions ==
 
