@@ -37,19 +37,13 @@ Currently, only English is supported.  I'm afraid I don't yet know how to make o
 
 [Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags.
 
-<<<<<<< HEAD
 This plugin uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain your OAuth 2.0 credentials from Blipfoto.  This is a straightforward process, and instructions are given.
 
 NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions on your behalf, including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
-=======
-It uses OAuth 2.0 to ensure that your password is kept secure.  You will need to obtain OAuth 2.0 credentials from Blipfoto.
-
-NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin means you consent to this plugin accessing your Blipfoto account, knowing your username and performing actions including publishing your blips on your WordPress website.  It does not post blips to Blipfoto.
->>>>>>> c514c8b39af3abe8c24f01fcc0a8208091c4f799
 
 = Requirements =
 
-* Blipfoto account
+* [Blipfoto account](https://www.blipfoto.com/account/signup)
 * WordPress 4.3 or higher
 * PHP 5 or higher
 * PHP [Client URL (cURL) library](http://php.net/manual/en/book.curl.php)
