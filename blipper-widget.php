@@ -1117,8 +1117,9 @@ class Blipper_Widget extends WP_Widget {
 
   // --- Action hooks ------------------------------------------------------- //
 
-  // Check the Blipfoto OAuth settings have been set, otherwise display
-  // a message to the user.
+  /**
+   * Check the Blipfoto OAuth settings have been set, otherwise display a message to the user.
+   */
   public function blipper_widget_settings_check() {
     $api = get_option('blipper-widget-settings-oauth');
     if ( !empty( $api ) ) {
@@ -1131,7 +1132,9 @@ class Blipper_Widget extends WP_Widget {
     }
   }
 
-  // Add the WP colour picker
+  /**
+   * Add the WP colour picker.
+   */
   public function blipper_widget_load_colour_picker() {
     error_log( "Blipper_Widget::blipper_widget_load_colour_picker()" );
   }
