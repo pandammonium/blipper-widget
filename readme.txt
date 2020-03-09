@@ -75,7 +75,7 @@ Yes and no.  The widget asks for your username for verification purposes, but do
 
 = Where can I get support for Blipper Widget? =
 
-You can use [the Blipper Widget page](http://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
+You can use [my Blipper Widget page on GitHub](https://github.com/pandammonium/wp-blipper-widget/issues) on my website to ask questions and report problems.
 
 = Is the image stored on my web server? =
 
