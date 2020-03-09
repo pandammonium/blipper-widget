@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 /**
   * Blipper Widget OAuth settings.
   * @since 0.0.2
   *
-  * These settings are set from the Blipper Widhet settings page, as opposed to
+  * These settings are set from the Blipper Widget settings page, as opposed to
   * on the back-end widget form.  They are settings, such as OAuth credentials,
   * that are unlikely to be changed after they have been set.  The settings on
   * the back-end form of the widget are more to do with the appearance of the
@@ -50,7 +50,7 @@ class blipper_widget_settings {
 
 /**
   * Construct an instance of the settings.
-  * 
+  *
   * @since     0.0.2
   * @access    public
   */
@@ -73,13 +73,13 @@ class blipper_widget_settings {
 
 /**
   * Create a new settings page for the widget in the WP admin settings menu.
-  * 
+  *
   * @since     0.0.2
   * @access    public
   */
   public function blipper_widget_admin_menu() {
 
-    add_options_page( 
+    add_options_page(
       // page title (not to be confused with page header):
       __( 'Blipper Widget Settings', 'blipper-widget' ),
       // menu title:
@@ -95,7 +95,7 @@ class blipper_widget_settings {
 
 /**
   * Set up the settings form on the Blipper Widget settings page.
-  * 
+  *
   * @since     0.0.2
   * @access    public
   */
@@ -178,7 +178,7 @@ class blipper_widget_settings {
     $value = false == $settings ? $this->blipper_widget_defaults[$args['setting']] : $settings[$args['setting']];
 
     ?>
-      <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">      
+      <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
     <?php
 
   }
@@ -241,8 +241,8 @@ class blipper_widget_settings {
     if ( !is_array( $input ) ) {
 
       add_settings_error(
-        'wp-blipper-settings-group', 
-        'inavlid-input', 
+        'wp-blipper-settings-group',
+        'invalid-input',
         __( 'Something has gone wrong.  Please check the OAuth settings.', 'blipper-widget' )
       );
 
@@ -255,14 +255,14 @@ class blipper_widget_settings {
         $output['username'] = $input['username'];
       } else if ( empty( $input['username'] ) ) {
         add_settings_error(
-          'wp-blipper-settings-group', 
-          'missing-oauth-username', 
+          'wp-blipper-settings-group',
+          'missing-oauth-username',
           __( 'Please enter a value for the username.', 'blipper-widget' )
         );
       } else {
         add_settings_error(
-          'wp-blipper-settings-group', 
-          'invalid-oauth-access-token', 
+          'wp-blipper-settings-group',
+          'invalid-oauth-access-token',
           __( 'Please enter printable characters only for the username.', 'blipper-widget' )
         );
         $output['username'] = '';
@@ -273,14 +273,14 @@ class blipper_widget_settings {
         $output['access-token'] = $input['access-token'];
       } else if ( empty( $input['access-token'] ) ) {
         add_settings_error(
-          'wp-blipper-settings-group', 
-          'missing-oauth-access-token', 
+          'wp-blipper-settings-group',
+          'missing-oauth-access-token',
           __( 'Please enter a value for the access token.', 'blipper-widget' )
         );
       } else {
         add_settings_error(
-          'wp-blipper-settings-group', 
-          'invalid-oauth-access-token', 
+          'wp-blipper-settings-group',
+          'invalid-oauth-access-token',
           __( 'Please enter alphanumeric characters only for the access token.', 'blipper-widget' )
         );
         $output['access-token'] = '';
@@ -330,7 +330,9 @@ class blipper_widget_settings {
     </ol>
     <p>Note that your plugin will no longer work.</p>
     <h4>Blipfoto username</h4>
-    <p>You also need to enter your username in the appropriate field below.  The widget will check to see that the access token is valid for your account.
+    <p>You also need to enter your username in the appropriate field below.  The widget will check to see that the access token is valid for your account.</p>
+    <h4>Add the widget</h4>
+    <p>All that's left to do now is to add the widget to one of your widget areas (sidebar, footer), style it and you're good to go!</p>
 
   <?php
 
@@ -357,7 +359,7 @@ class blipper_widget_settings {
        $oauth_settings['access-token']
       );
     } catch ( blipper_widget_ApiResponseException $e ) {
-      add_settings_error( 
+      add_settings_error(
         'wp-blipper-settings-group',
         'invalid-oauth-credentials',
         __( 'Unable to connect to Blipfoto.  Please check the OAuth settings.', 'blipper-widget' )
@@ -378,13 +380,13 @@ class blipper_widget_settings {
         }
 
       } catch ( blipper_widget_OAuthException $e ) {
-        add_settings_error( 
+        add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
           __( 'Error.  ' . $e->getMessage(), 'blipper-widget' )
         );
       } catch ( blipper_widget_ApiResponseException $e ) {
-        add_settings_error( 
+        add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
           __( 'Unable to connect to your Blipfoto user profile.<br>Please check you have correctly copied <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">your access token at Blipfoto</a> and pasted it into the settings below.<br>If you have refreshed your Blipfoto OAuth access token, you need to update it below.<br>If you have entered it correctly, try <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Blipfoto</a> and entering it below.', 'blipper-widget' )
