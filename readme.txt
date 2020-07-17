@@ -16,9 +16,10 @@ Displays the latest entry on Blipfoto by a given user in a widget on your WordPr
 
 Currently, Blipper Widget:
 
-* displays the latest blip (image, title and date) in your Blipfoto account in a widget;
-* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default);
-* displays your journal name and a link to your Blipfoto account (optional; off by default); and
+
+* displays the latest blip (image, title and date) in your Blipfoto account in a widget
+* takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default)
+* displays your journal name and a link to your Blipfoto account (optional; off by default)
 * displays a link to the Blipfoto website (optional; off by default).
 
 The image in the blip is not stored on your server: the widget links to the image on Blipfoto.
@@ -31,7 +32,7 @@ If you'd like to see the latest plugin code, [it's available on GitHub](https://
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget Plugin page on GitHub](https://github.com/pandammonium/blipper-widget).
+Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = About Blipfoto =
 
@@ -43,9 +44,9 @@ NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin
 
 = Requirements =
 
-* [Blipfoto account](https://www.blipfoto.com/account/signup)
-* WordPress 4.3 or higher
-* PHP 5 or higher
+* Blipfoto account
+* WordPress 4.3+
+* PHP 5+
 * PHP [Client URL (cURL) library](http://php.net/manual/en/book.curl.php)
 
 = Disclaimer =
@@ -79,7 +80,7 @@ Yes and no.  The widget asks for your username for verification purposes, but do
 
 = Where can I get support for Blipper Widget? =
 
-You can use [the Blipper Widget page](https://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
+You can use [my Blipper Widget page on GitHub](http://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
 
 = Is the image stored on my web server? =
 
