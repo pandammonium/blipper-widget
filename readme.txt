@@ -16,7 +16,6 @@ Displays the latest entry on Blipfoto by a given user in a widget on your WordPr
 
 Currently, Blipper Widget:
 
-
 * displays the latest blip (image, title and date) in your Blipfoto account in a widget
 * takes you to the corresponding blip on the Blipfoto website if you click on the image or its title and date (optional; off by default)
 * displays your journal name and a link to your Blipfoto account (optional; off by default)
