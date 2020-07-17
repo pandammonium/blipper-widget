@@ -57,7 +57,6 @@ You, the Blipfoto account holder, are responsible for the images shown on any we
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
 
-<<<<<<< HEAD
 Use of this widget does not affect the copyright of the photo.
 
 = GDPR compliance =
@@ -65,11 +64,6 @@ Use of this widget does not affect the copyright of the photo.
 Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
 
 Your use of the plugin is not monitored by the plugin.
-=======
-= GDPR compliance =
-
-Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish BLipper Widget to stor your Blipfoto username, please do not use this plugin.
->>>>>>> 054009136b4232086d54a39113a4eaab17e7ec73
 
 == Frequently Asked Questions ==
 
