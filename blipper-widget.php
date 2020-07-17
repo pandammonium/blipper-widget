@@ -1086,7 +1086,7 @@ class Blipper_Widget extends WP_Widget {
       <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'no line'.</p>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
-          <?php _e( 'Border width (px)', 'blipper-widget' ); ?>
+          <?php _e( 'Border width', 'blipper-widget' ); ?>
         </label>
         <select
           class="widefat"
