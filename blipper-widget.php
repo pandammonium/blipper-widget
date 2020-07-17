@@ -923,7 +923,7 @@ class Blipper_Widget extends WP_Widget {
           <option value="outset" <?php selected( 'outset', esc_attr( $instance['border-style'] ) ); ?>>outset line</option>
         </select>
       </p>
-      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'no line'.</p>
+      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'none'.</p>
       <p>
         <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
           <?php _e( 'Border width', 'blipper-widget' ); ?>
