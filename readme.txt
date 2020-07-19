@@ -188,10 +188,6 @@ The widget settings are currently:
 
 * Tested to ensure compatibility with WordPress 4.9.8.
 
-= 0.0.10 =
-
-* Tested to ensure compatibility with WordPress 4.9.8.
-
 = 0.0.9 =
 
 * Tested to ensure compatibility with WordPress 4.7.
