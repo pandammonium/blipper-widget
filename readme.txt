@@ -168,6 +168,7 @@ The widget settings are currently:
 = 1.0.4 =
 
 * Updates some of the wording in the readme file.
+* Updates wP compatibility to 5.4.2.
 
 = 1.0.3 =
 
