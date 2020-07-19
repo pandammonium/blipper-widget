@@ -229,7 +229,7 @@ class Blipper_Widget extends WP_Widget {
     $instance['display-date']           = $display_date;
     $instance['display-journal-title']  = $display_journal_title;
     $instance['add-link-to-blip']       = $add_link_to_blip;
-    $instance['display-powered-by']             = $powered_by;
+    $instance['display-powered-by']     = $powered_by;
     $instance['border-style']           = $border_style;
     $instance['border-width']           = $border_width;
     $instance['border-color']           = $border_colour;
@@ -886,7 +886,6 @@ class Blipper_Widget extends WP_Widget {
         </label>
       </p>
       <p class="description">Tick the box to show the name of your journal with a link back to your Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.</p>
-
       <p>
         <input
           class="widefat"
@@ -901,6 +900,165 @@ class Blipper_Widget extends WP_Widget {
         </label>
       </p>
       <p class="description">Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by'-style link.  The box is unticked by default.</p>
+
+      <h4>Styling</h4>
+      <p class="description">You can style your widget if you like.  If you leave the default settings, the widget will be displayed using your normal sidebar style.</p>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'border-style' ); ?>">
+          <?php _e( 'Border style', 'blipper-widget' ) ?>
+        </label>
+        <select
+          class="widefat"
+          id="<?php echo $this->get_field_id( 'border-style' ); ?>"
+          name="<?php echo $this->get_field_name('border-style'); ?>">
+          <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-style'] ) ); ?>>default</option>
+          <option value="none" <?php selected( 'none', esc_attr( $instance['border-style'] ) ); ?>>none</option>
+          <option value="solid" <?php selected( 'solid', esc_attr( $instance['border-style'] ) ); ?>>solid line</option>
+          <option value="dotted" <?php selected( 'dotted', esc_attr( $instance['border-style'] ) ); ?>>dotted line</option>
+          <option value="dashed" <?php selected( 'dashed', esc_attr( $instance['border-style'] ) ); ?>>dashed line</option>
+          <option value="double" <?php selected( 'double', esc_attr( $instance['border-style'] ) ); ?>>double line</option>
+          <option value="groove" <?php selected( 'groove', esc_attr( $instance['border-style'] ) ); ?>>groove</option>
+          <option value="ridge" <?php selected( 'ridge', esc_attr( $instance['border-style'] ) ); ?>>ridge</option>
+          <option value="inset" <?php selected( 'inset', esc_attr( $instance['border-style'] ) ); ?>>inset line</option>
+          <option value="outset" <?php selected( 'outset', esc_attr( $instance['border-style'] ) ); ?>>outset line</option>
+        </select>
+      </p>
+      <p class="description">The default style uses your theme's style.  The border won't show if the style is set to 'none'.</p>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
+          <?php _e( 'Border width', 'blipper-widget' ); ?>
+        </label>
+        <select
+          class="widefat"
+          id="<?php echo $this->get_field_id( 'border-width' ); ?>"
+          name="<?php echo $this->get_field_name( 'border-width' ); ?>"
+        >
+          <option value="inherit" <?php selected( 'inherit', esc_attr( $instance['border-width'] ) ); ?>>default</option>
+          <option value="0px" <?php selected( '0px', esc_attr( $instance['border-width'] ) ); ?>>0 pixels</option>
+          <option value="1px" <?php selected( '1px', esc_attr( $instance['border-width'] ) ); ?>>1 pixel</option>
+          <option value="2px" <?php selected( '2px', esc_attr( $instance['border-width'] ) ); ?>>2 pixels</option>
+          <option value="3px" <?php selected( '3px', esc_attr( $instance['border-width'] ) ); ?>>3 pixels</option>
+          <option value="4px" <?php selected( '4px', esc_attr( $instance['border-width'] ) ); ?>>4 pixels</option>
+          <option value="5px" <?php selected( '5px', esc_attr( $instance['border-width'] ) ); ?>>5 pixels</option>
+          <option value="6px" <?php selected( '6px', esc_attr( $instance['border-width'] ) ); ?>>6 pixels</option>
+          <option value="7px" <?php selected( '7px', esc_attr( $instance['border-width'] ) ); ?>>7 pixels</option>
+          <option value="8px" <?php selected( '8px', esc_attr( $instance['border-width'] ) ); ?>>8 pixels</option>
+          <option value="9px" <?php selected( '9px', esc_attr( $instance['border-width'] ) ); ?>>9 pixels</option>
+          <option value="10px" <?php selected( '10px', esc_attr( $instance['border-width'] ) ); ?>>10 pixels</option>
+        </select>
+      </p>
+      <p class="description">The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.</p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'border-color' ); ?>">
+          <?php _e( 'Border colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker widefat"
+          id="<?php echo $this->get_field_id( 'border-color' ); ?>"
+          name="<?php echo $this->get_field_name( 'border-color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['border-color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['border-color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
+      </p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'background-color' ); ?>">
+          <?php _e( 'Background colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker widefat"
+          id="<?php echo $this->get_field_id( 'background-color' ); ?>"
+          name="<?php echo $this->get_field_name( 'background-color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['background-color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['background-color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
+      </p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'color' ); ?>">
+          <?php _e( 'Text colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker widefat"
+          id="<?php echo $this->get_field_id( 'color' ); ?>"
+          name="<?php echo $this->get_field_name( 'color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
+      </p>
+
+      <script type='text/javascript'>
+          jQuery(document).ready(function($) {
+            $('.blipper-widget-colour-picker').wpColorPicker();
+          });
+      </script>
+      <p>
+        <label for="<?php echo $this->get_field_id( 'link-color' ); ?>">
+          <?php _e( 'Link colour', 'blipper-widget' ); ?>
+        </label><br>
+        <input
+          class="blipper-widget-colour-picker widefat"
+          id="<?php echo $this->get_field_id( 'link-color' ); ?>"
+          name="<?php echo $this->get_field_name( 'link-color' ); ?>"
+          type="text"
+          value="<?php echo esc_attr( $instance['link-color'] ); ?>"
+          placeholder="#"
+          data-default-color="<?php //echo $this->default_setting_values['link-color']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
+      </p>
+
+      <p>
+        <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
+          <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
+        </label>
+        <input
+          class="widefat"
+          id="<?php echo $this->get_field_id( 'padding' ); ?>"
+          name="<?php echo $this->get_field_name( 'padding' ); ?>"
+          type="number"
+          min="0"
+          max="20"
+          step="1"
+          value="<?php echo $instance['padding'] ? esc_attr( $instance['padding'] ) : $this->default_setting_values['padding']; ?>"
+        >
+      </p>
+      <p class="description">
+        Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
+      </p>
 
       <h4>Styling</h4>
       <p class="description">You can style your widget if you like.  If you leave the default settings, the widget will be displayed using your normal sidebar style.</p>
