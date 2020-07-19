@@ -164,7 +164,7 @@ The widget settings are currently:
 = 1.0.4 =
 
 * Updates some of the wording in the readme file.
-* Tested to ensure compatibility with WordPress 5.4.2.
+* Tests to ensure compatibility with WordPress 5.4.2.
 
 = 1.0.3 =
 
@@ -236,7 +236,11 @@ The widget settings are currently:
 
 == Upgrade notice ==
 
+<<<<<<< HEAD
 = 1.0.3 =
+=======
+= 1.1.0 =
+>>>>>>> 6a8b1e7... Updates version to 1.0.2, thus fixing the incorrect version number in blipper-widget.php.  Couldn't copy the SVN trunk into Git using git svn tag "1.0.1" because of error: 'branch 1.0.1 already exists'.
 
 Update now to ensure compatibility with WordPress 5.1.
 
