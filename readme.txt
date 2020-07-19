@@ -50,15 +50,19 @@ NB This plugin is independent of and unendorsed by Blipfoto.  Use of this plugin
 
 = Disclaimer =
 
-By using this plugin, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (excluding your password).
+By using this plugin, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password).
 
 You, the Blipfoto account holder, are responsible for the images shown on any website using the Blipper Widget with your OAuth credentials and access token.
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
 
+Use of this widget does not affect the copyright of the photo.
+
 = GDPR compliance =
 
 Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
+
+Your use of the plugin is not monitored by the plugin.
 
 == Frequently Asked Questions ==
 
