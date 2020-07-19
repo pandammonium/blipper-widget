@@ -58,11 +58,7 @@ The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/lice
 
 = GDPR compliance =
 
-<<<<<<< HEAD
 Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
-=======
-Only your Blipfoto username, which is public information, is required, collected and stored by Blipper Widget.  Your Blipfoto username will be retained by this plugin until you delete or uninstall the plugin.  If you do not wish BLipper Widget to stor your Blipfoto username, please do not use this plugin.
->>>>>>> 94ba265... Updates compatibility with WordPress to WP 4.9.8.
 
 == Frequently Asked Questions ==
 
