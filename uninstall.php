@@ -53,12 +53,12 @@ function blipper_widget_uninstall() {
     foreach ( $all_options as $key => $value ) {
       if ( false !== strpos( $key, 'blipper_widget'  ) ) {
         delete_option( $key );
-        // For site options in multi-site:
+        // For options in multi-site:
         delete_site_option( $key );
       }
       if ( false !== strpos( $key, 'blipper-widget'  ) ) {
         delete_option( $key );
-        // For site options in multi-site:
+        // For options in multi-site:
         delete_site_option( $key );
       }
     }
