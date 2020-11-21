@@ -3,7 +3,11 @@ Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
+<<<<<<< HEAD
 Tested up to: 5.5.3
+=======
+Tested up to: 5.4.2
+>>>>>>> 8cf40aa3c11f4615d2512d58f4c4b43af7e548cc
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,7 +35,7 @@ If you'd like to see the latest plugin code, [it's available on GitHub](https://
 
 = Languages =
 
-Currently, only English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
+Currently, only (British) English is supported.  I'm afraid I don't yet know how to make other languages available.  If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
 
 = About Blipfoto =
 
@@ -170,9 +174,13 @@ The widget settings are currently:
 
 * Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
 
+= 1.0.2 =
+
+* Updates version to 1.0.2 for technical reasons.
+
 = 1.0.1 =
 
-* Corrections to documentation.
+* Fixes a couple of typos.
 
 = 1.0 =
 

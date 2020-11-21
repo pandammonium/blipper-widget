@@ -61,11 +61,6 @@ function blipper_widget_uninstall() {
         // For options in multi-site:
         delete_site_option( $key );
       }
-      if ( false !== strpos( $key, 'blipper-widget'  ) ) {
-        delete_option( $key );
-        // For site options in multi-site:
-        delete_site_option( $key );
-      }
     }
   }
 
