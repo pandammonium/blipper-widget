@@ -4,10 +4,17 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tested up to: 5.4.2
 =======
 Tested up to: 5.5.3
 >>>>>>> da76a53... Updates the compatibility to WP 5.5.3.
+=======
+Tested up to: 5.5.3
+=======
+Tested up to: 5.4.2
+>>>>>>> 8cf40aa3c11f4615d2512d58f4c4b43af7e548cc
+>>>>>>> 3edd2c24d23b6bcde5c8618aae6d1aae7d8a28c7
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -169,7 +176,6 @@ The widget settings are currently:
 
 * Ensures compatibility with WordPress 5.5.3.
 * Updates some of the wording in the readme file.
-* Tests to ensure compatibility with WordPress 5.4.2.
 
 = 1.0.3 =
 
