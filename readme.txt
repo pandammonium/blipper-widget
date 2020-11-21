@@ -3,7 +3,7 @@ Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.4.2
+Tested up to: 5.5.3
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,7 +79,7 @@ Yes and no.  The widget asks for your username for verification purposes, but do
 
 = Where can I get support for Blipper Widget? =
 
-You can use [my Blipper Widget page on GitHub](https://github.com/pandammonium/wp-blipper-widget/issues) on my website to ask questions and report problems.
+You can use [my Blipper Widget page on GitHub](http://pandammonium.org/wordpress-dev/wp-blipper-widget/) on my website to ask questions and report problems.
 
 = Is the image stored on my web server? =
 
@@ -99,25 +99,21 @@ You can install this plugin either automatically or manually. The instructions f
 
 = Automatic plugin installation =
 
-1. Go to 'Plugins' > 'Add New'.
-1. Search for 'Blipper Widget'. Find the plugin in the search results the search results.
-1. Click 'Details' for more information about Blipper Widget and instructions you may wish to print or save to help set up Blipper Widget.
-1. Click 'Install Now' to install Blipper Widget.
-1. The resulting installation screen will list the installation as successful or note any problems during the install.
-1. If successful, click 'Activate Plugin' to activate it, or 'Return to Plugin Installer' for further actions.
+Having WordPress install plugins for you is the easiest installation method.
+
+Please follow [WordPress' instructions for the automatic installation of plugins](https://wordpress.org/support/article/managing-plugins/#automatic-plugin-installation).
+
+= Manual upload of plugin via WordPress admin =
+
+If you have the plugin as a zip file, you can install it manually using the plugins admin screen.
+
+Please follow [WordPress' instructions for the manual upload of plugins](https://wordpress.org/support/article/managing-plugins/#manual-upload-via-wordpress-admin).
 
 = Manual plugin installation =
 
 Installation of a WordPress plugin manually requires FTP familiarity and the awareness that you may put your site at risk if you install a WordPress plugin incompatible with the current version or from an unreliable source. You must also have permission to access your server by FTP.
 
-1. Backup your site completely before proceeding.
-1. Download Blipper Widget to your computer, for example, to your desktop.
-1. If downloaded as a zip archive, extract the plugin folder, wp-blipper-widget.
-1. Read the read-me file thoroughly to ensure you understand any installation instructions properly.
-1. With your FTP program, upload the plugin folder to the wp-content/plugins folder in your WordPress directory online.
-1. Go to the plugins screen and find the newly uploaded plugin, Blipper Widget, in the list.
-1. Click 'Activate' to activate it.
-1. Check the read-me file for further instructions or information.
+Please follow [WordPress' instructions for the manual installation of plugins](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
 
 = OAuth 2.0 =
 
@@ -167,8 +163,8 @@ The widget settings are currently:
 
 = 1.0.4 =
 
+* Ensures compatibility with WordPress 5.5.3.
 * Updates some of the wording in the readme file.
-* Updates WP compatibility to 5.4.2.
 
 = 1.0.3 =
 
