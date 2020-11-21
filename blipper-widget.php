@@ -900,7 +900,7 @@ class Blipper_Widget extends WP_Widget {
           <?php _e( 'Include a \'powered by\' link', 'display-powered-by' ) ?>
         </label>
       </p>
-      <p class="description">Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by'-style link.  The box is unticked by default.</p>
+      <p class="description">Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by' link.  The box is unticked by default.</p>
 
       <h4>Styling</h4>
       <p class="description">You can style your widget if you like.  If you leave the default settings, the widget will be displayed using your normal sidebar style.</p>
