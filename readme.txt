@@ -93,29 +93,7 @@ This is not determined by Blipper Widget, but by Blipfoto itself.  The widget us
 
 No.  The access token must belong to the account whose username is given in the widget settings.
 
-== Installation ==
-
-You can install this plugin either automatically or manually. The instructions for each method are given below.
-
-= Automatic plugin installation =
-
-Having WordPress install plugins for you is the easiest installation method.
-
-Please follow [WordPress' instructions for the automatic installation of plugins](https://wordpress.org/support/article/managing-plugins/#automatic-plugin-installation).
-
-= Manual upload of plugin via WordPress admin =
-
-If you have the plugin as a zip file, you can install it manually using the plugins admin screen.
-
-Please follow [WordPress' instructions for the manual upload of plugins](https://wordpress.org/support/article/managing-plugins/#manual-upload-via-wordpress-admin).
-
-= Manual plugin installation =
-
-Installation of a WordPress plugin manually requires FTP familiarity and the awareness that you may put your site at risk if you install a WordPress plugin incompatible with the current version or from an unreliable source. You must also have permission to access your server by FTP.
-
-Please follow [WordPress' instructions for the manual installation of plugins](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
-
-= OAuth 2.0 =
+== OAuth 2.0 ==
 
 You'll need your Blipfoto username and an OAuth access token from Blipfoto to use the widget.
 Your username is the username you use to sign in to Blipfoto.  Blipper Widget uses this information only to verify your account.  Blipper Widget does not have access to your Blipfoto password.
@@ -152,6 +130,28 @@ The widget settings are currently:
 * Include link to your latest blip: to link the displayed blip back to the corresponding entry on Blipfoto, tick the box.  The link has a rel="nofollow" attribute.  This option is unticked by default.
 * Display journal title and link: to include a link back to your Blipfoto journal, tick the box. For my journal, the link will appear as 'From Panda’s Pics'.  The link has a rel="nofollow" attribute.  This option is unticked by default.
 * Include a ‘powered by’ link: to include a 'Powered by Blipfoto' link to be displayed, tick the box.  The link has a rel="nofollow" attribute.  This option is unticked by default.
+
+== Installation ==
+
+You can install this plugin either automatically or manually. The instructions for each method are given below.
+
+= Automatic plugin installation =
+
+Having WordPress install plugins for you is the easiest installation method.
+
+Please follow [WordPress' instructions for the automatic installation of plugins](https://wordpress.org/support/article/managing-plugins/#automatic-plugin-installation).
+
+= Manual upload of plugin via WordPress admin =
+
+If you have the plugin as a zip file, you can install it manually using the plugins admin screen.
+
+Please follow [WordPress' instructions for the manual upload of plugins](https://wordpress.org/support/article/managing-plugins/#manual-upload-via-wordpress-admin).
+
+= Manual plugin installation =
+
+Installation of a WordPress plugin manually requires FTP familiarity and the awareness that you may put your site at risk if you install a WordPress plugin incompatible with the current version or from an unreliable source. You must also have permission to access your server by FTP.
+
+Please follow [WordPress' instructions for the manual installation of plugins](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
 
 == Screenshots ==
 
