@@ -4,7 +4,7 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.5.3
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -161,6 +161,10 @@ Please follow [WordPress' instructions for the manual installation of plugins](h
 
 == Changelog ==
 
+= 1.0.6 =
+
+* Corrects version number.
+
 = 1.0.5 =
 
 * Ensures compatibility with WordPress 5.5.3.
@@ -240,6 +244,10 @@ Please follow [WordPress' instructions for the manual installation of plugins](h
 
 == Upgrade notice ==
 
+= 1.0.5 =
+
+Update now to ensure compatibility with WordPress 5.5.3.
+
 = 1.0.3 =
 
 Update now to ensure compatibility with WordPress 5.1.
@@ -264,7 +272,7 @@ You can also hide the date of your blip in the widget.  The date is shown by def
 
 == Known issues ==
 
-There is [a list of known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) on GitHub.  If you have a suggestion for how to improve Blipper Widget, please add it to GitHub.  Cheers!
+[Known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) are recorded on my Blipper Widget repository on GitHub.  If you have a suggestion for how to improve Blipper Widget, please add it there.  Cheers!
 
 == Credits ==
 
