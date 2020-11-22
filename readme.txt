@@ -4,7 +4,7 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
 Tested up to: 5.5.3
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,7 +144,7 @@ You can revoke access from Blipper Widget to your Blipfoto account easily:
 
 *Note that Blipper Widget will no longer work.*
 
-Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, and set up the settings on the widget form as you wish.  When you view your webpage, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
+Once installed and the OAuth credentials have been set successfully, add the widget to a widget-enabled area, then set up the settings on the widget form as you wish.  When you view your web page, you should see your latest blip in the widget-enabled area.  If you can't see it, please check your OAuth settings carefully.
 
 The widget settings are currently:
 
@@ -161,9 +161,13 @@ The widget settings are currently:
 
 == Changelog ==
 
-= 1.0.4 =
+= 1.0.5 =
 
 * Ensures compatibility with WordPress 5.5.3.
+
+= 1.0.4 =
+
+* Tests to ensure compatibility with WordPress 5.4.2.
 * Updates some of the wording in the readme file.
 
 = 1.0.3 =
