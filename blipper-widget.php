@@ -10,7 +10,7 @@
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
-  * Version:            1.0.6
+  * Version:            1.1
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
@@ -155,7 +155,8 @@ class Blipper_Widget extends WP_Widget {
     // add_action( 'load-widgets.php', array( $this, 'blipper_widget_load_colour_picker') );
     add_action( 'admin_enqueue_scripts', array( $this, 'blipper_widget_enqueue_scripts' ) );
     add_action( 'admin_footer-widgets.php', array( $this, 'blipper_widget_print_scripts' ), 9999 );
-  }
+    add_shortcode('blipper_widget_blip', array( $this, 'blipper_widget_shortcode_blip_display') );
+}
 
 
 /**
@@ -229,7 +230,7 @@ class Blipper_Widget extends WP_Widget {
     $instance['display-date']           = $display_date;
     $instance['display-journal-title']  = $display_journal_title;
     $instance['add-link-to-blip']       = $add_link_to_blip;
-    $instance['display-powered-by']             = $powered_by;
+    $instance['display-powered-by']     = $powered_by;
     $instance['border-style']           = $border_style;
     $instance['border-width']           = $border_width;
     $instance['border-color']           = $border_colour;
@@ -241,6 +242,63 @@ class Blipper_Widget extends WP_Widget {
     return $instance;
 
   }
+/**
+ * Add a shortcode so the widget can be placed in a post or on a page.
+ *
+ * @var   array $atts:
+ *   'title'                 => 'My latest blip',
+ *   'display-date'          => 'show',
+ *   'display-journal-title' => 'hide',
+ *   'add-link-to-blip'      => 'hide',
+ *   'display-powered-by'    => 'hide',
+ *   'border-style'          => 'inherit',
+ *   'border-width'          => 'inherit',
+ *   'border-color'          => 'inherit',
+ *   'background-color'      => 'inherit',
+ *   'color'                 => 'inherit',
+ *   'link-color'            => 'initial',
+ *   'padding'               => '0',
+ *
+ * @since 1.0.7
+ */
+public function blipper_widget_shortcode_blip_display( $atts, $content=null, $shortcode="", $print=FALSE) {
+
+  $args = shortcode_atts(
+    array(
+      'title'                 => 'My latest blip',
+      'display-date'          => 'show',
+      'display-journal-title' => 'hide',
+      'add-link-to-blip'      => 'hide',
+      'display-powered-by'    => 'hide',
+      'border-style'          => 'inherit',
+      'border-width'          => 'inherit',
+      'border-color'          => 'inherit',
+      'background-color'      => 'inherit',
+      'color'                 => 'inherit',
+      'link-color'            => 'initial',
+      'padding'               => '0',
+      'titlelevel'            => 'h2'
+    ),
+    $atts, $shortcode
+  );
+  extract( $args );
+  if( WP_DEBUG ) {
+    $argsstring = implode(", ", $args);
+    echo "ARGS: '$argsstring' <br />";
+    echo "CONTENT: '$content' <br />";
+    echo "SHORTCODE: '$shortcode' <br />";
+    echo "PRINT: '$print' <br />";
+    // echo "<!-- $argsstring -->";
+  }
+    if ( ! empty( $args['title'] ) ) {
+      echo '<' . $args['titlelevel'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['titlelevel'] . '>';
+    }
+
+    if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
+      $this->blipper_widget_display_blip( $args );
+    }
+
+}
 
 /**
   * Validate the input.
