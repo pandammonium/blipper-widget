@@ -161,6 +161,10 @@ Please follow [WordPress' instructions for the manual installation of plugins](h
 
 == Changelog ==
 
+= 1.1 =
+
+* Adds shortcode functionality: now you can show off your latest blip on a whole page or a post using a shortcode.
+
 = 1.0.6 =
 
 * Corrects version number.
@@ -244,6 +248,10 @@ Please follow [WordPress' instructions for the manual installation of plugins](h
 
 == Upgrade notice ==
 
+= 1.1 =
+
+Update now to use Blipper Widget shortcodes in posts and pages.
+
 = 1.0.5 =
 
 Update now to ensure compatibility with WordPress 5.5.3.
@@ -278,6 +286,6 @@ You can also hide the date of your blip in the widget.  The date is shown by def
 
 This plug-in is loosely based on [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://mobile.twitter.com/lumpysimon).  I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
 
-I also used the excellent [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement the settings page and the widget back-end.
+I used the excellent [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement not only the settings page and the widget back-end but also the shortcode.
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
