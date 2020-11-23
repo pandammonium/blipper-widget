@@ -277,26 +277,36 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       'color'                 => 'inherit',
       'link-color'            => 'initial',
       'padding'               => '0',
-      'titlelevel'            => 'h2'
+      'title-level'           => 'h2'
     ),
     $atts, $shortcode
   );
   extract( $args );
-  if( WP_DEBUG ) {
+  if ( WP_DEBUG ) {
     $argsstring = implode(", ", $args);
-    echo "ARGS: '$argsstring' <br />";
-    echo "CONTENT: '$content' <br />";
-    echo "SHORTCODE: '$shortcode' <br />";
-    echo "PRINT: '$print' <br />";
-    // echo "<!-- $argsstring -->";
+    echo "<!-- ARGS: '$argsstring' -->";
+    echo "<!-- CONTENT: '$content' -->";
+    echo "<!-- SHORTCODE: '$shortcode' -->";
+    echo "<!-- PRINT: '$print' -->";
   }
-    if ( ! empty( $args['title'] ) ) {
-      echo '<' . $args['titlelevel'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['titlelevel'] . '>';
+  if ( ! empty( $args['title'] ) ) {
+    if ( $args['title-level'] === 'h1' ||
+         $args['title-level'] === 'h2' ||
+         $args['title-level'] === 'h3' ||
+         $args['title-level'] === 'h4' ||
+         $args['title-level'] === 'h5' ||
+         $args['title-level'] === 'h6' ||
+         $args['title-level'] === 'p' ) {
+      echo '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
+    } else {
+      error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display()" );
+      // If the filtered title is prepended with '<p>' and appended with '</p>', then '</p>' is inexplicably appended twice in the resulting HTML.  If '<p>' is prepended and '</p>' is omitted, then the title is appended with '</p>' once.  If both tags are omitted, then the title is bare.  If the tags are enclosed in the material to be filtered, they are treated as part of the string in the resulting HTML.
+      echo '<p>' . apply_filters( 'widget_title', $args['title'] );
     }
-
-    if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-      $this->blipper_widget_display_blip( $args );
-    }
+  }
+  if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
+    $this->blipper_widget_display_blip( $args, $content );
+  }
 
 }
 
@@ -564,8 +574,9 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   * @since    0.0.1
   * @access   private
   * @param    array     $instance         The settings saved in the database
+  * @param    string    $content          The content from the shortcode (i.e. the stuff that comes between the opening shortcode tag and the closing shortcode tag).  Not accessible from the widget settings when in a widgety area
   */
-  private function blipper_widget_display_blip( $instance ) {
+  private function blipper_widget_display_blip( $instance, $content=null ) {
 
     $user_profile = null;
     $user_settings = null;
@@ -819,7 +830,12 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           echo '<br>';
         }
       }
-      echo $blip['title'];
+      echo '<i>' . $blip['title'] . '</i>';
+
+      // Display any content provided by the user in a shortcode.
+      if ( ! empty( $content ) ) {
+        echo '<br />' . $content;
+      }
 
       // Journal title and/or display-powered-by link.
       $this->blipper_widget_log_display_values( $instance, 'display-journal-title', 'blipper_widget_display_blip' );
