@@ -282,13 +282,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     $atts, $shortcode
   );
   extract( $args );
-  if ( WP_DEBUG ) {
-    $argsstring = implode(", ", $args);
-    echo "<!-- ARGS: '$argsstring' -->";
-    echo "<!-- CONTENT: '$content' -->";
-    echo "<!-- SHORTCODE: '$shortcode' -->";
-    echo "<!-- PRINT: '$print' -->";
+  if ( WP_DEBUG_DISPLAY ) {
+    $argsstring = wp_json_encode($args);
+    echo "<p>ARGS: '$argsstring'</p>";
+    echo "<p>CONTENT: '$content'</p>";
+    echo "<p>SHORTCODE: '$shortcode'</p>";
+    echo "<p>PRINT: '$print'</p>";
   }
+  $the_title = '';
   if ( ! empty( $args['title'] ) ) {
     if ( $args['title-level'] === 'h1' ||
          $args['title-level'] === 'h2' ||
@@ -297,15 +298,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
          $args['title-level'] === 'h5' ||
          $args['title-level'] === 'h6' ||
          $args['title-level'] === 'p' ) {
-      echo '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
+      $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
     } else {
       error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display()" );
       // If the filtered title is prepended with '<p>' and appended with '</p>', then '</p>' is inexplicably appended twice in the resulting HTML.  If '<p>' is prepended and '</p>' is omitted, then the title is appended with '</p>' once.  If both tags are omitted, then the title is bare.  If the tags are enclosed in the material to be filtered, they are treated as part of the string in the resulting HTML.
-      echo '<p>' . apply_filters( 'widget_title', $args['title'] );
+      $the_title = '<p>' . apply_filters( 'widget_title', $args['title'] );
     }
   }
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-    $this->blipper_widget_display_blip( $args, $content );
+    return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
   }
 
 }
@@ -569,15 +570,16 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
 
 /**
-  * Display the blip using the settings stored in the database.
+  * Get the blip using the settings stored in the database.
   *
-  * @since    0.0.1
+  * @since    1.1
   * @access   private
   * @param    array     $instance         The settings saved in the database
   * @param    string    $content          The content from the shortcode (i.e. the stuff that comes between the opening shortcode tag and the closing shortcode tag).  Not accessible from the widget settings when in a widgety area
   */
-  private function blipper_widget_display_blip( $instance, $content=null ) {
+  private function get_blipper_widget_display_blip( $instance, $content=null ) {
 
+    $the_blip = '';
     $user_profile = null;
     $user_settings = null;
     $continue = false;
@@ -594,7 +596,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     } catch ( blipper_widget_ApiResponseException $e ) {
       if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+        $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
       }
     }
 
@@ -613,7 +615,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -634,7 +636,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -665,7 +667,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -686,7 +688,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -711,11 +713,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       } catch ( Exception $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -744,7 +746,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p> Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p> Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -775,7 +777,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -786,7 +788,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       // Display the blip.
 
-      echo '<figure style="'
+      $the_blip .= '<figure style="'
         . $this->blipper_widget_get_style( $instance, 'border-style')
         . $this->blipper_widget_get_style( $instance, 'border-width')
         . $this->blipper_widget_get_style( $instance, 'border-color')
@@ -801,10 +803,10 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $instance['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
       }
       if ( $instance['add-link-to-blip'] == 'show' ) {
-        echo '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
+        $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
       }
       // Add the image.
-      echo '<img src="' . $image_url . '"
+      $the_blip .= '<img src="' . $image_url . '"
         class="blipper-widget-image"
         alt="' . $blip['title'] . '"
         height="auto"
@@ -812,11 +814,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       ';
       // Close the link (anchor) tag.
       if ( $instance['add-link-to-blip'] == 'show' ) {
-        echo '</a>';
+        $the_blip .= '</a>';
       }
 
       // Display any associated data.
-      echo '<figcaption style="padding-top:7px;' . $this->blipper_widget_get_style( $instance, 'color' ) . '">';
+      $the_blip .= '<figcaption style="padding-top:7px;' . $this->blipper_widget_get_style( $instance, 'color' ) . '">';
 
       // Date (optional) and title
       $this->blipper_widget_log_display_values( $instance, 'display-date', 'blipper_widget_display_blip' );
@@ -825,16 +827,16 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $instance['display-date'] = $this->default_setting_values['display-date'];
       }
       if ( $instance['display-date'] == 'show' ) {
-        echo date( get_option( 'date_format' ), $blip['date_stamp'] );
+        $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
         if ( !empty( $blip['title'] ) ) {
-          echo '<br>';
+          $the_blip .= '<br>';
         }
       }
-      echo '<i>' . $blip['title'] . '</i>';
+      $the_blip .= '<i>' . $blip['title'] . '</i>';
 
       // Display any content provided by the user in a shortcode.
       if ( ! empty( $content ) ) {
-        echo '<br />' . $content;
+        $the_blip .= '<br />' . $content;
       }
 
       // Journal title and/or display-powered-by link.
@@ -849,7 +851,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $instance['display-powered-by'] = $this->default_setting_values['display-powered-by'];
       }
       if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
@@ -858,23 +860,37 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'hide' ) {
-        echo '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">' . $user_settings->data( 'journal_title' )
           . '</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'hide' && $instance['display-powered-by'] == 'show' ) {
-        echo '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+        $the_blip .= '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else {
         error_log( "Blipper_Widget::blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed" );
       }
 
-      echo '</figcaption></figure>';
+      $the_blip .= '</figcaption></figure>';
 
     }
+
+    return $the_blip;
+  }
+/**
+  * Display the blip using the settings stored in the database.
+  *
+  * @since    0.0.1
+  * @access   private
+  * @param    array     $instance         The settings saved in the database
+  * @param    string    $content          The content from the shortcode (i.e. the stuff that comes between the opening shortcode tag and the closing shortcode tag).  Not accessible from the widget settings when in a widgety area
+  */
+  private function blipper_widget_display_blip( $instance, $content=null ) {
+
+    echo $this->get_blipper_widget_display_blip( $instance, $content );
 
   }
 
