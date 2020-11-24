@@ -1,0 +1,83 @@
+== Changelog ==
+
+= 1.1 =
+
+* Adds shortcode functionality: now you can show off your latest blip on a whole page or a post using a shortcode.
+* Adds the Blipfoto username to the blip data in accordance with the Blipfoto developer rules.
+
+= 1.0.6 =
+
+* Corrects version number.
+
+= 1.0.5 =
+
+* Ensures compatibility with WordPress 5.5.3.
+
+= 1.0.4 =
+
+* Tests to ensure compatibility with WordPress 5.4.2.
+* Updates some of the wording in the readme file.
+
+= 1.0.3 =
+
+* Tested to ensure compatibility with WordPress 5.1.  Fixes version numbering.
+
+= 1.0.2 =
+
+* Updates version to 1.0.2 for technical reasons.
+
+= 1.0.1 =
+
+* Fixes a couple of typos.
+
+= 1.0 =
+
+* It's about time it got to a proper version number given that it seems pretty stable.  Let me know in the comments on [my Blipper Plugin GitHub page](https://github.com/pandammonium/blipper-widget) if it isn't!
+
+* Tested to ensure compatibility with WordPress 5.0.2.
+
+= 0.0.10 =
+
+* Tested to ensure compatibility with WordPress 4.9.8.
+
+= 0.0.9 =
+
+* Tested to ensure compatibility with WordPress 4.7.
+
+= 0.0.8 =
+
+* Tested to ensure compatibility with WordPress 4.6.1.
+
+= 0.0.7 =
+
+* Fixed: bug that added link from the image to the blip on Blipfoto whether it was set or not.
+
+= 0.0.6 =
+
+* Tested to ensure compatibility with WordPress 4.5.
+* In accordance with the removal of the Polaroid brand from Blipfoto, all mentions of Polaroid have been removed from Blipper Widget (except in this change log entry, where mentions of Polaroid have been added).
+* Changed the padding increment from half a pixel to a whole pixel.
+
+= 0.0.5 =
+
+* Added: styling!  You can now change the border of the widget, including the line style, the thickness and the colour.  You can also change the background colour and the text colour of the widget.
+* Changed: the display of the date is now optional.  It is on by default for backwards compatibility.
+* Improved: handling of options.
+* Improved: exception handling.
+
+= 0.0.4 =
+
+* Updated: screenshots.
+
+= 0.0.3 =
+
+* Added: uninstallation code to remove settings pertaining to the Blipper Widget to be removed from the database, leaving no trace of itself.
+* Replaced: screenshot-3.png with a screenshot of the widget in use on a site with the default twenty-fifteen theme with no modifications.
+* Added donation link.
+
+= 0.0.2 =
+
+* Changed: the widget's settings have been divided into those that act behind the scenes (such as OAuth) and those that directly affect the appearance of the widget front end.
+* Changed: the OAuth settings moved to Blipper Widget settings page under the general WordPress settings menu in the admin area.
+* Added: settings affecting the widget's appearance to the widget form; specifically including links back to Blipfoto (the blip itself, the user's journal, Blipfoto).  By default, these links are not displayed; the user must opt in to their display.
+* Renamed: the name of the widget from WP Blipper Widget to Blipper Widget, thus dropping the WP.
