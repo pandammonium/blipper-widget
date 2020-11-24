@@ -8,7 +8,7 @@
   * database.
   *
   * Some of this code is unashamedly swiped from the uninstall.php file of the
-  * WP-Spamshield plug-in.
+  * WP-Spamshield plugin.
   */
 
 // If uninstall not called from WordPress, exit:
