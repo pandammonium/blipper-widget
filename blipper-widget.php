@@ -245,10 +245,11 @@ class Blipper_Widget extends WP_Widget {
 /**
  * Add a shortcode so the widget can be placed in a post or on a page.
  *
- * @var   array    $atts       The settings (attributes) included in the
- *                               shortcode.
- * @var   string   $content    The content, if any, from between the shortcode
- *                               tags.
+ * @var   array    $atts        The settings (attributes) included in the
+ *                                shortcode.  Not all the default settings are
+ *                                necessarily supported.
+ * @var   string   $content     The content, if any, from between the shortcode
+ *                                tags.
  *
  * @since 1.1
  */
@@ -257,10 +258,21 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   $args = shortcode_atts( $this->default_setting_values, $atts, $shortcode );
   extract( $args );
 
+  // There are better ways of removing these keys from the array, but this seems
+  // the simplest, especially given that the values are not necessarily known.
+  // They are removed because the border doesn't necessarily fit snugly around
+  // the image, so it looks a bit naff.  The removed values will be replaced by
+  // the defaults when the blip is constructed.
+  unset ( $args['border-style'] );
+  unset ( $args['border-width'] );
+  unset ( $args['border-color'] );
+  unset ( $args['background-color'] );
+  // unset ( $args['color'] );
+  // unset ( $args['link-color'] );
+  unset ( $args['padding'] );
+
   $the_title = '';
-
   if ( ! empty( $args['title'] ) ) {
-
     $default_title_level = 'h2';
     if ( ! isset( $args['title-level'] ) ||
            empty( $args['title-level'] ) ||
@@ -275,6 +287,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     }
     $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
   }
+
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
     return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
   }
@@ -545,7 +558,12 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   * @since    1.1
   * @access   private
   * @param    array     $instance         The settings saved in the database
-  * @param    string    $content          The content from the shortcode (i.e. the stuff that goes between the opening shortcode tag and the closing shortcode tag).  Not accessible from the widget settings when in a widgety area
+  * @param    string    $content          The content from the shortcode (i.e.
+  *                                         the stuff that goes between the
+  *                                         opening shortcode tag and the
+  *                                         closing shortcode tag).  Not
+  *                                         accessible from the widget settings
+  *                                         when in a widgety area
   */
   private function get_blipper_widget_display_blip( $instance, $content=null ) {
 
@@ -815,13 +833,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       $this->blipper_widget_log_display_values( $instance, 'display-journal-title', 'blipper_widget_display_blip' );
       $this->blipper_widget_log_display_values( $instance, 'display-powered-by', 'blipper_widget_display_blip' );
       if ( ! array_key_exists( 'display-journal-title' , $instance ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser
+        // Necessary for when Blipper Widget is added via the Customiser.
         $instance['display-journal-title'] = $this->default_setting_values['display-journal-title'];
       }
       if ( ! array_key_exists( 'display-powered-by' , $instance ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser
+        // Necessary for when Blipper Widget is added via the Customiser.
         $instance['display-powered-by'] = $this->default_setting_values['display-powered-by'];
       }
+
       if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'show' ) {
         $the_blip .= '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
@@ -858,7 +877,12 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   * @since    0.0.1
   * @access   private
   * @param    array     $instance         The settings saved in the database
-  * @param    string    $content          The content from the shortcode (i.e. the stuff that comes between the opening shortcode tag and the closing shortcode tag).  Not accessible from the widget settings when in a widgety area
+  * @param    string    $content          The content from the shortcode (i.e.
+  *                                         the stuff that comes between the
+  *                                         opening shortcode tag and the
+  *                                         closing shortcode tag).  Not
+  *                                         accessible from the widget settings
+  *                                         when in a widgety area
   */
   private function blipper_widget_display_blip( $instance, $content=null ) {
 
