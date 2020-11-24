@@ -155,12 +155,13 @@ class Blipper_Widget extends WP_Widget {
     // add_action( 'load-widgets.php', array( $this, 'blipper_widget_load_colour_picker') );
     add_action( 'admin_enqueue_scripts', array( $this, 'blipper_widget_enqueue_scripts' ) );
     add_action( 'admin_footer-widgets.php', array( $this, 'blipper_widget_print_scripts' ), 9999 );
-    add_shortcode('blipper_widget_blip', array( $this, 'blipper_widget_shortcode_blip_display') );
+    add_shortcode('blipper_widget', array( $this, 'blipper_widget_shortcode_blip_display') );
+
 }
 
-
 /**
-  * Render the widget on the WP site.  This is the front-end of the widget.
+  * Render the widget on the WP site in a widget-enabled area.  This is the
+  * front-end of the widget.
   *
   * @since    0.0.1
   * @access   public
@@ -255,9 +256,12 @@ class Blipper_Widget extends WP_Widget {
  */
 public function blipper_widget_shortcode_blip_display( $atts, $content=null, $shortcode="", $print=false) {
 
+  $default_title_level = 'h2';
   $args = shortcode_atts( $this->default_setting_values, $atts, $shortcode );
   extract( $args );
-
+  if ( isset( $atts['title-level'] ) ) {
+    $args['title-level'] = $atts['title-level'];
+  }
   // There are better ways of removing these keys from the array, but this seems
   // the simplest, especially given that the values are not necessarily known.
   // They are removed because the border doesn't necessarily fit snugly around
@@ -267,13 +271,10 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   unset ( $args['border-width'] );
   unset ( $args['border-color'] );
   unset ( $args['background-color'] );
-  // unset ( $args['color'] );
-  // unset ( $args['link-color'] );
   unset ( $args['padding'] );
 
   $the_title = '';
   if ( ! empty( $args['title'] ) ) {
-    $default_title_level = 'h2';
     if ( ! isset( $args['title-level'] ) ||
            empty( $args['title-level'] ) ||
          ! ( $args['title-level'] === 'h1' ||
@@ -744,10 +745,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       $continue = false;
 
       // Blipfoto has different quality images, each with its own URL.
-      // Access is currently limited to standard, but I've optimistically
-      // allowed for higher quality images to be selected if they're present.
-      // The lowest quality image is obtained if the standard image isn't
-      // available.
+      // Access is currently limited by Blipfoto to standard resolution, but
+      // the plugin nevertheless looks for the highest quality image available.
       $image_url = null;
       try {
 
@@ -785,7 +784,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         . '">';
 
       // Link back to the blip on the Blipfoto site.
-      $this->blipper_widget_log_display_values( $instance, 'add-link-to-blip', 'blipper_widget_display_blip' );
+      $this->blipper_widget_log_display_values( $instance, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
       if ( ! array_key_exists( 'add-link-to-blip' , $instance ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $instance['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
@@ -808,8 +807,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       // Display any associated data.
       $the_blip .= '<figcaption style="padding-top:7px;' . $this->blipper_widget_get_style( $instance, 'color' ) . '">';
 
-      // Date (optional) and title
-      $this->blipper_widget_log_display_values( $instance, 'display-date', 'blipper_widget_display_blip' );
+      // Date (optional), title and username
+      $this->blipper_widget_log_display_values( $instance, 'display-date', 'get_blipper_widget_display_blip' );
       if ( ! array_key_exists( 'display-date' , $instance ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $instance['display-date'] = $this->default_setting_values['display-date'];
@@ -823,6 +822,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       if ( ! empty( $blip['title'] ) ) {
         $the_blip .= '<i>' . $blip['title'] . '</i>';
       }
+      $the_blip .= ' ' . __( 'by', 'blipper-widget' ) . ' ' . $user['username'];
 
       // Display any content provided by the user in a shortcode.
       if ( ! empty( $content ) ) {
@@ -830,8 +830,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
 
       // Journal title and/or display-powered-by link.
-      $this->blipper_widget_log_display_values( $instance, 'display-journal-title', 'blipper_widget_display_blip' );
-      $this->blipper_widget_log_display_values( $instance, 'display-powered-by', 'blipper_widget_display_blip' );
+      $this->blipper_widget_log_display_values( $instance, 'display-journal-title', 'get_blipper_widget_display_blip' );
+      $this->blipper_widget_log_display_values( $instance, 'display-powered-by', 'get_blipper_widget_display_blip' );
       if ( ! array_key_exists( 'display-journal-title' , $instance ) ) {
         // Necessary for when Blipper Widget is added via the Customiser.
         $instance['display-journal-title'] = $this->default_setting_values['display-journal-title'];
@@ -842,7 +842,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
 
       if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer><p style="font-size:75%;">From <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer><p style="font-size:75%;">' . __( 'From', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
@@ -851,18 +851,18 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'hide' ) {
-        $the_blip .= '<footer><p style="font-size:75%">From <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer><p style="font-size:75%">' . __( 'From', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">' . $user_settings->data( 'journal_title' )
           . '</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'hide' && $instance['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer><p style="font-size:75%">Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+        $the_blip .= '<footer><p style="font-size:75%">' . __( 'Powered by', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else {
-        error_log( "Blipper_Widget::blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed" );
+        error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed" );
       }
 
       $the_blip .= '</figcaption></figure>';
