@@ -30,7 +30,7 @@ The image in the blip is not stored on your server: the widget links to the best
 
 = View the plugin =
 
-If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/) to see Blipper Widget showing my latest blip.
+If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/my-latest-photo/) to see Blipper Widget showing my latest blip.
 
 [The latest plugin code is available on GitHub](https://github.com/pandammonium/blipper-widget); note that this might be ahead of the current release of Blipper Widget.  The code for the current release is available in WordPress' SVN repository.
 
