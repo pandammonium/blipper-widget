@@ -125,7 +125,7 @@ The plugin needs your username so it knows which Blipfoto account to access.  OA
 * You need at least one blip in your Blipfoto account.
 * Amend any necessary data indicated by error messages and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
-* You might have hit the rate limit set by Blipfoto; try again in fifteen minutes or so.  Tip: hide any widget-enabled areas that show the Blipper Widget on pages and posts with the Blipper Widget shortcode to reduce the number of requests to Blipfoto.
+* You might have hit (the rate limit set by Blipfoto)[https://www.blipfoto.com/developer/api/guides/rate-limits]; try again in fifteen minutes or so.  Tip: hide any widget-enabled areas that show the Blipper Widget on pages and posts with the Blipper Widget shortcode to reduce the number of requests to Blipfoto.
 
 = Can I display the blips from another account in my widget? =
 
