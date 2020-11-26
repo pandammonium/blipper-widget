@@ -100,18 +100,26 @@ class Blipper_Widget extends WP_Widget {
   * @var      array     $default_setting_values   The widget's default settings
   */
   private $default_setting_values = array (
-    'title'                 => 'My latest blip',
-    'display-date'          => 'show',
-    'display-journal-title' => 'hide',
-    'add-link-to-blip'      => 'hide',
-    'display-powered-by'    => 'hide',
-    'border-style'          => 'inherit',
-    'border-width'          => 'inherit',
-    'border-color'          => 'inherit',
-    'background-color'      => 'inherit',
-    'color'                 => 'inherit',
-    'link-color'            => 'initial',
-    'padding'               => '0',
+    'widget'     => array (
+      'border-style'          => 'inherit',
+      'border-width'          => 'inherit',
+      'border-color'          => 'inherit',
+      'background-color'      => 'inherit',
+      'color'                 => 'inherit',
+      'link-color'            => 'initial',
+      'padding'               => '0',
+    ),
+    'shortcode'  => array (
+      'title-level' => 'h2',
+      'display-body' => 'hide',
+    ),
+    'common'     => array (
+      'title'                 => 'My latest blip',
+      'display-date'          => 'show',
+      'display-journal-title' => 'hide',
+      'add-link-to-blip'      => 'hide',
+      'display-powered-by'    => 'hide',),
+
   );
 
 /**
@@ -194,6 +202,7 @@ class Blipper_Widget extends WP_Widget {
   */
   public function form( $settings ) {
 
+    error_log( "Blipper_Widget::form( " . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
     $this->blipper_widget_display_form( $this->blipper_widget_get_display_values( $settings ) );
 
   }
@@ -256,29 +265,15 @@ class Blipper_Widget extends WP_Widget {
  */
 public function blipper_widget_shortcode_blip_display( $atts, $content=null, $shortcode="", $print=false) {
 
-  $default_title_level = 'h2';
-  $args = shortcode_atts( $this->default_setting_values, $atts, $shortcode );
+  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
+
+  $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
+
+  $args = shortcode_atts( $settings, $atts, $shortcode );
   extract( $args );
+  error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" );
 
-  // Attributes that aren't included in the defaults but that are used in the display of the shortcode.
-  $args['title-level'] = isset( $atts['title-level'] ) ? $atts['title-level'] : $default_title_level;
-  $args['display-body'] = isset( $atts['display-body'] ) ? 'show' : 'hide';
-
-  // There are better ways of removing these keys from the array, but this seems
-  // the simplest, especially given that the values are not necessarily known.
-  // They are removed because the border doesn't necessarily fit snugly around
-  // the image, so it looks a bit naff.  The removed values will be replaced by
-  // the defaults when the blip is constructed.
-  unset ( $args['border-style'] );
-  unset ( $args['border-width'] );
-  unset ( $args['border-color'] );
-  unset ( $args['background-color'] );
-  unset ( $args['padding'] );
-  if ( ! isset( $args['display-body'] ) && ! empty( $args['display-body'] ) ) {
-    return $args['display-body'];
-  }
-
-  $the_title = '';
+   $the_title = '';
   if ( ! empty( $args['title'] ) ) {
     if ( ! ( $args['title-level'] === 'h1' ||
              $args['title-level'] === 'h2' ||
@@ -287,13 +282,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
              $args['title-level'] === 'h5' ||
              $args['title-level'] === 'h6' ||
              $args['title-level'] === 'p' ) ) {
-      $args['title-level'] = $default_title_level;
+      $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
     }
     $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
   }
 
-  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
-  error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" );
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
     return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
   }
@@ -327,7 +320,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
     }
 
-    $settings = $this->default_setting_values[$setting_field];
+    $settings = $this->default_setting_values['widget'][$setting_field];
 
     if ( array_key_exists( $setting_field, $new_settings ) ) {
       $new_settings[$setting_field] = esc_attr( $new_settings[$setting_field] );
@@ -376,18 +369,34 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   */
   private function blipper_widget_get_display_values( $settings ) {
 
-    $new_settings['title'] = $this->blipper_widget_get_display_value( 'title', $settings );
-    $new_settings['display-date'] = $this->blipper_widget_get_display_value( 'display-date', $settings );
-    $new_settings['display-journal-title'] = $this->blipper_widget_get_display_value( 'display-journal-title', $settings );
-    $new_settings['add-link-to-blip'] = $this->blipper_widget_get_display_value( 'add-link-to-blip', $settings );
-    $new_settings['display-powered-by'] = $this->blipper_widget_get_display_value( 'display-powered-by', $settings );
-    $new_settings['border-style'] = $this->blipper_widget_get_display_value( 'border-style', $settings );
-    $new_settings['border-width'] = $this->blipper_widget_get_display_value( 'border-width', $settings );
-    $new_settings['border-color'] = $this->blipper_widget_get_display_value( 'border-color', $settings );
-    $new_settings['background-color'] = $this->blipper_widget_get_display_value( 'background-color', $settings );
-    $new_settings['color'] = $this->blipper_widget_get_display_value( 'color', $settings );
-    $new_settings['link-color'] = $this->blipper_widget_get_display_value( 'link-color', $settings );
-    $new_settings['padding'] = $this->blipper_widget_get_display_value( 'padding', $settings );
+    error_log( 'Blipper_Widget::blipper_widget_get_display_values (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+
+    $new_settings = array();
+
+    try {
+      $new_settings['title'] = $this->blipper_widget_get_display_value( 'title', $settings );
+      $new_settings['display-date'] = $this->blipper_widget_get_display_value( 'display-date', $settings );
+      $new_settings['display-journal-title'] = $this->blipper_widget_get_display_value( 'display-journal-title', $settings );
+      $new_settings['add-link-to-blip'] = $this->blipper_widget_get_display_value( 'add-link-to-blip', $settings );
+      $new_settings['display-powered-by'] = $this->blipper_widget_get_display_value( 'display-powered-by', $settings );
+      $new_settings['border-style'] = $this->blipper_widget_get_display_value( 'border-style', $settings );
+      $new_settings['border-width'] = $this->blipper_widget_get_display_value( 'border-width', $settings );
+      $new_settings['border-color'] = $this->blipper_widget_get_display_value( 'border-color', $settings );
+      $new_settings['background-color'] = $this->blipper_widget_get_display_value( 'background-color', $settings );
+      $new_settings['color'] = $this->blipper_widget_get_display_value( 'color', $settings );
+      $new_settings['link-color'] = $this->blipper_widget_get_display_value( 'link-color', $settings );
+      $new_settings['padding'] = $this->blipper_widget_get_display_value( 'padding', $settings );
+    } catch ( ErrorException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          echo '<p>' . __( 'Error.  ' . $e->getMessage() . '.  Please check your settings are valid and try again.', 'blipper-widget' ) . '</p>';
+        }
+      } catch (Exception $e) {
+        if ( current_user_can( 'manage_options' ) ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the user settings.</p>';
+        }
+      }
 
     return $new_settings;
 
@@ -395,7 +404,21 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
   private function blipper_widget_get_display_value( $setting, $settings ) {
 
-    return array_key_exists( $setting, $settings ) ? esc_attr( $settings[$setting] ) : $this->default_setting_values[$setting];
+    error_log( 'Blipper_Widget::blipper_widget_get_display_value (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+
+    if ( array_key_exists( $setting, $settings ) ) {
+      return esc_attr( $settings[$setting] );
+    } else {
+      if ( array_key_exists( $setting, $this->default_setting_values['widget'] ) ) {
+        return $this->default_setting_values['widget'][$setting];
+      } else if ( array_key_exists( $setting, $this->default_setting_values['common'] ) ) {
+        return $this->default_setting_values['common'][$setting];
+      } else {
+        // throw new ErrorException( 'Invalid setting requested: ' . $setting );
+        error_log( 'Invalid setting requested: ' . $setting );
+        return '';
+      }
+    }
 
   }
 
@@ -486,7 +509,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
     } catch (Exception $e) {
       if ( current_user_can( 'manage_options' ) ) {
-        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong with getting the user.</p>';
+        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the user.</p>';
       }
       error_log( 'Error.  ' . $e->getMessage() . '.' );
     }
@@ -505,7 +528,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
         } else {
           $client_ok = true;
-          error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' );
+          error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
           error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) );
         }
       } catch ( blipper_widget_ApiResponseException $e ) {
@@ -516,7 +539,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       } catch (Exception $e) {
         if ( current_user_can( 'manage_options' ) ) {
         error_log( 'Error.  ' . $e->getMessage() . '.' );
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong when creating the client.</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong creating the client.</p>';
         }
       }
     }
@@ -876,7 +899,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
         if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser
-          $settings['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
+          $settings['add-link-to-blip'] = $this->default_setting_values['common']['add-link-to-blip'];
         }
         if ( $settings['add-link-to-blip'] == 'show' ) {
           $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
@@ -901,7 +924,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $this->blipper_widget_log_display_values( $settings, 'display-date', 'get_blipper_widget_display_blip' );
         if ( ! array_key_exists( 'display-date' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser
-          $settings['display-date'] = $this->default_setting_values['display-date'];
+          $settings['display-date'] = $this->default_setting_values['common']['display-date'];
         }
         if ( $settings['display-date'] == 'show' ) {
           $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
@@ -931,11 +954,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $this->blipper_widget_log_display_values( $settings, 'display-powered-by', 'get_blipper_widget_display_blip' );
         if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser.
-          $settings['display-journal-title'] = $this->default_setting_values['display-journal-title'];
+          $settings['display-journal-title'] = $this->default_setting_values['common']['display-journal-title'];
         }
         if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser.
-          $settings['display-powered-by'] = $this->default_setting_values['display-powered-by'];
+          $settings['display-powered-by'] = $this->default_setting_values['common']['display-powered-by'];
         }
 
         if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
@@ -1043,7 +1066,7 @@ private function sanitise_url( $url ) {
   */
   private function blipper_widget_display_form( $settings ) {
 
-    error_log( "Blipper_Widget::blipper_widget_display_form\nproperty " . var_export( $settings, true ) . "\n" );
+    error_log( "Blipper_Widget::blipper_widget_display_form( " . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' );
 
     $oauth_settings = $this->settings->blipper_widget_get_settings();
 
@@ -1070,7 +1093,7 @@ private function sanitise_url( $url ) {
           placeholder="The title will be blank"
         >
       </p>
-      <p class="description">Leave the widget title field blank if you don't want to display a title.  The default widget title is <i><?php _e( $this->default_setting_values['title'] ); ?></i>.</p>
+      <p class="description">Leave the widget title field blank if you don't want to display a title.  The default widget title is <i><?php _e( $this->default_setting_values['common']['title'] ); ?></i>.</p>
 
       <p>
         <input
@@ -1198,7 +1221,7 @@ private function sanitise_url( $url ) {
           type="text"
           value="<?php echo esc_attr( $settings['border-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['border-color']; ?>"
+          data-default-color="<?php //echo $this->default_setting_values['widget']['border-color']; ?>"
         >
       </p>
       <p class="description">
@@ -1221,7 +1244,7 @@ private function sanitise_url( $url ) {
           type="text"
           value="<?php echo esc_attr( $settings['background-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['background-color']; ?>"
+          data-default-color="<?php //echo $this->default_setting_values['widget']['background-color']; ?>"
         >
       </p>
       <p class="description">
@@ -1244,7 +1267,7 @@ private function sanitise_url( $url ) {
           type="text"
           value="<?php echo esc_attr( $settings['color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['color']; ?>"
+          data-default-color="<?php //echo $this->default_setting_values['widget']['color']; ?>"
         >
       </p>
       <p class="description">
@@ -1267,7 +1290,7 @@ private function sanitise_url( $url ) {
           type="text"
           value="<?php echo esc_attr( $settings['link-color'] ); ?>"
           placeholder="#"
-          data-default-color="<?php //echo $this->default_setting_values['link-color']; ?>"
+          data-default-color="<?php //echo $this->default_setting_values['widget']['link-color']; ?>"
         >
       </p>
       <p class="description">
@@ -1286,7 +1309,7 @@ private function sanitise_url( $url ) {
           min="0"
           max="20"
           step="1"
-          value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->default_setting_values['padding']; ?>"
+          value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->default_setting_values['widget']['padding']; ?>"
         >
       </p>
       <p class="description">
@@ -1310,25 +1333,25 @@ private function sanitise_url( $url ) {
         $element = 'color';
         return array_key_exists( $style_element, $settings )
           ? ( empty( $settings[$style_element] )
-            ? $element . ':' . $this->default_setting_values[$style_element]
+            ? $element . ':' . $this->default_setting_values['widget'][$style_element]
             : $element . ':' . $settings[$style_element] . ';'
             )
-          : $element . ':' . $this->default_setting_values[$style_element] . ';';
+          : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
       case 'padding':
         return array_key_exists( $style_element, $settings )
           ? ( empty( $settings[$style_element] )
-            ? $element . ':' . $this->default_setting_values[$style_element]
+            ? $element . ':' . $this->default_setting_values['widget'][$style_element]
             : $element . ':' . $settings[$style_element] . 'px' . ';'
             )
-          : $element . ':' . $this->default_setting_values[$style_element] . 'px' . ';';
+          : $element . ':' . $this->default_setting_values['widget'][$style_element] . 'px' . ';';
 
       default:
         return array_key_exists( $style_element, $settings )
           ? ( empty( $settings[$style_element] )
-            ? $element . ':' . $this->default_setting_values[$style_element]
+            ? $element . ':' . $this->default_setting_values['widget'][$style_element]
             : $element . ':' . $settings[$style_element] . ';'
             )
-          : $element . ':' . $this->default_setting_values[$style_element] . ';';
+          : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
     }
 
   }
@@ -1337,10 +1360,10 @@ private function sanitise_url( $url ) {
       $message =
         array_key_exists( $display_element, $settings )
         ? ( empty( $settings[$display_element] )
-          ? ( "Key has no value; using default: " . $this->default_setting_values[$display_element] )
+          ? ( "Key has no value; using default (widget): " . $this->default_setting_values['widget'][$display_element] )
           : ( "Value: " . $settings[$display_element] )
           )
-        : ( "No key, no value; adding default: " . $this->default_setting_values['display-journal-title'] );
+        : ( "No key, no value; adding default (common): " . $this->default_setting_values['common']['display-journal-title'] );
       error_log( "Blipper_Widget::$function_name( $display_element )" );
       error_log( "\t" . $message . "\n" );
   }
