@@ -10,7 +10,7 @@
   * Plugin Name:        Blipper Widget
   * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
-  * Version:            1.1
+  * Version:            1.1.1
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
@@ -460,7 +460,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   * @since    0.0.1
   * @access   private
   * @param    array     $instance         The settings just saved in the
-  *                                         database.
+  *                                         database
   * @return   bool      $client_ok        True if the client was created
   *                                         successfully, else false
   */
@@ -748,6 +748,27 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     }
 
+    // Get the blip's descriptive text as HTML, which will need to
+    // be sanitised on use.
+    if ( $instance['display-body'] && $continue ) {
+      $continue = false;
+
+      $descriptive_text = null;
+      // Get the blip's descriptive text, which may contain markup.
+      try {
+        if ( $details->data( 'details.description_html' ) ) {
+          $descriptive_text = $details->data( 'details.description_html' );
+          $continue = true;
+        } else {
+          throw new ErrorException('Did not get the descriptive text.');
+        }
+      } catch ( ErrorException $e ) {
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+        }
+      }
+    }
+
     if ( $continue ) {
       $continue = false;
 
@@ -874,10 +895,27 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       $the_blip .= '</figcaption></figure>';
 
+      $the_blip .= empty( $descriptive_text ) ? '' : '<div>' . $this->sanitise_html( $descriptive_text ) . '</div>';
+
+      error_log( "The converted blip: " . json_encode($the_blip) );
+
     }
 
     return $the_blip;
   }
+/**
+ * Sanitise third-party HTML.
+ *
+ * @since     1.1.1
+ * @access    private
+ * @param     string     $html   The HTML string to be sanitised.
+ * @return    string             The sanitised HTML string.
+ *
+ */
+private function sanitise_html( $html ) {
+  return wp_kses( $html, ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'b', 'em', 'div'] );
+}
+
 /**
   * Display the blip using the settings stored in the database.
   *
