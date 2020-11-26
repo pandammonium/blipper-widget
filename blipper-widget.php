@@ -918,7 +918,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       $the_blip .= "</div>"; // .the-blip
 
-      error_log( "The completed blip: " . json_encode($the_blip) );
+      error_log( "The completed blip: " . $the_blip );
 
     }
 
