@@ -94,6 +94,7 @@ You can change some of the settings.  The settings you can change, with their de
 * `display-powered-by    = 'hide' ['show']`
 * `color                 = 'inherit'`
 * `link-color            = 'initial'`
+* `display-text          = 'hide' ['show']`
 
 Here are some examples:
 
@@ -137,6 +138,11 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.1.1 =
+
+* Optionally displays the blip's descriptive text, if there is any, for the shortcode instance of the blip only (i.e. the descriptive text is not shown for the widget).
+* Adds classes to the blip containers so that you can easily style them using the Additional CSS component of the Customiser.
 
 = 1.1 =
 

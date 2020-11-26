@@ -750,7 +750,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     // Get the blip's descriptive text as HTML, which will need to
     // be sanitised on use.
-    if ( $instance['display-body'] && $continue ) {
+    if ( isset ( $instance['display-body'] ) && $continue ) {
       $continue = false;
 
       $descriptive_text = null;
@@ -803,7 +803,9 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       // Display the blip.
 
-      $the_blip .= '<figure style="'
+      $the_blip = "<div class='the-blip'>";
+
+      $the_blip .= '<figure class=\'the-blip-image\' style="'
         . $this->blipper_widget_get_style( $instance, 'border-style')
         . $this->blipper_widget_get_style( $instance, 'border-width')
         . $this->blipper_widget_get_style( $instance, 'border-color')
@@ -821,19 +823,20 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
       }
       // Add the image.
-      $the_blip .= '<img src="' . $image_url . '"
-        class="blipper-widget-image"
-        alt="' . $blip['title'] . '"
-        height="auto"
-        width="auto">
-      ';
+      $the_blip .= '<img src="'
+        . $image_url
+        . ' "class="blipper-widget-image" alt="'
+        . $blip['title']
+        . '">';
       // Close the link (anchor) tag.
       if ( $instance['add-link-to-blip'] == 'show' ) {
         $the_blip .= '</a>';
       }
 
       // Display any associated data.
-      $the_blip .= '<figcaption style="padding-top:7px;' . $this->blipper_widget_get_style( $instance, 'color' ) . '">';
+      $the_blip .= '<figcaption class=\'the-blip-image-caption\' style="padding-top:7px;'
+        . $this->blipper_widget_get_style( $instance, 'color' )
+        . '">';
 
       // Date (optional), title and username
       $this->blipper_widget_log_display_values( $instance, 'display-date', 'get_blipper_widget_display_blip' );
@@ -848,13 +851,20 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
       }
       if ( ! empty( $blip['title'] ) ) {
-        $the_blip .= '<i>' . $blip['title'] . '</i>';
+        $the_blip .= '<i>'
+          . $blip['title']
+          . '</i>';
       }
-      $the_blip .= ' ' . __( 'by', 'blipper-widget' ) . ' ' . $user['username'];
+      $the_blip .= ' '
+        . __( 'by', 'blipper-widget' )
+        . ' '
+        . $user['username'];
 
       // Display any content provided by the user in a shortcode.
       if ( ! empty( $content ) ) {
-        $the_blip .= '<br />' . $content;
+        $the_blip .= '<br /><span class=\'the-blip-image-caption-content\'>'
+          . $content
+          . '</span>';
       }
 
       // Journal title and/or display-powered-by link.
@@ -870,23 +880,30 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
 
       if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer><p style="font-size:75%;">' . __( 'From', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer class=\'the-blip-image-caption-footer\' style="margin-bottom:0"><p style="font-size:75%;">'
+          . __( 'From', 'blipper-widget' )
+          . ' <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
-          . '">' . $user_settings->data( 'journal_title' )
+          . '">'
+          . $user_settings->data( 'journal_title' )
           . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'show' && $instance['display-powered-by'] == 'hide' ) {
-        $the_blip .= '<footer><p style="font-size:75%">' . __( 'From', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/'
+        $the_blip .= '<footer><p style="font-size:75%">'
+          . __( 'From', 'blipper-widget' )
+          . ' <a href="https://www.blipfoto.com/'
           . $user_settings->data( 'username' )
           . '" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">' . $user_settings->data( 'journal_title' )
           . '</a></p></footer>';
       } else if ( $instance['display-journal-title'] == 'hide' && $instance['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer><p style="font-size:75%">' . __( 'Powered by', 'blipper-widget' ) . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+        $the_blip .= '<footer><p style="font-size:75%">'
+          . __( 'Powered by', 'blipper-widget' )
+          . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else {
@@ -895,9 +912,13 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       $the_blip .= '</figcaption></figure>';
 
-      $the_blip .= empty( $descriptive_text ) ? '' : '<div>' . $this->sanitise_html( $descriptive_text ) . '</div>';
+      $the_blip .= empty( $descriptive_text ) ? '' : '<div class=\'the-blip-descriptive-text\'>'
+        . $this->sanitise_html( $descriptive_text )
+        . '</div>';
 
-      error_log( "The converted blip: " . json_encode($the_blip) );
+      $the_blip .= "</div>"; // .the-blip
+
+      error_log( "The completed blip: " . json_encode($the_blip) );
 
     }
 
