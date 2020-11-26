@@ -832,6 +832,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       if ( $settings['add-link-to-blip'] == 'show' ) {
         $the_blip .= '</a>';
       }
+          . $this->sanitise_url( $image_url )
 
       // Display any associated data.
       $the_blip .= '<figcaption class=\'the-blip-image-caption\' style="padding-top:7px;'
@@ -935,6 +936,18 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
  */
 private function sanitise_html( $html ) {
   return wp_kses( $html, ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'b', 'em', 'div'] );
+}
+/**
+ * Sanitise URL.
+ *
+ * @since     1.1.1
+ * @access    private
+ * @param     string     $html   The URL to be sanitised.
+ * @return    string             The sanitised URL.
+ *
+ */
+private function sanitise_url( $url ) {
+  return esc_url( $url );
 }
 
 /**
