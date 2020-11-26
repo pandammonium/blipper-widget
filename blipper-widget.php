@@ -80,7 +80,8 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'blipper_widget_
   * @since 0.0.1
   */
 function blipper_widget_exception( $e ) {
-  echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '  Sorry about that.  Please check your settings or try again later.</p>';
+  error_log( 'Error.  ' . $e->getMessage() . '.' );
+  echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '.  Sorry about that.  Please check your settings or try again later.</p>';
 }
 set_exception_handler('blipper_widget_exception');
 
@@ -106,8 +107,6 @@ class Blipper_Widget extends WP_Widget {
     'display-powered-by'    => 'hide',
     'border-style'          => 'inherit',
     'border-width'          => 'inherit',
-    // Using 'inherit' for the default colour causes an error in the colour
-    // picker.  Leaving it blank has the same effect as using 'inherit'.
     'border-color'          => 'inherit',
     'background-color'      => 'inherit',
     'color'                 => 'inherit',
@@ -214,6 +213,7 @@ class Blipper_Widget extends WP_Widget {
   */
   public function update( $new_settings, $old_settings ) {
 
+    $settings = null;
     $title                  = $this->blipper_widget_validate( $new_settings, $old_settings, 'title' );
     $display_date           = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-date' );
     $display_journal_title  = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-journal-title' );
@@ -292,10 +292,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
   }
 
-  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( " . json_encode( $atts ) . "), '" . $content . "', " . $shortcode . ")\n" );
-  // error_log( "SHORTCODE: " . $shortcode );
-  error_log( "Collated arguments: " . json_encode( $args ) . "\n" );
-  // error_log( "CONTENT: " . json_encode( $content ) );
+  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
+  error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" );
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
     return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
   }
@@ -479,81 +477,89 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         throw new blipper_widget_OAuthException( 'Missing username.' );
       } else if ( empty( $oauth_settings['access-token'] ) ) {
         throw new blipper_widget_OAuthException( 'Missing access token.' );
-      }
-
-      // Create a new client using the OAuth settings from the database
-
-      $this->client = new blipper_widget_Client (
-        '',
-        '',
-        $oauth_settings['access-token']
-      );
-
-      if ( empty( $this->client ) || ! isset( $this->client ) ) {
-
-        throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
-
       } else {
-
         $client_ok = true;
-
       }
-
     } catch ( blipper_widget_OAuthException $e ) {
-
       if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>' . __( 'OAuth error.  ' . $e->getMessage() . '  Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.', 'blipper-widget' ) . '</p>';
+        echo '<p>' . __( 'OAuth error.  ' . $e->getMessage() . '.  Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.', 'blipper-widget' ) . '</p>';
       }
-
-    } catch ( blipper_widget_ApiResponseException $e ) {
-
+    } catch (Exception $e) {
       if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage() . 'Please try again later.', 'blipper-widget' ) . '</p>';
+        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong with getting the user.</p>';
       }
-
+      error_log( 'Error.  ' . $e->getMessage() . '.' );
     }
 
-    if ( true == $client_ok ) {
+    if ( $client_ok ) {
+      try {
+        $client_ok = false;
+
+        // Create a new client using the OAuth settings from the database
+        $this->client = new blipper_widget_Client (
+          '',
+          '',
+          $oauth_settings['access-token']
+        );
+        if ( empty( $this->client ) || ! isset( $this->client ) ) {
+          throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
+        } else {
+          $client_ok = true;
+          error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' );
+          error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) );
+        }
+      } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage() . '.  Please try again later.', 'blipper-widget' ) . '</p>';
+        }
+      } catch (Exception $e) {
+        if ( current_user_can( 'manage_options' ) ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong when creating the client.</p>';
+        }
+      }
+    }
+
+    if ( $client_ok ) {
       $client_ok = false;
       try {
+
         $user_profile = $this->client->get( 'user/profile' );
+
         if ( $user_profile->error() ) {
 
           throw new blipper_widget_ApiResponseException( $user_profile->error() );
-
         }
-
         $user = $user_profile->data()['user'];
-
         if ( $user['username'] != $oauth_settings['username'] ) {
-
           throw new blipper_widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
-
         } else {
-
           $client_ok = true;
-
         }
-
       } catch ( blipper_widget_OAuthException $e ) {
-
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
           echo '<p>' . __( 'OAuth error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
         }
-
       } catch ( blipper_widget_ApiResponseException $e ) {
-
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
           echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
         }
-
       } catch ( blipper_widget_BaseException $e ) {
-
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
           echo '<p>' . __( 'Error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
         }
-
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user account.</p>';
+        }
       }
+    } else {
+      error_log( 'CLIENT IS NOT OK' );
     }
     return $client_ok;
 
@@ -578,6 +584,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     $the_blip = '';
     $user_profile = null;
     $user_settings = null;
+    $descriptive_text = null;
     $continue = false;
 
     try {
@@ -591,8 +598,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
 
     } catch ( blipper_widget_ApiResponseException $e ) {
+      error_log( 'Error.  ' . $e->getMessage() . '.' );
       if ( current_user_can( 'manage_options' ) ) {
-        $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+        $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+      }
+    } catch (Exception $e) {
+      if ( current_user_can( 'manage_options' ) ) {
+      error_log( 'Error.  ' . $e->getMessage() . '.' );
+        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user profile.</p>';
       }
     }
 
@@ -610,8 +623,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user settings.</p>';
         }
       }
 
@@ -631,8 +650,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        if ( current_user_can( 'manage_options' ) ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your Blipfoto account.</p>';
         }
       }
 
@@ -662,8 +687,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your Blipfoto journal.</p>';
         }
       }
 
@@ -683,8 +714,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( ErrorException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your entries (blips).</p>';
         }
       }
 
@@ -708,12 +745,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( ErrorException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
         }
       } catch ( Exception $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
         }
       }
 
@@ -741,30 +780,42 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the entry (blip) details.</p>';
         }
       }
 
     }
 
-    // Get the blip's descriptive text as HTML, which will need to
-    // be sanitised on use.
     if ( isset ( $settings['display-body'] ) && $continue ) {
       $continue = false;
 
-      $descriptive_text = null;
-      // Get the blip's descriptive text, which may contain markup.
       try {
-        if ( $details->data( 'details.description_html' ) ) {
-          $descriptive_text = $details->data( 'details.description_html' );
+
+        // Use the HTML variation because it's easier to deal with than the
+        // version potentially containing markup.
+        $descriptive_text = $details->data( 'details.description_html' );
+
+        if ( isset( $descriptive_text ) ) {
           $continue = true;
         } else {
-          throw new ErrorException('Did not get the descriptive text.');
+          throw new blipper_widget_ApiResponseException('Did not get the descriptive text.');
         }
-      } catch ( ErrorException $e ) {
+      } catch ( blipper_widget_ApiResponseException $e ) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
+        }
+      } catch (Exception $e) {
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the entry\'s (blip\'s) descriptive text.</p>';
         }
       }
     }
@@ -776,6 +827,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       // Access is currently limited by Blipfoto to standard resolution, but
       // the plugin nevertheless looks for the highest quality image available.
       $image_url = null;
+
       try {
 
         if ( $details->data( 'image_urls.original' ) ) {
@@ -792,8 +844,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
         }
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
+      } catch (Exception $e) {
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the image URL.</p>';
+        }
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
       }
 
       $continue = ! empty ( $image_url );
@@ -802,122 +860,129 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     if ( $continue ) {
 
       // Display the blip.
+      try {
 
-      $the_blip = "<div class='the-blip'>";
+        $the_blip = "<div class='the-blip'>";
 
-      $the_blip .= '<figure class=\'the-blip-image\' style="'
-        . $this->blipper_widget_get_style( $settings, 'border-style')
-        . $this->blipper_widget_get_style( $settings, 'border-width')
-        . $this->blipper_widget_get_style( $settings, 'border-color')
-        . $this->blipper_widget_get_style( $settings, 'background-color' )
-        . $this->blipper_widget_get_style( $settings, 'padding' )
-        . '">';
+        $the_blip .= '<figure class=\'the-blip-image\' style="'
+          . $this->blipper_widget_get_style( $settings, 'border-style')
+          . $this->blipper_widget_get_style( $settings, 'border-width')
+          . $this->blipper_widget_get_style( $settings, 'border-color')
+          . $this->blipper_widget_get_style( $settings, 'background-color' )
+          . $this->blipper_widget_get_style( $settings, 'padding' )
+          . '">';
 
-      // Link back to the blip on the Blipfoto site.
-      $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
-      if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser
-        $settings['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
-      }
-      if ( $settings['add-link-to-blip'] == 'show' ) {
-        $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
-      }
-      // Add the image.
-      $the_blip .= '<img src="'
-        . $image_url
-        . ' "class="blipper-widget-image" alt="'
-        . $blip['title']
-        . '">';
-      // Close the link (anchor) tag.
-      if ( $settings['add-link-to-blip'] == 'show' ) {
-        $the_blip .= '</a>';
-      }
-          . $this->sanitise_url( $image_url )
-
-      // Display any associated data.
-      $the_blip .= '<figcaption class=\'the-blip-image-caption\' style="padding-top:7px;'
-        . $this->blipper_widget_get_style( $settings, 'color' )
-        . '">';
-
-      // Date (optional), title and username
-      $this->blipper_widget_log_display_values( $settings, 'display-date', 'get_blipper_widget_display_blip' );
-      if ( ! array_key_exists( 'display-date' , $settings ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser
-        $settings['display-date'] = $this->default_setting_values['display-date'];
-      }
-      if ( $settings['display-date'] == 'show' ) {
-        $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
-        if ( !empty( $blip['title'] ) ) {
-          $the_blip .= '<br>';
+        // Link back to the blip on the Blipfoto site.
+        $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
+        if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser
+          $settings['add-link-to-blip'] = $this->default_setting_values['add-link-to-blip'];
         }
-      }
-      if ( ! empty( $blip['title'] ) ) {
-        $the_blip .= '<i>'
+        if ( $settings['add-link-to-blip'] == 'show' ) {
+          $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
+        }
+        // Add the image.
+        $the_blip .= '<img src="'
+          . $this->sanitise_url( $image_url )
+          . '" class="blipper-widget-image" alt="'
           . $blip['title']
-          . '</i>';
+          . '">';
+        // Close the link (anchor) tag.
+        if ( $settings['add-link-to-blip'] == 'show' ) {
+          $the_blip .= '</a>';
+        }
+
+        // Display any associated data.
+        $the_blip .= '<figcaption class=\'the-blip-image-caption\' style="padding-top:7px;'
+          . $this->blipper_widget_get_style( $settings, 'color' )
+          . '">';
+
+        // Date (optional), title and username
+        $this->blipper_widget_log_display_values( $settings, 'display-date', 'get_blipper_widget_display_blip' );
+        if ( ! array_key_exists( 'display-date' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser
+          $settings['display-date'] = $this->default_setting_values['display-date'];
+        }
+        if ( $settings['display-date'] == 'show' ) {
+          $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
+          if ( !empty( $blip['title'] ) ) {
+            $the_blip .= '<br>';
+          }
+        }
+        if ( ! empty( $blip['title'] ) ) {
+          $the_blip .= '<i>'
+            . $blip['title']
+            . '</i>';
+        }
+        $the_blip .= ' '
+          . __( 'by', 'blipper-widget' )
+          . ' '
+          . $user['username'];
+
+        // Display any content provided by the user in a shortcode.
+        if ( ! empty( $content ) ) {
+          $the_blip .= '<br /><span class=\'the-blip-image-caption-content\'>'
+            . $content
+            . '</span>';
+        }
+
+        // Journal title and/or display-powered-by link.
+        $this->blipper_widget_log_display_values( $settings, 'display-journal-title', 'get_blipper_widget_display_blip' );
+        $this->blipper_widget_log_display_values( $settings, 'display-powered-by', 'get_blipper_widget_display_blip' );
+        if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser.
+          $settings['display-journal-title'] = $this->default_setting_values['display-journal-title'];
+        }
+        if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser.
+          $settings['display-powered-by'] = $this->default_setting_values['display-powered-by'];
+        }
+
+        if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
+          $the_blip .= '<footer class=\'the-blip-image-caption-footer\' style="margin-bottom:0"><p style="font-size:75%;">'
+            . __( 'From', 'blipper-widget' )
+            . ' <a href="https://www.blipfoto.com/'
+            . $user_settings->data( 'username' )
+            . '" rel="nofollow" style="'
+            . $this->blipper_widget_get_style( $settings, 'link-color' )
+            . '">'
+            . $user_settings->data( 'journal_title' )
+            . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+            . $this->blipper_widget_get_style( $settings, 'link-color' )
+            . '">Blipfoto</a></p></footer>';
+        } else if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'hide' ) {
+          $the_blip .= '<footer><p style="font-size:75%">'
+            . __( 'From', 'blipper-widget' )
+            . ' <a href="https://www.blipfoto.com/'
+            . $user_settings->data( 'username' )
+            . '" rel="nofollow" style="'
+            . $this->blipper_widget_get_style( $settings, 'link-color' )
+            . '">' . $user_settings->data( 'journal_title' )
+            . '</a></p></footer>';
+        } else if ( $settings['display-journal-title'] == 'hide' && $settings['display-powered-by'] == 'show' ) {
+          $the_blip .= '<footer><p style="font-size:75%">'
+            . __( 'Powered by', 'blipper-widget' )
+            . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+            . $this->blipper_widget_get_style( $settings, 'link-color' )
+            . '">Blipfoto</a></p></footer>';
+        } else {
+          error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' ): not displayed\n" );
+        }
+
+        $the_blip .= '</figcaption></figure>';
+
+        $the_blip .= empty( $descriptive_text ) ? '' : '<div class=\'the-blip-descriptive-text\'>'
+          . $this->sanitise_html( $descriptive_text )
+          . '</div>';
+
+        $the_blip .= "</div>"; // .the-blip
+
+      } catch (Exception $e) {
+        if ( current_user_can( 'manage_options' ) ) {
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong constructing your entry (blip).</p>';
+        }
+        error_log( 'Error.  ' . $e->getMessage() . '.' );
       }
-      $the_blip .= ' '
-        . __( 'by', 'blipper-widget' )
-        . ' '
-        . $user['username'];
-
-      // Display any content provided by the user in a shortcode.
-      if ( ! empty( $content ) ) {
-        $the_blip .= '<br /><span class=\'the-blip-image-caption-content\'>'
-          . $content
-          . '</span>';
-      }
-
-      // Journal title and/or display-powered-by link.
-      $this->blipper_widget_log_display_values( $settings, 'display-journal-title', 'get_blipper_widget_display_blip' );
-      $this->blipper_widget_log_display_values( $settings, 'display-powered-by', 'get_blipper_widget_display_blip' );
-      if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser.
-        $settings['display-journal-title'] = $this->default_setting_values['display-journal-title'];
-      }
-      if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser.
-        $settings['display-powered-by'] = $this->default_setting_values['display-powered-by'];
-      }
-
-      if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer class=\'the-blip-image-caption-footer\' style="margin-bottom:0"><p style="font-size:75%;">'
-          . __( 'From', 'blipper-widget' )
-          . ' <a href="https://www.blipfoto.com/'
-          . $user_settings->data( 'username' )
-          . '" rel="nofollow" style="'
-          . $this->blipper_widget_get_style( $settings, 'link-color' )
-          . '">'
-          . $user_settings->data( 'journal_title' )
-          . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
-          . $this->blipper_widget_get_style( $settings, 'link-color' )
-          . '">Blipfoto</a></p></footer>';
-      } else if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'hide' ) {
-        $the_blip .= '<footer><p style="font-size:75%">'
-          . __( 'From', 'blipper-widget' )
-          . ' <a href="https://www.blipfoto.com/'
-          . $user_settings->data( 'username' )
-          . '" rel="nofollow" style="'
-          . $this->blipper_widget_get_style( $settings, 'link-color' )
-          . '">' . $user_settings->data( 'journal_title' )
-          . '</a></p></footer>';
-      } else if ( $settings['display-journal-title'] == 'hide' && $settings['display-powered-by'] == 'show' ) {
-        $the_blip .= '<footer><p style="font-size:75%">'
-          . __( 'Powered by', 'blipper-widget' )
-          . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
-          . $this->blipper_widget_get_style( $settings, 'link-color' )
-          . '">Blipfoto</a></p></footer>';
-      } else {
-        error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed\n" );
-      }
-
-      $the_blip .= '</figcaption></figure>';
-
-      $the_blip .= empty( $descriptive_text ) ? '' : '<div class=\'the-blip-descriptive-text\'>'
-        . $this->sanitise_html( $descriptive_text )
-        . '</div>';
-
-      $the_blip .= "</div>"; // .the-blip
 
       error_log( "The completed blip:\n" . $the_blip );
 
