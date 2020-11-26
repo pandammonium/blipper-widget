@@ -259,9 +259,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   $default_title_level = 'h2';
   $args = shortcode_atts( $this->default_setting_values, $atts, $shortcode );
   extract( $args );
-  if ( isset( $atts['title-level'] ) ) {
-    $args['title-level'] = $atts['title-level'];
-  }
+
+  // Attributes that aren't included in the defaults but that are used in the display of the shortcode.
+  $args['title-level'] = isset( $atts['title-level'] ) ? $atts['title-level'] : $default_title_level;
+  $args['display-body'] = isset( $atts['display-body'] ) ? 'show' : 'hide';
+
   // There are better ways of removing these keys from the array, but this seems
   // the simplest, especially given that the values are not necessarily known.
   // They are removed because the border doesn't necessarily fit snugly around
@@ -272,12 +274,13 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   unset ( $args['border-color'] );
   unset ( $args['background-color'] );
   unset ( $args['padding'] );
+  if ( ! isset( $args['display-body'] ) && ! empty( $args['display-body'] ) ) {
+    return $args['display-body'];
+  }
 
   $the_title = '';
   if ( ! empty( $args['title'] ) ) {
-    if ( ! isset( $args['title-level'] ) ||
-           empty( $args['title-level'] ) ||
-         ! ( $args['title-level'] === 'h1' ||
+    if ( ! ( $args['title-level'] === 'h1' ||
              $args['title-level'] === 'h2' ||
              $args['title-level'] === 'h3' ||
              $args['title-level'] === 'h4' ||
@@ -289,6 +292,10 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
     $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
   }
 
+  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( " . json_encode( $atts ) . "), '" . $content . "', " . $shortcode . ")\n" );
+  // error_log( "SHORTCODE: " . $shortcode );
+  error_log( "Collated arguments: " . json_encode( $args ) . "\n" );
+  // error_log( "CONTENT: " . json_encode( $content ) );
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
     return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
   }
@@ -585,7 +592,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     } catch ( blipper_widget_ApiResponseException $e ) {
       if ( current_user_can( 'manage_options' ) ) {
-        $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+        $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
       }
     }
 
@@ -604,7 +611,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -625,7 +632,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -656,7 +663,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -677,7 +684,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -702,11 +709,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       } catch ( Exception $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -735,7 +742,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( blipper_widget_ApiResponseException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p> Blipfoto error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -764,7 +771,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
       } catch ( ErrorException $e ) {
         if ( current_user_can( 'manage_options' ) ) {
-          $the_blip .= '<p>Error.  ' . $e->getMessage() . '</p>';
+          $the_blip = '<p>Error.  ' . $e->getMessage() . '</p>';
         }
       }
 
@@ -862,7 +869,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           . $this->blipper_widget_get_style( $instance, 'link-color' )
           . '">Blipfoto</a></p></footer>';
       } else {
-        error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed" );
+        error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' )\tnot displayed\n" );
       }
 
       $the_blip .= '</figcaption></figure>';
