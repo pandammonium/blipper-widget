@@ -112,7 +112,7 @@ class Blipper_Widget extends WP_Widget {
     ),
     'shortcode'  => array (
       'title-level'            => 'h2',                    // 'h1–6','p'
-      'display-body'           => 'hide',                  // 'show'
+      'display-desc-text'      => 'hide',                  // 'show'
     ),
     'common'     => array (
       'title'                  => 'My latest blip',
@@ -833,7 +833,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     }
 
-    if ( isset ( $settings['display-body'] ) && $continue ) {
+    if ( 'show' === $settings['display-desc-text'] && $continue ) {
       $continue = false;
 
       try {
