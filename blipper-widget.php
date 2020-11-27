@@ -1158,6 +1158,16 @@ private function blipper_widget_sanitise_url( $url ) {
     } else {
 
       ?>
+      <style>
+        div.option {
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgb(200,200,200);
+          border-radius: 3px;
+          margin-top: 2px;
+          margin-bottom: 2px;
+        }
+      </style>
       <div><p class="description">
         <label for="<?php echo $this->get_field_id( 'title' ); ?>">
           <?php _e( 'Widget title', 'blipper-widget' ); ?>
@@ -1173,7 +1183,7 @@ private function blipper_widget_sanitise_url( $url ) {
         Leave the widget title field blank if you don't want to display a title.  The default widget title is <i><?php _e( $this->default_setting_values['common']['title'] ); ?></i>.
       </p></div>
 
-      <div><p class="description">
+      <div class="option"><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-date' ); ?>"
@@ -1183,14 +1193,14 @@ private function blipper_widget_sanitise_url( $url ) {
           <?php checked( 'show', esc_attr( $settings['display-date'] ) ); ?>
         >
         <label for="<?php echo $this->get_field_id( 'display-date' ); ?>">
-          <?php _e( 'Display date of your latest blip', 'display-date' ) ?>
+          <?php _e( 'Display the date of your latest blip', 'display-date' ) ?>
         </label>
       </p>
       <p class="description">
         Untick the box to hide the date of your latest blip.  Leave it ticked if you want to display the date of your latest blip.  The box is ticked by default.
       </p></div>
 
-      <div><p class="description">
+      <div class="option"><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'add-link-to-blip' ); ?>"
@@ -1200,14 +1210,14 @@ private function blipper_widget_sanitise_url( $url ) {
           <?php checked( 'show', esc_attr( $settings['add-link-to-blip'] ) ); ?>
         >
         <label for="<?php echo $this->get_field_id( 'add-link-to-blip' ); ?>">
-          <?php _e( 'Include link to your latest blip', 'add-link-to-blip' ) ?>
+          <?php _e( 'Include a link to your latest blip', 'add-link-to-blip' ) ?>
         </label>
       </p>
       <p class="description">
         Tick the box to include a link from the image link back to the corresponding blip in your journal.  Leave it unticked if you don't want to include a link back to your latest blip.  The box is unticked by default.
       </p></div>
 
-      <div><p class="description">
+      <div class="option"><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-journal-title' ); ?>"
@@ -1217,14 +1227,14 @@ private function blipper_widget_sanitise_url( $url ) {
           <?php checked( 'show', esc_attr( $settings['display-journal-title'] ) ); ?>
         >
         <label for="<?php echo $this->get_field_id( 'display-journal-title' ); ?>">
-          <?php _e( 'Display journal title and link', 'display-journal-title' ) ?>
+          <?php _e( 'Display your journal title and link', 'display-journal-title' ) ?>
         </label>
       </p>
       <p class="description">
         Tick the box to show the name of your journal with a link back to your Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.
       </p></div>
 
-      <div><p class="description">
+      <div class="option"><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-powered-by' ); ?>"
@@ -1295,7 +1305,7 @@ private function blipper_widget_sanitise_url( $url ) {
 
       <div id="blipper-widget-conditional" class="blipper-widget-conditional">
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <label for="<?php echo $this->get_field_id( 'border-style' ); ?>">
             <?php _e( 'Border style', 'blipper-widget' ) ?>
           </label>
@@ -1319,7 +1329,7 @@ private function blipper_widget_sanitise_url( $url ) {
           The default style uses your theme's style.  The border won't show if the style is set to 'no line'.
         </p></div>
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
             <?php _e( 'Border width', 'blipper-widget' ); ?>
           </label>
@@ -1346,7 +1356,7 @@ private function blipper_widget_sanitise_url( $url ) {
           The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.
         </p></div>
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1369,7 +1379,7 @@ private function blipper_widget_sanitise_url( $url ) {
           Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
         </p></div>
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1388,7 +1398,7 @@ private function blipper_widget_sanitise_url( $url ) {
             data-default-color="<?php //echo $this->default_setting_values['widget']['background-color']; ?>"
           >
         </p>
-        <div><p class="description">
+        <div class="option"><p class="description">
           Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
         </p></div>
 
@@ -1415,7 +1425,7 @@ private function blipper_widget_sanitise_url( $url ) {
           Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
         </p></div>
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1438,7 +1448,7 @@ private function blipper_widget_sanitise_url( $url ) {
           Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
         </p></div>
 
-        <div><p class="description">
+        <div class="option"><p class="description">
           <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
             <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
           </label>
