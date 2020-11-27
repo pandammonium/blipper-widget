@@ -107,22 +107,29 @@ class Blipper_Widget extends WP_Widget {
       'background-color'       => 'inherit',
       'color'                  => 'inherit',
       'link-color'             => 'initial',
-      'padding'                => '0',               // in pixels
-      'style-control'          => 'widget-settings-only',   // 'css'
+      'padding'                => '0',                     // in pixels
+      'style-control'          => 'widget-settings-only',  // 'css'
     ),
     'shortcode'  => array (
-      'title-level'            => 'h2',              // 'h1–6','p'
-      'display-body'           => 'hide',            // 'show'
+      'title-level'            => 'h2',                    // 'h1–6','p'
+      'display-body'           => 'hide',                  // 'show'
     ),
     'common'     => array (
       'title'                  => 'My latest blip',
-      'display-date'           => 'show',            // 'hide'
-      'display-journal-title'  => 'hide',            // 'show'
-      'add-link-to-blip'       => 'hide',            // 'show'
-      'display-powered-by'     => 'hide',            // 'show'
+      'display-date'           => 'show',                  // 'hide'
+      'display-journal-title'  => 'hide',                  // 'show'
+      'add-link-to-blip'       => 'hide',                  // 'show'
+      'display-powered-by'     => 'hide',                  // 'show'
     ),
+);
 
-  );
+/**
+  * @since    1.1.1
+  * @access   private
+  * @var      array     $style_control_classes   The classes used for styling
+  *                                              the widget.
+  */
+private $style_control_classes = array ();
 
 /**
   * @since    0.0.1
@@ -914,7 +921,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
         // Add the image.
         $the_blip .= '<img src="'
-          . $this->sanitise_url( $image_url )
+          . $this->blipper_widget_sanitise_url( $image_url )
           . '" class="blipper-widget-image" alt="'
           . $blip['title']
           . '">';
@@ -1003,7 +1010,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $the_blip .= '</figcaption></figure>';
 
         $the_blip .= empty( $descriptive_text ) ? '' : '<div class=\'the-blip-descriptive-text\'>'
-          . $this->sanitise_html( $descriptive_text )
+          . $this->blipper_widget_sanitise_html( $descriptive_text )
           . '</div>';
 
         $the_blip .= "</div>"; // .the-blip
@@ -1030,9 +1037,10 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
  * @return    string             The sanitised HTML string.
  *
  */
-private function sanitise_html( $html ) {
+private function blipper_widget_sanitise_html( $html ) {
   return wp_kses( $html, ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'b', 'em', 'div'] );
 }
+
 /**
  * Sanitise URL.
  *
@@ -1042,8 +1050,20 @@ private function sanitise_html( $html ) {
  * @return    string             The sanitised URL.
  *
  */
-private function sanitise_url( $url ) {
+private function blipper_widget_sanitise_url( $url ) {
   return esc_url( $url );
+}
+
+/**
+ * Get whether the styling should be controlled by the widget settings form (default) only or by CSS only.
+ *
+ * @since     1.1.1
+ * @access    private
+ * @return    bool               True if the default, else false;
+ *
+ */
+private function blipper_widget_get_style_control( $settings ) {
+  return $this->default_setting_values['widget']['style-control'] === $settings['style-control'];
 }
 
 /**
@@ -1192,23 +1212,23 @@ private function sanitise_url( $url ) {
 
       <script>
         jQuery(document).ready(function() {
-          theValue = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
-          console.log('on load: ' + theValue);
-          if (theValue == 'widget-settings-only') {
-            console.log('Showing');
+          the_value = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
+          console.log( 'On load: ' + the_value );
+          if (the_value == 'widget-settings-only') {
+            console.log( '  showing' );
             jQuery('.blipper-widget-conditional').show();
           } else {
-            console.log('Hiding');
+            console.log( '  hiding' );
             jQuery('.blipper-widget-conditional').hide();
           }
           jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?>').on('change', function() {
-            theValue = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
-            console.log('on change: ' + theValue);
-            if (theValue == 'widget-settings-only') {
-              console.log('Showing');
+            the_value = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
+            console.log('On change: ' + the_value);
+            if (the_value == 'widget-settings-only') {
+              console.log( '  showing' );
               jQuery('.blipper-widget-conditional').show();
             } else {
-              console.log('Hiding');
+              console.log( '  hiding' );
               jQuery('.blipper-widget-conditional').hide();
             }
           });
