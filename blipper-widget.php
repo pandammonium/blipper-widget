@@ -1398,11 +1398,11 @@ private function blipper_widget_sanitise_url( $url ) {
             data-default-color="<?php //echo $this->default_setting_values['widget']['background-color']; ?>"
           >
         </p>
-        <div class="option"><p class="description">
+        <p class="description">
           Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
         </p></div>
 
-        <p class="description">
+        <div class="option"><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
