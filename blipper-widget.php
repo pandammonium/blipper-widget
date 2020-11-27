@@ -191,7 +191,7 @@ private $style_control_classes = array ();
     }
 
     if ( $this->blipper_widget_create_blipfoto_client( $settings ) ) {
-      $this->blipper_widget_display_blip( $settings );
+      $this->blipper_widget_display_blip( $settings, true );
     }
 
     echo $args['after_widget'];
@@ -302,7 +302,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   }
 
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-    return $the_title . $this->get_blipper_widget_display_blip( $args, $content );
+    return $the_title . $this->get_blipper_widget_display_blip( $args, false, $content );
   }
 
 }
@@ -603,13 +603,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
   }
 
-
 /**
   * Get the blip using the settings stored in the database.
   *
   * @since    1.1
   * @access   private
   * @param    array     $settings         The settings saved in the database
+  * @param    bool      $is_widget        True if the blip is to be displayed in
+  *                                         a widget; false if it is to be
+  *                                         displayed elsewhere
   * @param    string    $content          The content from the shortcode (i.e.
   *                                         the stuff that goes between the
   *                                         opening shortcode tag and the
@@ -617,13 +619,13 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   *                                         accessible from the widget settings
   *                                         when in a widgety area
   */
-  private function get_blipper_widget_display_blip( $settings, $content=null ) {
+  private function get_blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
 
-    $the_blip = '';
     $user_profile = null;
     $user_settings = null;
     $descriptive_text = null;
     $continue = false;
+    $the_blip = '';
 
     try {
 
@@ -900,15 +902,16 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       // Display the blip.
       try {
 
-        $the_blip = "<div class='the-blip'>";
+        // Given that all the data used to determines $style_control is passed
+        // to blipper_widget_get_styling, it might seem pointless to calculate
+        // here here once and pass to that function; but this way, it's only
+        // calculated once.  I don't really know how much this affect
+        // performance.
+        $style_control = $is_widget ? $settings['style-control'] === $this->default_setting_values['widget']['style-control'] : false;
 
-        $the_blip .= '<figure class=\'the-blip-image\' style="'
-          . $this->blipper_widget_get_style( $settings, 'border-style')
-          . $this->blipper_widget_get_style( $settings, 'border-width')
-          . $this->blipper_widget_get_style( $settings, 'border-color')
-          . $this->blipper_widget_get_style( $settings, 'background-color' )
-          . $this->blipper_widget_get_style( $settings, 'padding' )
-          . '">';
+        $the_blip = "<div" . $this->blipper_widget_get_styling( 'div', $is_widget, $style_control, $settings ) . ">";
+
+        $the_blip .= "<figure" . $this->blipper_widget_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
 
         // Link back to the blip on the Blipfoto site.
         $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
@@ -931,9 +934,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
         // Display any associated data.
-        $the_blip .= '<figcaption class=\'the-blip-image-caption\' style="padding-top:7px;'
-          . $this->blipper_widget_get_style( $settings, 'color' )
-          . '">';
+        $the_blip .= "<figcaption" . $this->blipper_widget_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
 
         // Date (optional), title and username
         $this->blipper_widget_log_display_values( $settings, 'display-date', 'get_blipper_widget_display_blip' );
@@ -976,40 +977,31 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           $settings['display-powered-by'] = $this->default_setting_values['common']['display-powered-by'];
         }
 
-        if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
-          $the_blip .= '<footer class=\'the-blip-image-caption-footer\' style="margin-bottom:0"><p style="font-size:75%;">'
-            . __( 'From', 'blipper-widget' )
-            . ' <a href="https://www.blipfoto.com/'
-            . $user_settings->data( 'username' )
-            . '" rel="nofollow" style="'
-            . $this->blipper_widget_get_style( $settings, 'link-color' )
-            . '">'
-            . $user_settings->data( 'journal_title' )
-            . '</a> | Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
-            . $this->blipper_widget_get_style( $settings, 'link-color' )
-            . '">Blipfoto</a></p></footer>';
-        } else if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'hide' ) {
-          $the_blip .= '<footer><p style="font-size:75%">'
-            . __( 'From', 'blipper-widget' )
-            . ' <a href="https://www.blipfoto.com/'
-            . $user_settings->data( 'username' )
-            . '" rel="nofollow" style="'
-            . $this->blipper_widget_get_style( $settings, 'link-color' )
-            . '">' . $user_settings->data( 'journal_title' )
-            . '</a></p></footer>';
-        } else if ( $settings['display-journal-title'] == 'hide' && $settings['display-powered-by'] == 'show' ) {
-          $the_blip .= '<footer><p style="font-size:75%">'
-            . __( 'Powered by', 'blipper-widget' )
-            . ' <a href="https://www.blipfoto.com/" rel="nofollow" style="'
-            . $this->blipper_widget_get_style( $settings, 'link-color' )
-            . '">Blipfoto</a></p></footer>';
-        } else {
-          error_log( "Blipper_Widget::get_blipper_widget_display_blip( 'display-journal-title', 'display-powered-by' ): not displayed\n" );
+      if ( $settings['display-journal-title'] == 'show' || $settings['display-powered-by'] == 'show' ) {
+          $the_blip .= "<footer" . $this->blipper_widget_get_styling( 'footer', $is_widget, $style_control, $settings ) . "><p" . $this->blipper_widget_get_styling( 'footer>p', $is_widget, $style_control, $settings ) . ">";
+          if ( $settings['display-journal-title'] == 'show' ) {
+              $the_blip .= __( 'From', 'blipper-widget' )
+              . ' <a href="https://www.blipfoto.com/'
+              . $user_settings->data( 'username' )
+              . '" rel="nofollow" style="'
+              . $this->blipper_widget_get_style( $settings, 'link-color' )
+              . '">'
+              . $user_settings->data( 'journal_title' )
+              . '</a>';
+          }
+          if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
+            $the_blip .= ' | ';
+          }
+          if ( $settings['display-powered-by'] == 'show' ) {
+            $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
+              . $this->blipper_widget_get_style( $settings, 'link-color' )
+              . '">Blipfoto</a>';
+          }
+          $the_blip .= '</p></footer>';
         }
-
         $the_blip .= '</figcaption></figure>';
 
-        $the_blip .= empty( $descriptive_text ) ? '' : '<div class=\'the-blip-descriptive-text\'>'
+        $the_blip .= empty( $descriptive_text ) ? "" : "<div" . $this->blipper_widget_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
           . $this->blipper_widget_sanitise_html( $descriptive_text )
           . '</div>';
 
@@ -1028,6 +1020,69 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     return $the_blip;
   }
+
+/**
+ * Return the class or style attributes (and their values) used to style the
+ * given element.
+ *
+ * @since    1.1.1
+ * @access   private
+ * @param    string     $element         The element to be styled
+ * @param    bool       $is_widget       Only bother with style attributes if
+ *                                         the blip is to be displayed in a
+ *                                         widget (true) or not (false)
+ * @param    bool       $style_control   The user setting indicating whether
+ *                                         widgets should be styled using the
+ *                                         widget settings form only (true) or
+ *                                         CSS only (false)
+ * @param    array      $settings        The user-defined settings containing
+ *                                         the style data
+ */
+private function blipper_widget_get_styling( $element, $is_widget, $style_control, $settings ) {
+
+  error_log( 'Blipper_Widget::blipper_widget_get_styling( ' . $element . ', ' . (int)$is_widget . ', ' . (int)$style_control . ' )' );
+
+  // If the blip is not to be displayed in a widget or if the widget is to be
+  // styled using CSS only, return a class attribute.
+  // If the blip is to be displayed in a widget using the widget settings only,
+  // return a style attribute.
+  // The default is an empty string either way.
+  switch ( $element ) {
+    case 'div':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip\'' ) :
+        ( '' );
+    case 'figure':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip-image\'' ) :
+        ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'border-style')
+          . $this->blipper_widget_get_style( $settings, 'border-width')
+          . $this->blipper_widget_get_style( $settings, 'border-color')
+          . $this->blipper_widget_get_style( $settings, 'background-color' )
+          . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
+    case 'figcaption':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip-caption\'' ) :
+        ( ' style=\'padding-top:7px;'
+          . $this->blipper_widget_get_style( $settings, 'color' ) . '\'' );
+    case 'footer':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip-caption-footer\'' ) :
+        ( ' style=\'margin-bottom:0;\'' );
+    case 'footer>p':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip-caption-footer-text\'' ) :
+        ( ' style=\'font-size:75%;\'' );
+    case 'div|desc-text':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-blip-text\'' ) :
+        ( '' );
+    default:
+      return '';
+  }
+
+}
+
 /**
  * Sanitise third-party HTML.
  *
@@ -1038,7 +1093,9 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
  *
  */
 private function blipper_widget_sanitise_html( $html ) {
+
   return wp_kses( $html, ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'b', 'em', 'div'] );
+
 }
 
 /**
@@ -1051,19 +1108,9 @@ private function blipper_widget_sanitise_html( $html ) {
  *
  */
 private function blipper_widget_sanitise_url( $url ) {
-  return esc_url( $url );
-}
 
-/**
- * Get whether the styling should be controlled by the widget settings form (default) only or by CSS only.
- *
- * @since     1.1.1
- * @access    private
- * @return    bool               True if the default, else false;
- *
- */
-private function blipper_widget_get_style_control( $settings ) {
-  return $this->default_setting_values['widget']['style-control'] === $settings['style-control'];
+  return esc_url( $url );
+
 }
 
 /**
@@ -1072,6 +1119,9 @@ private function blipper_widget_get_style_control( $settings ) {
   * @since    0.0.1
   * @access   private
   * @param    array     $settings         The settings saved in the database
+  * @param    bool      $is_widget        True if the blip is to be displayed in
+  *                                         a widget; false if it is to be
+  *                                         displayed elsewhere
   * @param    string    $content          The content from the shortcode (i.e.
   *                                         the stuff that comes between the
   *                                         opening shortcode tag and the
@@ -1079,9 +1129,9 @@ private function blipper_widget_get_style_control( $settings ) {
   *                                         accessible from the widget settings
   *                                         when in a widgety area
   */
-  private function blipper_widget_display_blip( $settings, $content=null ) {
+  private function blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
 
-    echo $this->get_blipper_widget_display_blip( $settings, $content );
+    echo $this->get_blipper_widget_display_blip( $settings, $is_widget, $content );
 
   }
 
@@ -1108,7 +1158,7 @@ private function blipper_widget_get_style_control( $settings ) {
     } else {
 
       ?>
-      <p class="description">
+      <div><p class="description">
         <label for="<?php echo $this->get_field_id( 'title' ); ?>">
           <?php _e( 'Widget title', 'blipper-widget' ); ?>
         </label>
@@ -1121,9 +1171,9 @@ private function blipper_widget_get_style_control( $settings ) {
           placeholder="The title will be blank"
         >
         Leave the widget title field blank if you don't want to display a title.  The default widget title is <i><?php _e( $this->default_setting_values['common']['title'] ); ?></i>.
-      </p>
+      </p></div>
 
-      <p class="description">
+      <div><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-date' ); ?>"
@@ -1135,10 +1185,12 @@ private function blipper_widget_get_style_control( $settings ) {
         <label for="<?php echo $this->get_field_id( 'display-date' ); ?>">
           <?php _e( 'Display date of your latest blip', 'display-date' ) ?>
         </label>
-        Untick the box to hide the date of your latest blip.  Leave it ticked if you want to display the date of your latest blip.  The box is ticked by default.
       </p>
-
       <p class="description">
+        Untick the box to hide the date of your latest blip.  Leave it ticked if you want to display the date of your latest blip.  The box is ticked by default.
+      </p></div>
+
+      <div><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'add-link-to-blip' ); ?>"
@@ -1150,10 +1202,12 @@ private function blipper_widget_get_style_control( $settings ) {
         <label for="<?php echo $this->get_field_id( 'add-link-to-blip' ); ?>">
           <?php _e( 'Include link to your latest blip', 'add-link-to-blip' ) ?>
         </label>
-        Tick the box to include a link from the image link back to the corresponding blip in your journal.  Leave it unticked if you don't want to include a link back to your latest blip.  The box is unticked by default.
       </p>
-
       <p class="description">
+        Tick the box to include a link from the image link back to the corresponding blip in your journal.  Leave it unticked if you don't want to include a link back to your latest blip.  The box is unticked by default.
+      </p></div>
+
+      <div><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-journal-title' ); ?>"
@@ -1165,10 +1219,12 @@ private function blipper_widget_get_style_control( $settings ) {
         <label for="<?php echo $this->get_field_id( 'display-journal-title' ); ?>">
           <?php _e( 'Display journal title and link', 'display-journal-title' ) ?>
         </label>
-        Tick the box to show the name of your journal with a link back to your Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.
       </p>
-
       <p class="description">
+        Tick the box to show the name of your journal with a link back to your Blipfoto journal.  Leave it unticked if you don't want to show the name of your journal and link back to your journal.  The box is unticked by default.
+      </p></div>
+
+      <div><p class="description">
         <input
           class="widefat"
           id="<?php echo $this->get_field_id( 'display-powered-by' ); ?>"
@@ -1180,8 +1236,10 @@ private function blipper_widget_get_style_control( $settings ) {
         <label for="<?php echo $this->get_field_id( 'display-powered-by' ); ?>">
           <?php _e( 'Include a \'powered by\' link', 'display-powered-by' ) ?>
         </label>
-        Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by' link.  The box is unticked by default.
       </p>
+      <p class="description">
+        Tick the box to include a 'powered by' link back to Blipfoto.  Leave it unticked if you don't want to include a 'powered by' link.  The box is unticked by default.
+      </p></div>
 
       <h4>Styling</h4>
       <p class="description">You can style your widget in one of two ways.
@@ -1237,7 +1295,7 @@ private function blipper_widget_get_style_control( $settings ) {
 
       <div id="blipper-widget-conditional" class="blipper-widget-conditional">
 
-        <p class="description">
+        <div><p class="description">
           <label for="<?php echo $this->get_field_id( 'border-style' ); ?>">
             <?php _e( 'Border style', 'blipper-widget' ) ?>
           </label>
@@ -1256,9 +1314,12 @@ private function blipper_widget_get_style_control( $settings ) {
             <option value="inset" <?php selected( 'inset', esc_attr( $settings['border-style'] ) ); ?>>inset line</option>
             <option value="outset" <?php selected( 'outset', esc_attr( $settings['border-style'] ) ); ?>>outset line</option>
           </select>
-          The default style uses your theme's style.  The border won't show if the style is set to 'no line'.
         </p>
         <p class="description">
+          The default style uses your theme's style.  The border won't show if the style is set to 'no line'.
+        </p></div>
+
+        <div><p class="description">
           <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
             <?php _e( 'Border width', 'blipper-widget' ); ?>
           </label>
@@ -1280,10 +1341,12 @@ private function blipper_widget_get_style_control( $settings ) {
             <option value="9px" <?php selected( '9px', esc_attr( $settings['border-width'] ) ); ?>>9 pixels</option>
             <option value="10px" <?php selected( '10px', esc_attr( $settings['border-width'] ) ); ?>>10 pixels</option>
           </select>
-          The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.
         </p>
-
         <p class="description">
+          The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.
+        </p></div>
+
+        <div><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1301,10 +1364,12 @@ private function blipper_widget_get_style_control( $settings ) {
             placeholder="#"
             data-default-color="<?php //echo $this->default_setting_values['widget']['border-color']; ?>"
           >
-          Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
         </p>
-
         <p class="description">
+          Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
+        </p></div>
+
+        <div><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1322,8 +1387,10 @@ private function blipper_widget_get_style_control( $settings ) {
             placeholder="#"
             data-default-color="<?php //echo $this->default_setting_values['widget']['background-color']; ?>"
           >
-          Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
         </p>
+        <div><p class="description">
+          Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
+        </p></div>
 
         <p class="description">
           <script type='text/javascript'>
@@ -1343,10 +1410,12 @@ private function blipper_widget_get_style_control( $settings ) {
             placeholder="#"
             data-default-color="<?php //echo $this->default_setting_values['widget']['color']; ?>"
           >
-          Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
         </p>
-
         <p class="description">
+          Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
+        </p></div>
+
+        <div><p class="description">
           <script type='text/javascript'>
               jQuery(document).ready(function($) {
                 $('.blipper-widget-colour-picker').wpColorPicker();
@@ -1364,10 +1433,12 @@ private function blipper_widget_get_style_control( $settings ) {
             placeholder="#"
             data-default-color="<?php //echo $this->default_setting_values['widget']['link-color']; ?>"
           >
-          Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
         </p>
-
         <p class="description">
+          Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
+        </p></div>
+
+        <div><p class="description">
           <label for="<?php echo $this->get_field_id( 'padding' ); ?>">
             <?php _e( 'Padding (pixels)', 'blipper-widget' ); ?>
           </label>
@@ -1381,8 +1452,10 @@ private function blipper_widget_get_style_control( $settings ) {
             step="1"
             value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->default_setting_values['widget']['padding']; ?>"
           >
-          Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
         </p>
+        <p class="description">
+          Pick a number of pixels between zero and twenty.  Changing the padding will increase the distance between the border and the edge of the image.  Bear in mind that the more padding you have, the smaller your image will appear.
+        </p></div>
       </div>
       <?php
     }
