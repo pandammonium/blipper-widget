@@ -1160,14 +1160,14 @@ private function blipper_widget_sanitise_url( $url ) {
       ?>
       <style>
         div.option {
-          border-width: 1px;
-          border-style: solid;
-          border-color: rgb(200,200,200);
-          border-radius: 3px;
+          background-color: rgb(253,253,253);
+          border: none;
+          color: inherit;
           margin-top: 2px;
-          margin-bottom: 2px;
+          margin-bottom: 3px;
         }
       </style>
+
       <div><p class="description">
         <label for="<?php echo $this->get_field_id( 'title' ); ?>">
           <?php _e( 'Widget title', 'blipper-widget' ); ?>
