@@ -1333,27 +1333,20 @@ private function blipper_widget_sanitise_url( $url ) {
           <label for="<?php echo $this->get_field_id( 'border-width' ); ?>">
             <?php _e( 'Border width', 'blipper-widget' ); ?>
           </label>
-          <select
+          <input
             class="widefat"
             id="<?php echo $this->get_field_id( 'border-width' ); ?>"
             name="<?php echo $this->get_field_name( 'border-width' ); ?>"
+            type="number"
+            min="0"
+            max="10"
+            step="1"
+            placeholder="<?php echo $this->default_setting_values['widget']['border-width']; ?>"
+            value="<?php echo $settings['border-width'] ? esc_attr( $settings['border-width'] ) : $this->default_setting_values['widget']['border-width']; ?>"
           >
-            <option value="inherit" <?php selected( 'inherit', esc_attr( $settings['border-width'] ) ); ?>>default</option>
-            <option value="0px" <?php selected( '0px', esc_attr( $settings['border-width'] ) ); ?>>0 pixels</option>
-            <option value="1px" <?php selected( '1px', esc_attr( $settings['border-width'] ) ); ?>>1 pixel</option>
-            <option value="2px" <?php selected( '2px', esc_attr( $settings['border-width'] ) ); ?>>2 pixels</option>
-            <option value="3px" <?php selected( '3px', esc_attr( $settings['border-width'] ) ); ?>>3 pixels</option>
-            <option value="4px" <?php selected( '4px', esc_attr( $settings['border-width'] ) ); ?>>4 pixels</option>
-            <option value="5px" <?php selected( '5px', esc_attr( $settings['border-width'] ) ); ?>>5 pixels</option>
-            <option value="6px" <?php selected( '6px', esc_attr( $settings['border-width'] ) ); ?>>6 pixels</option>
-            <option value="7px" <?php selected( '7px', esc_attr( $settings['border-width'] ) ); ?>>7 pixels</option>
-            <option value="8px" <?php selected( '8px', esc_attr( $settings['border-width'] ) ); ?>>8 pixels</option>
-            <option value="9px" <?php selected( '9px', esc_attr( $settings['border-width'] ) ); ?>>9 pixels</option>
-            <option value="10px" <?php selected( '10px', esc_attr( $settings['border-width'] ) ); ?>>10 pixels</option>
-          </select>
         </p>
         <p class="description">
-          The border width is in pixels.  The default is to use your theme's style.  The border won't show if the width is zero.
+          The border width is inherited from your theme by default, but you can choose a value between 0 and 10 pixels.  The border won't show if the width is zero.
         </p></div>
 
         <div class="option"><p class="description">
