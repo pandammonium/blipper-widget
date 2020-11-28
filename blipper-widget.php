@@ -302,7 +302,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   }
 
   if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-    return $the_title . $this->get_blipper_widget_display_blip( $args, false, $content );
+    return $the_title . $this->blipper_widget_get_blip( $args, false, $content );
   }
 
 }
@@ -618,8 +618,9 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   *                                         closing shortcode tag).  Not
   *                                         accessible from the widget settings
   *                                         when in a widgety area
+  * @return   string                      The blip encoded in HTML
   */
-  private function get_blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
+  private function blipper_widget_get_blip( $settings, $is_widget, $content=null ) {
 
     $user_profile = null;
     $user_settings = null;
@@ -904,7 +905,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
         // Given that all the data used to determines $style_control is passed
         // to blipper_widget_get_styling, it might seem pointless to calculate
-        // here here once and pass to that function; but this way, it's only
+        // here once and pass to that function; but this way, it's only
         // calculated once.  I don't really know how much this affect
         // performance.
         $style_control = $is_widget ? $settings['style-control'] === $this->default_setting_values['widget']['style-control'] : false;
@@ -914,7 +915,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $the_blip .= "<figure" . $this->blipper_widget_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
 
         // Link back to the blip on the Blipfoto site.
-        $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'get_blipper_widget_display_blip' );
+        $this->blipper_widget_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
         if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser
           $settings['add-link-to-blip'] = $this->default_setting_values['common']['add-link-to-blip'];
@@ -937,7 +938,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $the_blip .= "<figcaption" . $this->blipper_widget_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
 
         // Date (optional), title and username
-        $this->blipper_widget_log_display_values( $settings, 'display-date', 'get_blipper_widget_display_blip' );
+        $this->blipper_widget_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
         if ( ! array_key_exists( 'display-date' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser
           $settings['display-date'] = $this->default_setting_values['common']['display-date'];
@@ -966,8 +967,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
         // Journal title and/or display-powered-by link.
-        $this->blipper_widget_log_display_values( $settings, 'display-journal-title', 'get_blipper_widget_display_blip' );
-        $this->blipper_widget_log_display_values( $settings, 'display-powered-by', 'get_blipper_widget_display_blip' );
+        $this->blipper_widget_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
+        $this->blipper_widget_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
         if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
           // Necessary for when Blipper Widget is added via the Customiser.
           $settings['display-journal-title'] = $this->default_setting_values['common']['display-journal-title'];
@@ -1131,7 +1132,7 @@ private function blipper_widget_sanitise_url( $url ) {
   */
   private function blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
 
-    echo $this->get_blipper_widget_display_blip( $settings, $is_widget, $content );
+    echo $this->blipper_widget_get_blip( $settings, $is_widget, $content );
 
   }
 
