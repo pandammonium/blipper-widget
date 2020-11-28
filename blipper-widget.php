@@ -1279,25 +1279,25 @@ private function blipper_widget_sanitise_url( $url ) {
       ?>
 
       <script>
-        jQuery(document).ready(function() {
-          the_value = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
+        jQuery(document).ready(function($) {
+          the_value = $('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
           console.log( 'On load: ' + the_value );
           if (the_value == 'widget-settings-only') {
             console.log( '  showing' );
-            jQuery('.blipper-widget-conditional').show();
+            $('.blipper-widget-conditional').show();
           } else {
             console.log( '  hiding' );
-            jQuery('.blipper-widget-conditional').hide();
+            $('.blipper-widget-conditional').hide();
           }
-          jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?>').on('change', function() {
-            the_value = jQuery('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
+          $('#<?php echo $this->get_field_id( 'style-control' ); ?>').on('change', function() {
+            the_value = $('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
             console.log('On change: ' + the_value);
             if (the_value == 'widget-settings-only') {
               console.log( '  showing' );
-              jQuery('.blipper-widget-conditional').show();
+              $('.blipper-widget-conditional').show();
             } else {
               console.log( '  hiding' );
-              jQuery('.blipper-widget-conditional').hide();
+              $('.blipper-widget-conditional').hide();
             }
           });
         });
