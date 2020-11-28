@@ -401,16 +401,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       $new_settings['link-color'] = $this->blipper_widget_get_display_value( 'link-color', $settings );
       $new_settings['padding'] = $this->blipper_widget_get_display_value( 'padding', $settings );
       $new_settings['style-control'] = $this->blipper_widget_get_display_value( 'style-control', $settings );
+
     } catch ( ErrorException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'Error.  ' . $e->getMessage() . '.  Please check your settings are valid and try again.', 'blipper-widget' ) . '</p>';
-        }
-      } catch (Exception $e) {
-        if ( current_user_can( 'manage_options' ) ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the user settings.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, 'Please check your settings are valid and try again.' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user settings.' );
+
       }
 
     return $new_settings;
@@ -421,19 +420,31 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     error_log( 'Blipper_Widget::blipper_widget_get_display_value (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
 
-    if ( array_key_exists( $setting, $settings ) ) {
-      return esc_attr( $settings[$setting] );
-    } else {
-      if ( array_key_exists( $setting, $this->default_setting_values['widget'] ) ) {
-        return $this->default_setting_values['widget'][$setting];
-      } else if ( array_key_exists( $setting, $this->default_setting_values['common'] ) ) {
-        return $this->default_setting_values['common'][$setting];
-      } else {
-        // throw new ErrorException( 'Invalid setting requested: ' . $setting );
-        error_log( 'Invalid setting requested: ' . $setting );
-        return '';
+    try {
+
+        if ( array_key_exists( $setting, $settings ) ) {
+          return esc_attr( $settings[$setting] );
+        } else {
+          if ( array_key_exists( $setting, $this->default_setting_values['widget'] ) ) {
+            return $this->default_setting_values['widget'][$setting];
+          } else if ( array_key_exists( $setting, $this->default_setting_values['common'] ) ) {
+            return $this->default_setting_values['common'][$setting];
+          } else {
+            throw new ErrorException( 'Invalid setting requested:  <strong>' . $setting . '</strong>.' );
+            error_log( 'Invalid setting requested:' . $setting );
+            return '';
+          }
+        }
+
+      } catch ( ErrorException $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user settings.' );
+
       }
-    }
 
   }
 
@@ -446,7 +457,6 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   private function load_dependencies() {
 
     require( plugin_dir_path( __FILE__ ) . 'includes/class-settings.php' );
-    // require( plugin_dir_path( __FILE__ ) . 'includes/class-colour-picker.php' );
 
     $this->load_blipfoto_dependencies();
 
@@ -504,13 +514,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     $client_ok = false;
     $this->client = null;
+
     try {
 
       // Get the settings from the database
       $oauth_settings = $this->settings->blipper_widget_get_settings();
 
       if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
-        throw new blipper_widget_OAuthException( 'Missing username and access token.');
+        throw new ErrorException( 'Missing username and access token.');
       } else if ( empty( $oauth_settings['username'] ) ) {
         throw new blipper_widget_OAuthException( 'Missing username.' );
       } else if ( empty( $oauth_settings['access-token'] ) ) {
@@ -518,15 +529,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       } else {
         $client_ok = true;
       }
+
     } catch ( blipper_widget_OAuthException $e ) {
-      if ( current_user_can( 'manage_options' ) ) {
-        echo '<p>' . __( 'OAuth error.  ' . $e->getMessage() . '.  Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.', 'blipper-widget' ) . '</p>';
-      }
-    } catch (Exception $e) {
-      if ( current_user_can( 'manage_options' ) ) {
-        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the user.</p>';
-      }
-      error_log( 'Error.  ' . $e->getMessage() . '.' );
+
+      $this->blipper_widget_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+
+    } catch ( Exception $e ) {
+
+      $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user.' );
+
     }
 
     if ( $client_ok ) {
@@ -546,16 +557,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
           error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) );
         }
+
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage() . '.  Please try again later.', 'blipper-widget' ) . '</p>';
-        }
-      } catch (Exception $e) {
-        if ( current_user_can( 'manage_options' ) ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong creating the client.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, 'Please try again later.' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong creating the client.' );
+
       }
     }
 
@@ -576,25 +586,24 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           $client_ok = true;
         }
       } catch ( blipper_widget_OAuthException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'OAuth error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'Blipfoto error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
       } catch ( blipper_widget_BaseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'Error.  ' . $e->getMessage(), 'blipper-widget' ) . '</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user account.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( ErrorException $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account.' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account.' );
       }
     } else {
       error_log( 'CLIENT IS NOT OK' );
@@ -639,15 +648,13 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
       }
 
     } catch ( blipper_widget_ApiResponseException $e ) {
-      error_log( 'Error.  ' . $e->getMessage() . '.' );
-      if ( current_user_can( 'manage_options' ) ) {
-        $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-      }
-    } catch (Exception $e) {
-      if ( current_user_can( 'manage_options' ) ) {
-      error_log( 'Error.  ' . $e->getMessage() . '.' );
-        $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user profile.</p>';
-      }
+
+      $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+      $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user profile.' );
+
     }
 
     if ( $continue ) {
@@ -658,21 +665,19 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $user_settings = $this->client->get( 'user/settings' );
 
         if ( $user_settings->error() ) {
-          throw new blipper_widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+          throw new blipper_widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
         } else {
           $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting your user settings.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user settings.' );
+
       }
 
     }
@@ -685,21 +690,19 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $user = $user_profile->data('user');
 
         if ( empty( $user ) ) {
-          throw new blipper_widget_ApiResponseException( 'Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
+          throw new blipper_widget_ApiResponseException( 'Can\'t access your Blipfoto account data.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
         } else {
           $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        if ( current_user_can( 'manage_options' ) ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your Blipfoto account.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account.' );
+
       }
 
     }
@@ -722,21 +725,19 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         );
 
         if ( $journal->error() ) {
-          throw new blipper_widget_ApiResponseException( $journal->error() . '  Can\'t access your journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+          throw new blipper_widget_ApiResponseException( $journal->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
         } else {
           $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your Blipfoto journal.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal.' );
+
       }
 
     }
@@ -749,21 +750,19 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $blips = $journal->data( 'entries' );
 
         if ( empty( $blips ) ) {
-          throw new ErrorException( 'Can\'t access your journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+          throw new ErrorException( 'Can\'t access your Blipfoto journal entries (blips).  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
         } else {
           $continue = true;
         }
 
       } catch ( ErrorException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong accessing your entries (blips).</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips).' );
+
       }
 
     }
@@ -776,25 +775,23 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
         switch ( count( $blips ) ) {
           case 0:
-            throw new Exception( 'No blips found.  Do you have <a href="https://www.blipfoto.com/' . $user['username'] . '" rel="nofollow">any Blipfoto entries</a>?');
+            throw new Exception( 'No Blipfoto entries (blips) found.  <a href="https://www.blipfoto.com/' . $user['username'] . '" rel="nofollow">Your Blipfoto journal</a> must have at least one entry (blip) before Blipper Widget can display anything.');
           break;
           case 1:
             $continue = true;
           break;
           default:
-            throw new ErrorException( count( $blips ) . ' blips found, but was only looking for one.  Something has gone wrong.  Please try again.');
+            throw new blipper_widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' .count( $blips ) . '. Something has gone wrong.  Please try again.' );
         }
 
-      } catch ( ErrorException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
-        }
+      } catch ( blipper_widget_BaseException $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
       } catch ( Exception $e ) {
-        if ( current_user_can( 'manage_options' ) ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
       }
 
     }
@@ -815,21 +812,19 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         );
 
         if ( $details->error() ) {
-          throw new blipper_widget_ApiResponseException( $details->error() . '  Can\'t get the blip details.' );
+          throw new blipper_widget_ApiResponseException( $details->error() . '  Can\'t get the entry (blip) details.' );
         } else {
          $continue = true;
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the entry (blip) details.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details.' );
+
       }
 
     }
@@ -849,15 +844,13 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           throw new blipper_widget_ApiResponseException('Did not get the descriptive text.');
         }
       } catch ( blipper_widget_ApiResponseException $e ) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Blipfoto error.  ' . $e->getMessage() . '.</p>';
-        }
-      } catch (Exception $e) {
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the entry\'s (blip\'s) descriptive text.</p>';
-        }
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text.' );
+
       }
     }
 
@@ -884,15 +877,12 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       } catch ( ErrorException $e ) {
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.</p>';
-        }
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-      } catch (Exception $e) {
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong getting the image URL.</p>';
-        }
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
+
+        $this->blipper_widget_display_error_msg( $e, '' );
+      } catch ( Exception $e ) {
+
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the image URL.' );
+
       }
 
       $continue = ! empty ( $image_url );
@@ -1008,18 +998,18 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
         $the_blip .= "</div>"; // .bw-blip
 
-      } catch (Exception $e) {
-        if ( current_user_can( 'manage_options' ) ) {
-          $the_blip = '<p>Error.  ' . $e->getMessage() . '.  Something has gone wrong constructing your entry (blip).</p>';
-        }
-        error_log( 'Error.  ' . $e->getMessage() . '.' );
-      }
+      } catch ( Exception $e ) {
 
-      error_log( "The completed blip:\n" . $the_blip );
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip).' );
+
+      } finally {
+        error_log( "The completed blip:\n" . $the_blip );
+      }
 
     }
 
     return $the_blip;
+
   }
 
 /**
@@ -1513,6 +1503,80 @@ private function blipper_widget_sanitise_url( $url ) {
       error_log( "\t" . $message . "\n" );
   }
 
+  /**
+   * Display an error message after an exception was thrown.
+   *
+   * @param    $e                  The exception object containing information
+   *                                 about the error
+   * @param    $additional_info    Extra information to help the user.
+   * @since    1.1.1
+   * @access   private
+   */
+  private function blipper_widget_display_error_msg($e, $additional_info) {
+
+    error_log( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() );
+    if ( current_user_can( 'manage_options' ) ) {
+      $this->blipper_widget_display_private_error_msg( $e, $additional_info );
+    } else {
+      $this->blipper_widget_display_public_error_msg();
+    }
+
+  }
+
+  /**
+   * Display an error message for a user that can manage options.
+   *
+   * @param    $e                  The exception object containing information
+   *                                 about the error
+   * @param    $additional_info    Extra information to help the user.
+   * @since    1.1.1
+   * @access   private
+   */
+  private function blipper_widget_display_private_error_msg($e, $additional_info) {
+
+      echo '<p>' . __( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() . ' ' . $additional_info, 'blipper-widget' ) . '</p>';
+
+  }
+
+  /**
+   * Display an error message for a user that cannot manage options.
+   *
+   * @since    1.1.1
+   * @access   private
+   */
+  private function blipper_widget_display_public_error_msg() {
+
+    echo '<p>Something has gone wrong with Blipper Widget.  Please inform the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">add an issue to Blipper Widget on GitHub</a>.</p>';
+
+  }
+
+  /**
+   * Display a message based on the exception class.
+   */
+  private function blipper_widget_get_exception_class( $e ) {
+
+    switch ( get_class( $e ) ) {
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException':
+        return 'Blipfoto error';
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException':
+        return 'Blipfoto API response error';
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_FileException':
+        return 'File error';
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException':
+        return 'Invalid response';
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException':
+        return 'Network error';
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException':
+        return 'OAuth error';
+      case 'ErrorException':
+        return 'Error';
+      case 'Exception':
+      default:
+        return 'Warning';
+      }
+
+  }
+
   // --- Action hooks ------------------------------------------------------- //
 
   /**
@@ -1580,4 +1644,3 @@ private function blipper_widget_sanitise_url( $url ) {
   }
 
 }
-
