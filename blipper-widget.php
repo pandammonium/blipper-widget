@@ -1006,7 +1006,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           . $this->blipper_widget_sanitise_html( $descriptive_text )
           . '</div>';
 
-        $the_blip .= "</div>"; // .the-blip
+        $the_blip .= "</div>"; // .bw-blip
 
       } catch (Exception $e) {
         if ( current_user_can( 'manage_options' ) ) {
