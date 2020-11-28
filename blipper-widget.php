@@ -1366,7 +1366,7 @@ private function blipper_widget_sanitise_url( $url ) {
             type="text"
             value="<?php echo esc_attr( $settings['border-color'] ); ?>"
             placeholder="#"
-            data-default-color="<?php //echo $this->default_setting_values['widget']['border-color']; ?>"
+            data-default-color=""
           >
         </p>
         <p class="description">
@@ -1389,7 +1389,7 @@ private function blipper_widget_sanitise_url( $url ) {
             type="text"
             value="<?php echo esc_attr( $settings['background-color'] ); ?>"
             placeholder="#"
-            data-default-color="<?php //echo $this->default_setting_values['widget']['background-color']; ?>"
+            data-default-color=""
           >
         </p>
         <p class="description">
@@ -1412,7 +1412,7 @@ private function blipper_widget_sanitise_url( $url ) {
             type="text"
             value="<?php echo esc_attr( $settings['color'] ); ?>"
             placeholder="#"
-            data-default-color="<?php //echo $this->default_setting_values['widget']['color']; ?>"
+            data-default-color=""
           >
         </p>
         <p class="description">
@@ -1435,7 +1435,7 @@ private function blipper_widget_sanitise_url( $url ) {
             type="text"
             value="<?php echo esc_attr( $settings['link-color'] ); ?>"
             placeholder="#"
-            data-default-color="<?php //echo $this->default_setting_values['widget']['link-color']; ?>"
+            data-default-color=""
           >
         </p>
         <p class="description">
