@@ -833,7 +833,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
     }
 
-    if ( 'show' === $settings['display-desc-text'] && $continue ) {
+    if ( isset( $settings['display-desc-text'] ) && 'show' === $settings['display-desc-text'] && $continue ) {
       $continue = false;
 
       try {
