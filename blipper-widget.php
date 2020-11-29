@@ -896,9 +896,10 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         // Given that all the data used to determines $style_control is passed
         // to blipper_widget_get_styling, it might seem pointless to calculate
         // here once and pass to that function; but this way, it's only
-        // calculated once.  I don't really know how much this affect
-        // performance.
-        $style_control = $is_widget ? $settings['style-control'] === $this->default_setting_values['widget']['style-control'] : false;
+        // calculated once.  I don't really know how much this affects
+        // performance.  Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
+        // Need to check whether the style control been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used.
+        $style_control = $is_widget ? isset( $settings['style-control'] ) ? ( $settings['style-control'] === $this->default_setting_values['widget']['style-control'] ) : true : false;
 
         $the_blip = "<div" . $this->blipper_widget_get_styling( 'div', $is_widget, $style_control, $settings ) . ">";
 
