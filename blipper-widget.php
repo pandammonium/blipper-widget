@@ -901,7 +901,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         // Need to check whether the style control been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used.
         $style_control = $is_widget ? isset( $settings['style-control'] ) ? ( $settings['style-control'] === $this->default_setting_values['widget']['style-control'] ) : true : false;
 
-        $the_blip = "<div" . $this->blipper_widget_get_styling( 'div', $is_widget, $style_control, $settings ) . ">";
+        $the_blip = "<div" . $this->blipper_widget_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
 
         $the_blip .= "<figure" . $this->blipper_widget_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
 
@@ -912,12 +912,15 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           $settings['add-link-to-blip'] = $this->default_setting_values['common']['add-link-to-blip'];
         }
         if ( $settings['add-link-to-blip'] == 'show' ) {
-          $the_blip .= '<a href="https://www.blipfoto.com/entry/' . $blip['entry_id_str'] . '" rel="nofollow">';
+          $the_url = $this->blipper_widget_sanitise_url( 'https://www.blipfoto.com/entry/' . $blip['entry_id_str'] );
+          $the_blip .= '<a href="' . $the_url . '" rel="nofollow">';
         }
         // Add the image.
         $the_blip .= '<img src="'
           . $this->blipper_widget_sanitise_url( $image_url )
-          . '" class="blipper-widget-image" alt="'
+          . '"'
+          . $this->blipper_widget_get_styling( 'img', $is_widget, $style_control, $settings )
+          . ' alt="'
           . $blip['title']
           . '">';
         // Close the link (anchor) tag.
@@ -934,8 +937,11 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           // Necessary for when Blipper Widget is added via the Customiser
           $settings['display-date'] = $this->default_setting_values['common']['display-date'];
         }
+        if ( $settings['display-date'] == 'show' || ! empty( $blip['title'] ) ) {
+          $the_blip .= "<header" . $this->blipper_widget_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
+        }
         if ( $settings['display-date'] == 'show' ) {
-          $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
+            $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
           if ( !empty( $blip['title'] ) ) {
             $the_blip .= '<br>';
           }
@@ -948,13 +954,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $the_blip .= ' '
           . __( 'by', 'blipper-widget' )
           . ' '
-          . $user['username'];
+          . $user['username']
+          . '</header>';
 
         // Display any content provided by the user in a shortcode.
         if ( ! empty( $content ) ) {
-          $the_blip .= '<br /><span class=\'the-blip-image-caption-content\'>'
+          $the_blip .= '<div' . $this->blipper_widget_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
             . $content
-            . '</span>';
+            . '</div>';
         }
 
         // Journal title and/or display-powered-by link.
@@ -970,14 +977,12 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
 
       if ( $settings['display-journal-title'] == 'show' || $settings['display-powered-by'] == 'show' ) {
-          $the_blip .= "<footer" . $this->blipper_widget_get_styling( 'footer', $is_widget, $style_control, $settings ) . "><p" . $this->blipper_widget_get_styling( 'footer>p', $is_widget, $style_control, $settings ) . ">";
+          $the_blip .= "<footer" . $this->blipper_widget_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
           if ( $settings['display-journal-title'] == 'show' ) {
               $the_blip .= __( 'From', 'blipper-widget' )
               . ' <a href="https://www.blipfoto.com/'
               . $user_settings->data( 'username' )
-              . '" rel="nofollow" style="'
-              . $this->blipper_widget_get_style( $settings, 'link-color' )
-              . '">'
+              . '" rel="nofollow"' . $this->blipper_widget_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
               . $user_settings->data( 'journal_title' )
               . '</a>';
           }
@@ -985,11 +990,9 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
             $the_blip .= ' | ';
           }
           if ( $settings['display-powered-by'] == 'show' ) {
-            $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow" style="'
-              . $this->blipper_widget_get_style( $settings, 'link-color' )
-              . '">Blipfoto</a>';
+            $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . $this->blipper_widget_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
           }
-          $the_blip .= '</p></footer>';
+          $the_blip .= '</footer>';
         }
         $the_blip .= '</figcaption></figure>';
 
@@ -1040,34 +1043,49 @@ private function blipper_widget_get_styling( $element, $is_widget, $style_contro
   // return a style attribute.
   // The default is an empty string either way.
   switch ( $element ) {
-    case 'div':
+    case 'div|blip':
       return ( ! $is_widget || ! $style_control ) ?
         ( ' class=\'bw-blip\'' ) :
-        ( '' );
-    case 'figure':
-      return ( ! $is_widget || ! $style_control ) ?
-        ( ' class=\'bw-blip-image\'' ) :
-        ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'border-style')
+        ( ' style=\'' .  $this->blipper_widget_get_style( $settings, 'border-style')
           . $this->blipper_widget_get_style( $settings, 'border-width')
           . $this->blipper_widget_get_style( $settings, 'border-color')
-          . $this->blipper_widget_get_style( $settings, 'background-color' )
+          . '\'' );
+    case 'figure':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-figure\'' ) :
+        ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'background-color' )
           . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
+    case 'img':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-image\'' ) :
+        ( ' style=\'margin:auto;\'' );
     case 'figcaption':
       return ( ! $is_widget || ! $style_control ) ?
-        ( ' class=\'bw-blip-caption\'' ) :
-        ( ' style=\'padding-top:7px;'
-          . $this->blipper_widget_get_style( $settings, 'color' ) . '\'' );
+        ( ' class=\'bw-caption\'' ) :
+        ( ' style=\'padding-top:7px;line-height:2;'
+          . $this->blipper_widget_get_style( $settings, 'color' )
+          . '\'' );
+    case 'header':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-caption-header\'' ) :
+        ( '' );
     case 'footer':
       return ( ! $is_widget || ! $style_control ) ?
-        ( ' class=\'bw-blip-caption-footer\'' ) :
-        ( ' style=\'margin-bottom:0;\'' );
-    case 'footer>p':
+        ( ' class=\'bw-caption-footer\'' ) :
+        ( ' style=\'font-size:75%;margin-bottom:0;\'' );
+    case 'div|content':
       return ( ! $is_widget || ! $style_control ) ?
-        ( ' class=\'bw-blip-caption-footer-text\'' ) :
-        ( ' style=\'font-size:75%;\'' );
+        ( ' class=\'bw-caption-content\'' ) :
+        ( '' );
+    case 'link':
+      return ( ! $is_widget || ! $style_control ) ?
+        ( ' class=\'bw-caption-link\'' ) :
+        ( ' style=\''
+          . $this->blipper_widget_get_style( $settings, 'link-color' )
+          . 'text-decoration:none;\'' );
     case 'div|desc-text':
       return ( ! $is_widget || ! $style_control ) ?
-        ( ' class=\'bw-blip-text\'' ) :
+        ( ' class=\'bw-text\'' ) :
         ( '' );
     default:
       return '';
@@ -1100,6 +1118,8 @@ private function blipper_widget_sanitise_html( $html ) {
  *
  */
 private function blipper_widget_sanitise_url( $url ) {
+
+  error_log( "Blipper_Widget::blipper_widget_sanitise_url:\n$url ⟹\n" . esc_url( $url ) );
 
   return esc_url( $url );
 
@@ -1313,8 +1333,8 @@ private function blipper_widget_sanitise_url( $url ) {
             <option value="double" <?php selected( 'double', esc_attr( $settings['border-style'] ) ); ?>>double line</option>
             <option value="groove" <?php selected( 'groove', esc_attr( $settings['border-style'] ) ); ?>>groove</option>
             <option value="ridge" <?php selected( 'ridge', esc_attr( $settings['border-style'] ) ); ?>>ridge</option>
-            <option value="inset" <?php selected( 'inset', esc_attr( $settings['border-style'] ) ); ?>>inset line</option>
-            <option value="outset" <?php selected( 'outset', esc_attr( $settings['border-style'] ) ); ?>>outset line</option>
+            <option value="inset" <?php selected( 'inset', esc_attr( $settings['border-style'] ) ); ?>>inset</option>
+            <option value="outset" <?php selected( 'outset', esc_attr( $settings['border-style'] ) ); ?>>outset</option>
           </select>
         </p>
         <p class="description">
@@ -1474,13 +1494,13 @@ private function blipper_widget_sanitise_url( $url ) {
             )
           : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
       case 'padding':
+      case 'border-width':
         return array_key_exists( $style_element, $settings )
           ? ( empty( $settings[$style_element] )
             ? $element . ':' . $this->default_setting_values['widget'][$style_element]
             : $element . ':' . $settings[$style_element] . 'px' . ';'
             )
           : $element . ':' . $this->default_setting_values['widget'][$style_element] . 'px' . ';';
-
       default:
         return array_key_exists( $style_element, $settings )
           ? ( empty( $settings[$style_element] )
