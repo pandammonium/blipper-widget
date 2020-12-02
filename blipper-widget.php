@@ -1104,7 +1104,27 @@ private function blipper_widget_get_styling( $element, $is_widget, $style_contro
  */
 private function blipper_widget_sanitise_html( $html ) {
 
-  return wp_kses( $html, ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'b', 'em', 'div'] );
+  $allowed_html = array(
+    'p' => array(),
+    'h1' => array(),
+    'h2' => array(),
+    'h3' => array(),
+    'h4' => array(),
+    'h5' => array(),
+    'h6' => array(),
+    'i' => array(),
+    'b' => array(),
+    'em' => array(),
+    'div' => array(),
+    'br' => array(),
+    'a' => array(
+      'href' => array(),
+      'title' => array(),
+    ),
+  );
+  error_log( 'Dirty HTML: ' . $html);
+  return wp_kses( $html, $allowed_html );
+  error_log( 'Clean HTML: ' . $html);
 
 }
 
