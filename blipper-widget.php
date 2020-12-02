@@ -81,7 +81,7 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'blipper_widget_
   */
 function blipper_widget_exception( $e ) {
   error_log( 'Error.  ' . $e->getMessage() . '.' );
-  echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '.  Sorry about that.  Please check your settings or try again later.</p>';
+  echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '.  Please check your settings or try again later.</p>';
 }
 set_exception_handler('blipper_widget_exception');
 
