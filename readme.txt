@@ -179,15 +179,7 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 * Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
 * Tested for compatibility with WP 5.6.
 
-= 1.1 =
-
-* Adds shortcode functionality: now you can show off your latest blip on a whole page or a post using a shortcode.
-* Adds the Blipfoto username to the blip data in accordance with the Blipfoto developer rules.
-* Changes the consent in the Disclaimer section of the readme file.
-
-= 1.0 =
-
-* It's about time it got to a proper version number given that it seems pretty stable.  Let me know on [my Blipper Widget Plugin GitHub page](https://github.com/pandammonium/blipper-widget) if it isn't!
+[Complete version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
 == Upgrade notice ==
 
