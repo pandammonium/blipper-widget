@@ -3,7 +3,7 @@ Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.5.3
+Tested up to: 5.6
 Stable tag: 1.1.1
 Requires PHP: 5.6.16
 License: GPLv2 or later
@@ -177,6 +177,7 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 * Fixes display of widgets styled by the widget settings form.
 * Blipper Widget output checked and validated by [Nu Html Checker](https://validator.w3.org/nu/) by [W3C](https://www.w3.org/).
 * Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
+* Tested for compatibility with WP 5.6.
 
 = 1.1 =
 
