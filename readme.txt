@@ -179,7 +179,7 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 * Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
 * Tested for compatibility with WP 5.6.
 
-[Complete version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
+[Previous version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
 == Upgrade notice ==
 
