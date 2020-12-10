@@ -172,7 +172,7 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 = 1.1.1 =
 
 * Optionally displays the blip's descriptive text, if there is any, for the shortcode version of Blipper Widget only (i.e. the descriptive text is not shown for the widget).
-* Separates the styling of the widget and the shortcode so that the user can either use the settings on the widget form or CSS to stlye the widget version of Blipper Widget.  The shortcode version always uses CSS.
+* Separates the styling of the widget and the shortcode so that the user can either use the settings on the widget form or CSS to style the widget version of Blipper Widget.  The shortcode version always uses CSS.
 * Adds classes to the blip tags so that they can be easily styled using the Additional CSS component of the Customiser or some other stylesheet.
 * Fixes display of widgets styled by the widget settings form.
 * Blipper Widget output checked and validated by [Nu Html Checker](https://validator.w3.org/nu/) by [W3C](https://www.w3.org/).
