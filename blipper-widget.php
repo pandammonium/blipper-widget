@@ -1122,9 +1122,8 @@ private function blipper_widget_sanitise_html( $html ) {
       'title' => array(),
     ),
   );
-  error_log( 'Dirty HTML: ' . $html);
+  error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
   return wp_kses( $html, $allowed_html );
-  error_log( 'Clean HTML: ' . $html);
 
 }
 
@@ -1556,10 +1555,14 @@ private function blipper_widget_sanitise_url( $url ) {
   private function blipper_widget_display_error_msg($e, $additional_info) {
 
     error_log( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() );
+
+
+    $request_limit_reached = $e->getMessage() === 'Request limit reached.' ? true : false;
+
     if ( current_user_can( 'manage_options' ) ) {
-      $this->blipper_widget_display_private_error_msg( $e, $additional_info );
+      $this->blipper_widget_display_private_error_msg( $e, $additional_info, $request_limit_reached );
     } else {
-      $this->blipper_widget_display_public_error_msg();
+      $this->blipper_widget_display_public_error_msg( $e, $request_limit_reached );
     }
 
   }
@@ -1573,9 +1576,9 @@ private function blipper_widget_sanitise_url( $url ) {
    * @since    1.1.1
    * @access   private
    */
-  private function blipper_widget_display_private_error_msg($e, $additional_info) {
+  private function blipper_widget_display_private_error_msg($e, $additional_info, $request_limit_reached ) {
 
-      echo '<p>' . __( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() . ' ' . $additional_info, 'blipper-widget' ) . '</p>';
+      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ) . '</span>. ' . $e->getMessage() . ' ' . $additional_info . ( $request_limit_reached ? ' Please try again in 15 minutes.' : '' ), 'blipper-widget' ) . '</p>';
 
   }
 
@@ -1585,9 +1588,13 @@ private function blipper_widget_sanitise_url( $url ) {
    * @since    1.1.1
    * @access   private
    */
-  private function blipper_widget_display_public_error_msg() {
+  private function blipper_widget_display_public_error_msg( $request_limit_reached ) {
 
-    echo '<p>Something has gone wrong with Blipper Widget.  Please inform the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">add an issue to Blipper Widget on GitHub</a>.</p>';
+    if ( $request_limit_reached ) {
+      echo '<p>' .  __( 'The Blipfoto request limited has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
+    } else {
+      echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+    }
 
   }
 
@@ -1614,6 +1621,28 @@ private function blipper_widget_sanitise_url( $url ) {
       case 'Exception':
       default:
         return 'Warning';
+      }
+
+  }
+
+  /**
+   * Use the exception class to get appropriate CSS classes.
+   */
+  private function blipper_widget_get_css_error_classes( $e ) {
+
+    switch ( get_class( $e ) ) {
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException':
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException':
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_FileException':
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException':
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException':
+      case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException':
+      case 'ErrorException':
+        return 'error';
+      case 'Exception':
+        return 'warning';
+      default:
+        return 'notice';
       }
 
   }
