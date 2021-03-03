@@ -3,7 +3,7 @@ Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.5.3
+Tested up to: 5.6
 Stable tag: 1.1.1
 Requires PHP: 5.6.16
 License: GPLv2 or later
@@ -172,21 +172,14 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 = 1.1.1 =
 
 * Optionally displays the blip's descriptive text, if there is any, for the shortcode version of Blipper Widget only (i.e. the descriptive text is not shown for the widget).
-* Separates the styling of the widget and the shortcode so that the user can either use the settings on the widget form or CSS to stlye the widget version of Blipper Widget.  The shortcode version always uses CSS.
+* Separates the styling of the widget and the shortcode so that the user can either use the settings on the widget form or CSS to style the widget version of Blipper Widget.  The shortcode version always uses CSS.
 * Adds classes to the blip tags so that they can be easily styled using the Additional CSS component of the Customiser or some other stylesheet.
 * Fixes display of widgets styled by the widget settings form.
 * Blipper Widget output checked and validated by [Nu Html Checker](https://validator.w3.org/nu/) by [W3C](https://www.w3.org/).
 * Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
+* Tested for compatibility with WP 5.6.
 
-= 1.1 =
-
-* Adds shortcode functionality: now you can show off your latest blip on a whole page or a post using a shortcode.
-* Adds the Blipfoto username to the blip data in accordance with the Blipfoto developer rules.
-* Changes the consent in the Disclaimer section of the readme file.
-
-= 1.0 =
-
-* It's about time it got to a proper version number given that it seems pretty stable.  Let me know on [my Blipper Widget Plugin GitHub page](https://github.com/pandammonium/blipper-widget) if it isn't!
+[Previous version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
 == Upgrade notice ==
 
