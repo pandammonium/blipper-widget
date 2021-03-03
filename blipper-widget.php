@@ -118,8 +118,8 @@ class Blipper_Widget extends WP_Widget {
       'title'                  => 'My latest blip',
       'display-date'           => 'show',                  // 'hide'
       'display-journal-title'  => 'hide',                  // 'show'
-      'add-link-to-blip'       => 'hide',                  // 'show'
       'display-powered-by'     => 'hide',                  // 'show'
+      'add-link-to-blip'       => 'hide',                  // 'show'
     ),
 );
 
