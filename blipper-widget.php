@@ -47,6 +47,10 @@ use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthExcept
 use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException;
 use blipper_widget\blipper_widget_settings;
 
+// -------------------------------------------------------------------------- //
+
+define( 'BW_DEBUG', true );
+
 // --- Action hooks --------------------------------------------------------- //
 
 /**
@@ -80,8 +84,8 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'blipper_widget_
   * @since 0.0.1
   */
 function blipper_widget_exception( $e ) {
-  error_log( 'Error.  ' . $e->getMessage() . '.' );
-  echo '<p>An unexpected error has occurred.  ' . $e->getMessage() . '.  Sorry about that.  Please check your settings or try again later.</p>';
+  if ( BW_DEBUG ) { error_log( 'Blipper Widget: ' . $e->getMessage() . '.' ); }
+  echo '<p class="blipper-widget error">Blipper Widget: An unexpected error has occurred.  ' . $e->getMessage() . '.  Please check your settings or try again later.</p>';
 }
 set_exception_handler('blipper_widget_exception');
 
@@ -211,7 +215,7 @@ private $style_control_classes = array ();
   */
   public function form( $settings ) {
 
-    error_log( 'Blipper_Widget::form( $settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
+    if ( BW_DEBUG ) { error_log( 'Blipper_Widget::form( $settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' ); }
     $this->blipper_widget_display_form( $this->blipper_widget_get_display_values( $settings ) );
 
   }
@@ -260,8 +264,8 @@ private $style_control_classes = array ();
     $settings['padding']                = $padding;
     $settings['style-control']          = $style_control;
 
-    error_log( 'Blipper_Widget::update( $new_settings: ' . json_encode( $new_settings, JSON_PRETTY_PRINT ) . ' $old_settings: ' . json_encode( $old_settings, JSON_PRETTY_PRINT ) . ' )' );
-    error_log( 'Actual settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) );
+    if ( BW_DEBUG ) { error_log( 'Blipper_Widget::update( $new_settings: ' . json_encode( $new_settings, JSON_PRETTY_PRINT ) . ' $old_settings: ' . json_encode( $old_settings, JSON_PRETTY_PRINT ) . ' )' ); }
+    if ( BW_DEBUG ) { error_log( 'Actual settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) ); }
 
     return $settings;
 
@@ -279,13 +283,13 @@ private $style_control_classes = array ();
  */
 public function blipper_widget_shortcode_blip_display( $atts, $content=null, $shortcode="", $print=false) {
 
-  error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
+  if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" ); }
 
   $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
 
   $args = shortcode_atts( $settings, $atts, $shortcode );
   extract( $args );
-  error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" );
+  if ( BW_DEBUG ) { error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" ); }
 
    $the_title = '';
   if ( ! empty( $args['title'] ) ) {
@@ -322,14 +326,14 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   */
   private function blipper_widget_validate( $new_settings, $old_settings, $setting_field ) {
 
-    error_log( "Blipper_Widget::blipper_widget_validate( $setting_field )" );
-    error_log( "\tCurrent value:   " . ( array_key_exists( $setting_field, $old_settings ) ? $old_settings[$setting_field] : "undefined" ) );
-    error_log( "\tProposed value:  " . ( array_key_exists( $setting_field, $new_settings ) ? $new_settings[$setting_field] : "undefined" ) );
+    if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_validate( $setting_field )" ); }
+    if ( BW_DEBUG ) { error_log( "\tCurrent value:   " . ( array_key_exists( $setting_field, $old_settings ) ? $old_settings[$setting_field] : "undefined" ) ); }
+    if ( BW_DEBUG ) { error_log( "\tProposed value:  " . ( array_key_exists( $setting_field, $new_settings ) ? $new_settings[$setting_field] : "undefined" ) ); }
 
     if ( array_key_exists( $setting_field, $old_settings ) && array_key_exists( $setting_field, $new_settings ) ) {
       if ( $new_settings[$setting_field] === $old_settings[$setting_field] ) {
         $settings =  $old_settings[$setting_field];
-        error_log( "\tValue unchanged\n" );
+        if ( BW_DEBUG ) { error_log( "\tValue unchanged\n" ); }
         return $settings;
       }
     }
@@ -366,7 +370,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         }
     }
 
-    error_log( "\tNew value:       $settings\n" );
+    if ( BW_DEBUG ) { error_log( "\tNew value:       $settings\n" ); }
 
     return $settings;
   }
@@ -383,7 +387,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
   */
   private function blipper_widget_get_display_values( $settings ) {
 
-    error_log( 'Blipper_Widget::blipper_widget_get_display_values (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+    if ( BW_DEBUG ) { error_log( 'Blipper_Widget::blipper_widget_get_display_values (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')'); }
 
     $new_settings = array();
 
@@ -418,7 +422,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
 
   private function blipper_widget_get_display_value( $setting, $settings ) {
 
-    error_log( 'Blipper_Widget::blipper_widget_get_display_value (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+    if ( BW_DEBUG ) { error_log( 'Blipper_Widget::blipper_widget_get_display_value (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')'); }
 
     try {
 
@@ -431,7 +435,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
             return $this->default_setting_values['common'][$setting];
           } else {
             throw new ErrorException( 'Invalid setting requested:  <strong>' . $setting . '</strong>.' );
-            error_log( 'Invalid setting requested:' . $setting );
+            if ( BW_DEBUG ) { error_log( 'Invalid setting requested:' . $setting ); }
             return '';
           }
         }
@@ -554,8 +558,8 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
           throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
         } else {
           $client_ok = true;
-          error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
-          error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) );
+          if ( BW_DEBUG ) { error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' ); }
+          if ( BW_DEBUG ) { error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) ); }
         }
 
       } catch ( blipper_widget_ApiResponseException $e ) {
@@ -606,7 +610,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account.' );
       }
     } else {
-      error_log( 'CLIENT IS NOT OK' );
+      if ( BW_DEBUG ) { error_log( 'CLIENT IS NOT OK' ); }
     }
     return $client_ok;
 
@@ -1007,7 +1011,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
         $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip).' );
 
       } finally {
-        error_log( "The completed blip:\n" . $the_blip );
+        if ( BW_DEBUG ) { error_log( "The completed blip:\n" . $the_blip ); }
       }
 
     }
@@ -1035,7 +1039,7 @@ public function blipper_widget_shortcode_blip_display( $atts, $content=null, $sh
  */
 private function blipper_widget_get_styling( $element, $is_widget, $style_control, $settings ) {
 
-  error_log( 'Blipper_Widget::blipper_widget_get_styling( ' . $element . ', ' . (int)$is_widget . ', ' . (int)$style_control . ' )' );
+  if ( BW_DEBUG ) { error_log( 'Blipper_Widget::blipper_widget_get_styling( ' . $element . ', ' . (int)$is_widget . ', ' . (int)$style_control . ' )' ); }
 
   // If the blip is not to be displayed in a widget or if the widget is to be
   // styled using CSS only, return a class attribute.
@@ -1119,7 +1123,7 @@ private function blipper_widget_sanitise_html( $html ) {
  */
 private function blipper_widget_sanitise_url( $url ) {
 
-  error_log( "Blipper_Widget::blipper_widget_sanitise_url:\n$url ⟹\n" . esc_url( $url ) );
+  if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_sanitise_url:\n$url ⟹\n" . esc_url( $url ) ); }
 
   return esc_url( $url );
 
@@ -1156,7 +1160,7 @@ private function blipper_widget_sanitise_url( $url ) {
   */
   private function blipper_widget_display_form( $settings ) {
 
-    error_log( "Blipper_Widget::blipper_widget_display_form( " . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' );
+    if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_display_form( " . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' ); }
 
     $oauth_settings = $this->settings->blipper_widget_get_settings();
 
@@ -1283,11 +1287,11 @@ private function blipper_widget_sanitise_url( $url ) {
         </select>
       </p>
 
-      <?php error_log(
+      <?php if ( BW_DEBUG ) { error_log(
              'NAME: ' . $this->get_field_name( 'style-control' )
           . ' ID: ' . $this->get_field_name( 'style-control' )
           . ' DEFAULT VALUE: ' . $this->default_setting_values['widget']['style-control']
-          . ' ACTUAL VALUE: ' . $settings['style-control'] );
+          . ' ACTUAL VALUE: ' . $settings['style-control'] ); }
       ?>
 
       <script>
@@ -1520,8 +1524,8 @@ private function blipper_widget_sanitise_url( $url ) {
           : ( "Value: " . $settings[$display_element] )
           )
         : ( "No key, no value; adding default (common): " . $this->default_setting_values['common']['display-journal-title'] );
-      error_log( "Blipper_Widget::$function_name( $display_element )" );
-      error_log( "\t" . $message . "\n" );
+      if ( BW_DEBUG ) { error_log( "Blipper_Widget::$function_name( $display_element )" ); }
+      if ( BW_DEBUG ) { error_log( "\t" . $message . "\n" ); }
   }
 
   /**
@@ -1535,7 +1539,7 @@ private function blipper_widget_sanitise_url( $url ) {
    */
   private function blipper_widget_display_error_msg($e, $additional_info) {
 
-    error_log( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() );
+    if ( BW_DEBUG ) { error_log( $this->blipper_widget_get_exception_class( $e ) . '. ' . $e->getMessage() ); }
     if ( current_user_can( 'manage_options' ) ) {
       $this->blipper_widget_display_private_error_msg( $e, $additional_info );
     } else {
@@ -1619,12 +1623,12 @@ private function blipper_widget_sanitise_url( $url ) {
    * Add the WP colour picker.
    */
   public function blipper_widget_load_colour_picker() {
-    error_log( "Blipper_Widget::blipper_widget_load_colour_picker()" );
+    if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_load_colour_picker()" ); }
   }
 
   public function blipper_widget_enqueue_scripts( $hook_suffix ) {
-    // error_log( "Blipper_Widget::blipper_widget_enqueue()" );
-    // error_log( "\tHook suffix: $hook_suffix\n" );
+    // if ( BW_DEBUG ) { error_log( "Blipper_Widget::blipper_widget_enqueue()" ); }
+    // if ( BW_DEBUG ) { error_log( "\tHook suffix: $hook_suffix\n" ); }
     if ( 'widgets.php' === $hook_suffix ) {
       wp_enqueue_style( 'wp-color-picker' );
       wp_enqueue_script( 'wp-color-picker' );
