@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.1.2 =
+
+* Improves error handling.
+* Tests for compatibility with WP 5.7.
+
 = 1.1.1 =
 
 * Optionally displays the blip's descriptive text, if there is any, for the shortcode version of Blipper Widget only (i.e. the descriptive text is not shown for the widget).
@@ -8,7 +13,7 @@
 * Fixes display of widgets styled by the widget settings form.
 * Blipper Widget output checked and validated by [Nu Html Checker](https://validator.w3.org/nu/) by [W3C](https://www.w3.org/).
 * Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
-* Tested for compatibility with WP 5.6 and 5.7.
+* Tests for compatibility with WP 5.6.
 
 = 1.1 =
 
