@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.1.2 =
+
+* Improves error handling.
+* Tests for compatibility with WP 5.7.
+
 = 1.1.1 =
 
 * Optionally displays the blip's descriptive text, if there is any, for the shortcode version of Blipper Widget only (i.e. the descriptive text is not shown for the widget).
