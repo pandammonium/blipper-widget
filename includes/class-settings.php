@@ -202,7 +202,7 @@ class blipper_widget_settings {
       } else {
         ?>
         <div class="notice">
-          <p><strong><abbr title="Nota Bene 'note well'">NB</abbr> Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.9 and later).</strong></p>
+          <p><strong><abbr title="Nota Bene 'note well'">NB</abbr> Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.8 and later).</strong></p>
           <p>This may change in the future; until then, there are two ways to get Blipper Widget to work with block-enabled themes. The first is a workaround; the second uses existing Blipper Widget functionality:</p>
           <ol>
             <li>Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add Blipper Widget to any widget-enabled location on your site.</li>

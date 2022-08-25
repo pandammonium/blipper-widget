@@ -17,7 +17,7 @@ Blipper Widget displays your latest entry (latest blip) on Blipfoto in a classic
 
 ***
 
-__NB Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.9 and later).__
+__NB Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.8 and later).__
 
 This may change in the future; until then, there are two ways to get Blipper Widget to work with block-enabled themes. The first is a workaround; the second uses existing Blipper Widget functionality:
 
