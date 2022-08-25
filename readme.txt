@@ -136,6 +136,12 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 [Previous version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
+= Known issues =
+
+[Known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
+
+In addition, this plugin is not fully developed for use with Gutenberg blocks. There are workarounds to this, so please consider using one of these as outlined above.
+
 == Upgrade notice ==
 
 = 1.1 =
@@ -207,12 +213,6 @@ the optional links back to your journal and the Blipfoto home page
 the textual component of the blip.
 
 You can ignore these classes and allow your blip to be styled according to your theme or other changes you've made using the Additional CSS in the Customiser or other stylesheet. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site looked originally.
-
-= Known issues =
-
-[Known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
-
-In addition, this plugin is not fully developed for use with Gutenberg blocks. There are workarounds to this, so please consider using one of these as outlined above.
 
 == Credits ==
 
