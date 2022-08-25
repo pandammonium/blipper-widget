@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Displays your latest blip in a widget. Requires a Blipfoto account.
 
-= Description
+= Description =
 
 Blipper Widget displays your latest entry (latest blip) on Blipfoto in a classic widget on your WordPress website.
 
@@ -39,26 +39,26 @@ Currently, Blipper Widget:
 
 The image in the blip is not stored on your server: the widget links to the best quality image made available by Blipfoto.
 
-== View the plugin
+== View the plugin ==
 
 If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/my-latest-photo/) to see Blipper Widget showing my latest blip.
 
 [The latest plugin code is available on GitHub](https://github.com/pandammonium/blipper-widget); note that this might be ahead of the current release of Blipper Widget. The code for the current release is available in WordPress' SVN repository.
 
-== Translations
+== Translations ==
 
 Currently, only (British) English is supported. I'm afraid I don't yet know how to make other languages available. If you'd like to help, let me know on [my Blipper Widget page on GitHub](https://github.com/pandammonium/blipper-widget).
 
-== About Blipfoto
+== About Blipfoto ==
 
 [Blipfoto](https://www.blipfoto.com/) is a photo journal service. It allows the user to post one photo a day along with descriptive text and tags; this constitutes a blip. The users may comment on other users' blips, depending in the user's settings, and award a star or heart to other users' blips.
 
-== Additional requirements
+== Additional requirements ==
 
 * Blipfoto account – [get one for free](https://www.blipfoto.com/account/signup)
 * PHP [client URL (cURL) library](http://php.net/manual/en/book.curl.php)
 
-== Disclaimer
+== Disclaimer ==
 
 Blipper Widget is independent of and unendorsed by Blipfoto.
 
@@ -76,7 +76,7 @@ Use of Blipper Widget does not affect the copyright of the photo.
 
 The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
 
-== GDPR compliance
+== GDPR compliance ==
 
 Only your Blipfoto username, which is public information, and your Blipfoto access token are required, collected and stored by Blipper Widget. Your Blipfoto username and access token will be retained by this plugin until you delete or uninstall the plugin. If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
 
@@ -84,22 +84,22 @@ Your use of the plugin is not monitored by the plugin.
 
 == Frequently Asked Questions ==
 
-=== Does the plugin need my Blipfoto username and password?
+* Does the plugin need my Blipfoto username and password?
 
-Yes and no. The plugin needs your username so it knows which Blipfoto account to access. OAuth 2.0 is used to authorise access to your Blipfoto account, which means Blipper Widget does not access your password.
+  * Yes and no. The plugin needs your username so it knows which Blipfoto account to access. OAuth 2.0 is used to authorise access to your Blipfoto account, which means Blipper Widget does not access your password.
 
-=== Why doesn't the plugin seem to do anything?
+* Why doesn't the plugin seem to do anything?
 
-* You need to install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used on your site.
-* You need to add the Blipper Widget shortcode to a Shortcode block.
-* You need at least one blip in your Blipfoto account.
-* Amend any necessary data indicated by error messages and try again.
-* If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
-* You might have hit [the rate limit set by Blipfoto](https://www.blipfoto.com/developer/api/guides/rate-limits); try again in fifteen minutes or so. Tip: hide any widget-enabled areas that show the Blipper Widget on pages and posts with the Blipper Widget shortcode to reduce the number of requests to Blipfoto.
+  * You need to install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used on your site.
+  * You need to add the Blipper Widget shortcode to a Shortcode block.
+  * You need at least one blip in your Blipfoto account.
+  * Amend any necessary data indicated by error messages and try again.
+  * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
+  * You might have hit [the rate limit set by Blipfoto](https://www.blipfoto.com/developer/api/guides/rate-limits); try again in fifteen minutes or so. Tip: hide any widget-enabled areas that show the Blipper Widget on pages and posts with the Blipper Widget shortcode to reduce the number of requests to Blipfoto.
 
-=== Can I display the blips from another account in my widget?
+* Can I display the blips from another account in my widget?
 
-No. You can only display the blips of one Blipfoto account, which must be your own account to which you have password access.
+  * No. You can only display the blips of one Blipfoto account, which must be your own account to which you have password access.
 
 == Screenshots ==
 
@@ -109,7 +109,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 == Changelog ==
 
-=== 1.1.3
+=== 1.1.3 ===
 
 * Tests compatibility with WordPress 6.0.1. One of the following two methods must be used for Blipper Widget to work with block-enabled themes:
   * install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used
@@ -119,14 +119,14 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 [More details](https://pandammonium.org/?p=18422).
 
-=== 1.1.2
+=== 1.1.2 ===
 
 * Tests compatibility with WP 5.7.
 * Improves error handling.
 
 [More details](https://pandammonium.org/blipper-widget-1-1-2-is-released/).
 
-=== 1.1.1
+=== 1.1.1 ===
 
 * Optionally displays the blip's descriptive text, if there is any, for the shortcode version of Blipper Widget only (i.e. the descriptive text is not shown for the widget).
 * Separates the styling of the widget and the shortcode so that the user can either use the settings on the widget form or CSS to style the widget version of Blipper Widget. The shortcode version always uses CSS.
@@ -140,13 +140,13 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 == Upgrade notice ==
 
-=== 1.1
+=== 1.1 ===
 
 Update now to use the Blipper Widget shortcode in posts and pages. Please note the change in consent in the Disclaimer section of the readme file.
 
-= Usage
+= Usage =
 
-== How to use the shortcode
+== How to use the shortcode ==
 
 The Blipper Widget shortcode allows you to place your latest blip outside the widget areas in your theme, i.e. you can include it in a post or you can dedicate a whole page to it.
 
@@ -183,7 +183,7 @@ You can use the paired shortcodes to add text to your blip's caption:
 * Insert text telling your visitor they can click on the image: `[blipper_widget add-link-to-blip=show]Click on the photo to view this image on Blipfoto[/blipper_widget]`.
 * Insert text telling your vistor something about Blipfoto: `[blipper_widget]Blipfoto allows you to save your life -- with a daily photo.[/blipper_widget]`.
 
-== How to use CSS classes to style Blipper Widget
+== How to use CSS classes to style Blipper Widget ==
 
 The shortcode version of Blipper Widget always uses CSS to style the blip. The widget can use either CSS or the settings in the Blipper Widget settings form as in previous versions (to 1.1.1). This form is used to switch between using the widget form settings and using CSS.
 
@@ -210,21 +210,21 @@ the textual component of the blip.
 
 You can ignore these classes and allow your blip to be styled according to your theme or other changes you've made using the Additional CSS in the Customiser or other stylesheet. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site looked originally.
 
-= Known issues
+= Known issues =
 
 [Known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
 
 In addition, this plugin is not fully developed for use with Gutenberg blocks. There are workarounds to this, so please consider using one of these as outlined above.
 
-= Installation
+= Installation =
 
 Follow [WordPress' instructions for installation of plugins](https://wordpress.org/support/article/managing-plugins/) to install this plugin, then authenticate the plugin using OAuth.
 
-== OAuth 2.0 authentication
+== OAuth 2.0 authentication ==
 
 After installing and activating the Blipper Widget plugin, you will need to go to the plugin settings and follow the instructions to authenticate the plugin with Blipfoto. The plugin will not work if you do not do this.
 
-= Credits
+= Credits =
 
 This plugin is loosely based on [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://mobile.twitter.com/lumpysimon). I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
 
