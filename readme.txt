@@ -1,10 +1,10 @@
 === Blipper Widget ===
+Stable tag: 1.1.3
 Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image
 Requires at least: 4.3
-Tested up to: 5.7
-Stable tag: 1.1.2
+Tested up to: 6.0.1
 Requires PHP: 5.6.16 or later
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,15 @@ Displays your latest blip in a widget.  Requires a Blipfoto account.
 
 == Description ==
 
-Blipper Widget displays your latest entry (latest blip) on Blipfoto in a widget on your WordPress website.
+Blipper Widget displays your latest entry (latest blip) on Blipfoto in a classic widget on your WordPress website.
+
+***
+
+__NB Blipper Widget will not work with Gutenberg blocks.__
+
+To use Blipper Widget with WordPress Gutenberg block widgets (included in WP 5.9 and later), you _must_ install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/). This may change in the future.
+
+***
 
 Currently, Blipper Widget:
 
@@ -153,6 +161,7 @@ The plugin needs your username so it knows which Blipfoto account to access.  OA
 
 = Why doesn't the plugin seem to do anything? =
 
+* You need to install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used on your site.
 * You need at least one blip in your Blipfoto account.
 * Amend any necessary data indicated by error messages and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
@@ -161,6 +170,7 @@ The plugin needs your username so it knows which Blipfoto account to access.  OA
 = Can I display the blips from another account in my widget? =
 
 No.  You can only display the blips of one Blipfoto account, which must be your own account to which you have password access.
+
 == Screenshots ==
 
 1. The Blipper Widget settings page.
@@ -168,6 +178,17 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.1.3 =
+
+* Updates compatibility with WordPress 6.0.1.
+* Adds note that a plugin enabling [classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used must be installed for Blipper Widget to use.
+* Tests Blipper Widget with the [Classic Widgets](https://en-gb.wordpress.org/plugins/classic-widgets/) plugin.
+
+= 1.1.2 =
+
+* Tests compatibility with WP 5.7.
+* Improves error handling.
 
 = 1.1.1 =
 

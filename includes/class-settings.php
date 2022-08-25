@@ -5,10 +5,10 @@
   * @since 0.0.2
   *
   * These settings are set from the Blipper Widget settings page, as opposed to
-  * on the back-end widget form.  They are settings, such as OAuth credentials,
-  * that are unlikely to be changed after they have been set.  The settings on
+  * on the back-end widget form. They are settings, such as OAuth credentials,
+  * that are unlikely to be changed after they have been set. The settings on
   * the back-end form of the widget are more to do with the appearance of the
-  * front-end widget.  Therefore, it makes sense to keep them separate.
+  * front-end widget. Therefore, it makes sense to keep them separate.
   */
 
 namespace blipper_widget;
@@ -59,7 +59,7 @@ class blipper_widget_settings {
     add_action( 'admin_menu', array( &$this, 'blipper_widget_admin_menu' ) );
     // Ensure the admin page is initialised only when needed:
     // Not calling this results in repeated error messages, if error messages
-    // are displayed.  Repeated error messages look pants.
+    // are displayed. Repeated error messages look pants.
     if ( ! empty ( $GLOBALS['pagenow'] )
       and ( 'options-general.php' === $GLOBALS['pagenow']
       or 'options.php' === $GLOBALS['pagenow']
@@ -114,7 +114,7 @@ class blipper_widget_settings {
       // section id:
       'blipper-widget-oauth',
       // section title:
-      __( 'Blipfoto OAuth 2.0 Settings', 'blipper-widget' ),
+      __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
       // section callback function to render information and instructions about
       // this section:
       array( &$this, 'blipper_widget_oauth_instructions'),
@@ -126,7 +126,7 @@ class blipper_widget_settings {
       // field id:
       'blipper-widget-username',
       // field title:
-      __( 'Blipfoto Username', 'blipper-widget' ),
+      __( 'Blipfoto username', 'blipper-widget' ),
       // callback function to render the field on the form:
       array( &$this, 'wp_blipper_field_render'),
       // page id (i.e. menu slug):
@@ -146,7 +146,7 @@ class blipper_widget_settings {
       // field id:
       'blipper-widget-oauth-access-token',
       // field title:
-      __( 'Blipfoto Access Token', 'blipper-widget' ),
+      __( 'Blipfoto access token', 'blipper-widget' ),
       // callback function to render the field on the form:
       array( &$this, 'wp_blipper_field_render'),
       // page id (i.e. menu slug):
@@ -201,6 +201,12 @@ class blipper_widget_settings {
         wp_die( __( '', 'blipper-widget' ) );
       } else {
         ?>
+        <div class="notice">
+          <p><strong><abbr title="Nota Bene 'note well'">NB</abbr> Blipper Widget will not work with Gutenberg blocks.</strong></p>
+          <p>To use Blipper Widget with WordPress Gutenberg block widgets (included in WP 5.9 and later), you <em>must</em> install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This may change in the future.</p>
+          <p>Alternatively, use the Blipper Widget shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a>: <code>[blipper_widget title='Blipper Widget' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code></p>
+          <p>Either way, you must fill out the form below.</p>
+        </div>
         <form action="options.php" method="POST">
           <?php
             // Render a few hidden fields that tell WP which settings are going
@@ -243,7 +249,7 @@ class blipper_widget_settings {
       add_settings_error(
         'wp-blipper-settings-group',
         'invalid-input',
-        __( 'Something has gone wrong.  Please check the OAuth settings.', 'blipper-widget' )
+        __( 'Something has gone wrong. Please check the OAuth settings.', 'blipper-widget' )
       );
 
     } else {
@@ -305,7 +311,7 @@ class blipper_widget_settings {
 
     ?>
 
-      <p>You need to authorise access to your Blipfoto account before you can use this plugin.  <em>You can revoke access at any time.</em></p><p>Just follow the instructions below to authorise access and to revoke access.</p>
+      <p>You need to authorise access to your Blipfoto account before you can use this plugin. <em>You can revoke access at any time.</em></p><p>Just follow the instructions below to authorise access and to revoke access.</p>
       <h4>How to authorise your Blipfoto account</h4>
       <p>To allow WordPress to access your Blipfoto account, you need to carry out a few simple steps:</p>
       <ol>
@@ -318,11 +324,11 @@ class blipper_widget_settings {
         <li>Leave the <i>Redirect URI</i> field blank.</li>
         <li>Indicate that you agree to the <i>Developer rules</i>.</li>
         <li>Press the <i>Create a new app</i> button.</li>
-        <li>You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>.  Copy and paste your <i>Access Token</i> only into the corresponding field below.</li>
+        <li>You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>. Copy and paste your <i>Access Token</i> only into the corresponding field below.</li>
       </ol>
       <p><abbr title="Nota Bene 'note well'">NB</abbr> Whereas authorisation gives Blipper Widget permission to access your Blipfoto account, it does not give Blipper Widget access to your password.</p>
     <h4>How to revoke access to your Blipfoto account</h4>
-    <p>It's simple to revoke access.  We hope you don't want to do this, but if you do, the instructions are laid out below:</p>
+    <p>It's simple to revoke access. We hope you don't want to do this, but if you do, the instructions are laid out below:</p>
     <ol>
       <li>Go to <a href="https://www.blipfoto.com/settings/apps" rel="nofollow">your Blipfoto app settings</a>.</li>
       <li>Select the app whose access you want to revoke (the one you created using the above instructions).</li>
@@ -330,7 +336,7 @@ class blipper_widget_settings {
     </ol>
     <p>Note that your plugin will no longer work.</p>
     <h4>Blipfoto username</h4>
-    <p>You also need to enter your username in the appropriate field below.  The widget will check to see that the access token is valid for your account.</p>
+    <p>You also need to enter your username in the appropriate field below. The widget will check to see that the access token is valid for your account.</p>
     <h4>Add the widget</h4>
     <p>All that's left to do now is to add the widget to one of your widget areas (sidebar, footer), style it and you're good to go!</p>
 
@@ -340,7 +346,7 @@ class blipper_widget_settings {
 
   /**
    * Checks whether the OAuth credentials are valid or not.
-   * A temporary client is created using the settings given.  If the settings
+   * A temporary client is created using the settings given. If the settings
    * are invalid, an exception will be thrown when the client is used to get
    * data from Blipfoto.
    *
@@ -362,7 +368,7 @@ class blipper_widget_settings {
       add_settings_error(
         'wp-blipper-settings-group',
         'invalid-oauth-credentials',
-        __( 'Unable to connect to Blipfoto.  Please check the OAuth settings.', 'blipper-widget' )
+        __( 'Unable to connect to Blipfoto. Please check the OAuth settings.', 'blipper-widget' )
       );
     }
     if ( !empty( $client ) && isset( $client ) ) {
@@ -383,7 +389,7 @@ class blipper_widget_settings {
         add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
-          __( 'Error.  ' . $e->getMessage(), 'blipper-widget' )
+          __( 'Error. ' . $e->getMessage(), 'blipper-widget' )
         );
       } catch ( blipper_widget_ApiResponseException $e ) {
         add_settings_error(
