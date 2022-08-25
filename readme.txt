@@ -39,9 +39,33 @@ Currently, Blipper Widget:
 
 The image in the blip is not stored on your server: the widget links to the best quality image made available by Blipfoto.
 
+See the plugin in action on [my WordPress site](https://pandammonium.org/my-latest-photo/).
+
 = About Blipfoto =
 
 [Blipfoto](https://www.blipfoto.com/) is a photo journal service. It allows the user to post one photo a day along with descriptive text and tags; this constitutes a blip. The users may comment on other users' blips, depending in the user's settings, and award a star or heart to other users' blips.
+
+Blipper Widget is independent of and unendorsed by Blipfoto.
+
+It does not allow you to:
+
+* publish blips
+* comment on or award stars or or hearts to blips
+* follow other users.
+
+This plugin is subject to [Blipfoto's developer rules](https://www.blipfoto.com/developer/rules); hence by installing, activating and/or using Blipper Widget, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password) and publishing your blips on your WordPress website. You also consent to your username being displayed together with your image. Following [WordPress' restrictions in their developer information](https://wordpress.org/plugins/developers/), no links to Blipfoto (or other external links) are included without your explicit consent.
+
+You, the Blipfoto account holder, are responsible for the images shown on any website using the Blipper Widget with your Blipfoto and Blipfoto OAuth credentials.
+
+Use of Blipper Widget does not affect the copyright of the photo.
+
+The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
+
+= GDPR compliance =
+
+Only your Blipfoto username, which is public information, and your Blipfoto access token are required, collected and stored by Blipper Widget. Your Blipfoto username and access token will be retained by this plugin until you delete or uninstall the plugin. If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
+
+Your use of the plugin is not monitored by the plugin.
 
 == Installation ==
 
@@ -55,36 +79,6 @@ After installing and activating the Blipper Widget plugin, you will need to go t
 
 * Blipfoto account – [get one for free](https://www.blipfoto.com/account/signup)
 * PHP [client URL (cURL) library](http://php.net/manual/en/book.curl.php)
-
-== View the plugin in action ==
-
-If you'd like to see the plugin in action, you can visit [my WordPress site](https://pandammonium.org/my-latest-photo/) to see Blipper Widget showing my latest blip.
-
-[The latest plugin code is available on GitHub](https://github.com/pandammonium/blipper-widget); note that this might be ahead of the current release of Blipper Widget. The code for the current release is available in WordPress' SVN repository.
-
-== Disclaimer ==
-
-Blipper Widget is independent of and unendorsed by Blipfoto.
-
-It does not allow you to:
-
-* publish blips
-* comment on, star or favourite blips
-* follow other users.
-
-This plugin is subject to [Blipfoto's developer rules](https://www.blipfoto.com/developer/rules); hence by installing, activating and/or using Blipper Widget, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password) and publishing your blips on your WordPress website. You also consent to your username being displayed together with your image. Following [WordPress' restrictions in their developer information](https://wordpress.org/plugins/developers/), no links to Blipfoto (or other external links) are included without your explicit consent.
-
-You, the Blipfoto account holder, are responsible for the images shown on any website using the Blipper Widget with your Blipfoto or OAuth credentials.
-
-Use of Blipper Widget does not affect the copyright of the photo.
-
-The Blipfoto PHP SDK is used under [the MIT Licence](https://opensource.org/licenses/MIT).
-
-== GDPR compliance ==
-
-Only your Blipfoto username, which is public information, and your Blipfoto access token are required, collected and stored by Blipper Widget. Your Blipfoto username and access token will be retained by this plugin until you delete or uninstall the plugin. If you do not wish Blipper Widget to store your Blipfoto username, please do not use this plugin.
-
-Your use of the plugin is not monitored by the plugin.
 
 == Frequently Asked Questions ==
 
