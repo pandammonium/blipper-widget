@@ -207,7 +207,7 @@ the head component of the caption containing the date and title of the blip, and
 the text between the opening Blipper Widget shortcode and the closing Blipper Widget: `[blipper_widget]this is the content[/blipper_widget]`. There will be no content if there is only an opening tag or the widget is added to a widgetised area (e.g. a sidebar)
 * `div.bw-blip > figure.bw-figure > figcaption > footer.bw-caption-footer`
 the foot component of the caption containing the optional link back to your journal and the optional 'powered-by' link to the Blipfoto home page.
-* `div.bw-blip > figure.bw-figure > figcaption .bw-caption-link `
+* `div.bw-blip > figure.bw-figure > figcaption.bw-caption-link `
 the optional links back to your journal and the Blipfoto home page
 * `div.bw-blip > div.bw-text`
 the textual component of the blip.
