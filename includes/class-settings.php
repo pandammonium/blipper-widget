@@ -202,9 +202,12 @@ class blipper_widget_settings {
       } else {
         ?>
         <div class="notice">
-          <p><strong><abbr title="Nota Bene 'note well'">NB</abbr> Blipper Widget will not work with Gutenberg blocks.</strong></p>
-          <p>To use Blipper Widget with WordPress Gutenberg block widgets (included in WP 5.9 and later), you <em>must</em> install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This may change in the future.</p>
-          <p>Alternatively, use the Blipper Widget shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a>: <code>[blipper_widget title='Blipper Widget' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code></p>
+          <p><strong><abbr title="Nota Bene 'note well'">NB</abbr> Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.9 and later).</strong></p>
+          <p>This may change in the future; until then, there are two ways to get Blipper Widget to work with block-enabled themes. The first is a workaround; the second uses existing Blipper Widget functionality:</p>
+          <ol>
+            <li>Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add Blipper Widget to any widget-enabled location on your site.</li>
+            <li>Use the Blipper Widget shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a> anywhere a shortcode may be used. Example: <code>[blipper_widget title='Blipper Widget' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code></li>
+          </ol>
           <p>Either way, you must fill out the form below.</p>
         </div>
         <form action="options.php" method="POST">
@@ -338,7 +341,7 @@ class blipper_widget_settings {
     <h4>Blipfoto username</h4>
     <p>You also need to enter your username in the appropriate field below. The widget will check to see that the access token is valid for your account.</p>
     <h4>Add the widget</h4>
-    <p>All that's left to do now is to add the widget to one of your widget areas (sidebar, footer), style it and you're good to go!</p>
+    <p>All that's left to do now is to add the widget to one of your widget areas (e.g. sidebar, footer) or add the shortcode (to a page, post, etc.), style it and you're good to go!</p>
 
   <?php
 

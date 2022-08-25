@@ -17,9 +17,12 @@ Blipper Widget displays your latest entry (latest blip) on Blipfoto in a classic
 
 ***
 
-__NB Blipper Widget will not work with Gutenberg blocks.__
+__NB Blipper Widget does not work with WordPress Gutenberg block widgets (included in WP 5.9 and later).__
 
-To use Blipper Widget with WordPress Gutenberg block widgets (included in WP 5.9 and later), you _must_ install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/). This may change in the future.
+This may change in the future; until then, there are two ways to get Blipper Widget to work with block-enabled themes. The first is a workaround; the second uses existing Blipper Widget functionality:
+
+1. Install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/). This will allow you to add Blipper Widget to any widget-enabled location on your site.
+2. Use the Blipper Widget shortcode (details below) in a WP [Shortcode block](https://wordpress.org/support/article/shortcode-block/).
 
 ***
 
@@ -27,8 +30,8 @@ Currently, Blipper Widget:
 
 * displays the latest blip (image, title and username) in your Blipfoto account:
   * in a widget in a widget-enabled area
-  * on a page
-  * in a post
+  * on a page via a shortcode
+  * in a post via a shortcode
 * displays the date of the blip (optional; on by default)
 * includes a link from the image to the corresponding blip on the Blipfoto website (optional; off by default)
 * displays your journal name with a link to your Blipfoto account (optional; off by default)
@@ -48,7 +51,7 @@ Currently, only (British) English is supported.  I'm afraid I don't yet know how
 
 = About Blipfoto =
 
-[Blipfoto](https://www.blipfoto.com/) is a photo journal service, allowing users to post one photo a day along with descriptive text and tags; this constitutes a blip.  Users may comment on, star or favourite other users' blips.
+[Blipfoto](https://www.blipfoto.com/) is a photo journal service. It allows the user to post one photo a day along with descriptive text and tags; this constitutes a blip. The users may comment on other users' blips, depending in the user's settings, and award a star or heart to other users' blips.
 
 = Additional requirements =
 
@@ -162,6 +165,7 @@ The plugin needs your username so it knows which Blipfoto account to access.  OA
 = Why doesn't the plugin seem to do anything? =
 
 * You need to install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used on your site.
+* You need to add a shortcode that
 * You need at least one blip in your Blipfoto account.
 * Amend any necessary data indicated by error messages and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update these details on the Blipper Widget settings page.
@@ -189,6 +193,8 @@ No.  You can only display the blips of one Blipfoto account, which must be your 
 
 * Tests compatibility with WP 5.7.
 * Improves error handling.
+
+[More details…](https://pandammonium.org/blipper-widget-1-1-2-is-released/)
 
 = 1.1.1 =
 
