@@ -150,20 +150,26 @@ Update now to use the Blipper Widget shortcode in posts and pages. Please note t
 
 == Usage ==
 
+In classic themes and in block themes with a classic-widgets plugin installed, Blipper Widget is added to widget areas in the same way as any other classic widget. Your latest blip will be styled either according to your CSS or to the widget's settings.
+
+In block-enabled themes, Blipper Widget is added with the shortcode. It can be added in a Shortcode block or anywhere else a shortcode can be added in WP.
+
+The shortcode is also used to place Blipper Widget outside widget areas, such as oosts and pages in both classic and block-enabled themes.
+
+Using the shortcode will style tour latest blip according to your CSS.
+
 = How to use the shortcode =
 
-The Blipper Widget shortcode allows you to place your latest blip in non-widget areas. That is, it allows you to place your latest blip in posts and pages, and provides compatibility with Gutenberg blocks. The shortcut can be used in a Shortcode block or some other block.
-
-NB If you don't know how to use shortcodes, please refer to [the article on shortcodes in the WordPress codex](https://codex.wordpress.org/Shortcode). If you need information on how to use the Shortcode block, please refer to (the WordPress support article on Shortcode blocks)[https://wordpress.org/support/article/shortcode-block/].
+NB If you don't know how to use WordPress shortcodes, please refer to [the WordPress codex article on shortcodes](https://codex.wordpress.org/Shortcode). If you don't know how to use the Shortcode block, please refer to (the WordPress support article on Shortcode blocks)[https://wordpress.org/support/article/shortcode-block/].
 
 The Blipper Widget shortcode, `[blipper_widget]`, can be used singly or as a pair of start and end shortcodes:
 
 * single use: `[blipper_widget]`
 * paired use: `[blipper_widget] … [/blipper_widget]`.
 
-The most straightforward use of the shortcode is the single use. In the page or post editor, place the shortcode where you would like it to occur. It will be styled according to your theme, unless you have modified your site's CSS in a way that affects the elements used by Blipper Widget to display your blip.
+The most straightforward use of the shortcode is single use. In the page or post editor, place the shortcode where you would like it to occur. Alternatively, place the shortcode in a Shortcode block.
 
-You can change some of the settings. The settings you can change, with their default values [and alternative values where appropriate], are:
+There are settings you can change; these, with their default values [and alternative values where appropriate], are:
 
 * `title                 = 'My latest blip'`
 * `title-level           = 'h2'`
@@ -177,48 +183,39 @@ You can change some of the settings. The settings you can change, with their def
 
 Here are some examples:
 
-* Change the title text and heading level: `[blipper_widget title='The Daily Photo' title-level=h1]`
-* Change the colour of the figure caption text: `[blipper_widget color=red]`
+* Change the text and heading level of the title: `[blipper_widget title='The Daily Photo' title-level=h1]`
+* Change the colour of the figure-caption text: `[blipper_widget color=red]`
 * Display your journal title in the figure caption: `[blipper_widget display-journal-title=show]`
 * Display your journal title and change the link colour in the figure caption: `[blipper_widget display-journal-title=show link-color=blue]`.
 
 You can use the paired shortcodes to add text to your blip's caption:
 
-* Insert text telling your visitor they can click on the image: `[blipper_widget add-link-to-blip=show]Click on the photo to view this image on Blipfoto[/blipper_widget]`.
-* Insert text telling your vistor something about Blipfoto: `[blipper_widget]Blipfoto allows you to save your life -- with a daily photo.[/blipper_widget]`.
+* Add instructions: `[blipper_widget add-link-to-blip=show]Click on the photo to view this image on Blipfoto[/blipper_widget]`.
+* Add information: `[blipper_widget]Blipfoto allows you to save your life -- with a daily photo.[/blipper_widget]`.
 
 = How to use CSS classes to style Blipper Widget =
 
-The shortcode version of Blipper Widget always uses CSS to style the blip. The widget can use either CSS or the settings in the Blipper Widget settings form as in previous versions (to 1.1.1). This form is used to switch between using the widget form settings and using CSS.
+The shortcode version of Blipper Widget always uses CSS to style the blip. The classic widget can be styled using either CSS or the Blipper Widget settings form.
 
-When CSS is used to style the blip, the following elements are modified by the listed classes. (The full CSS selectors are given here, but you can almost certainly omit all but the class names in your CSS.)
+The following CSS selectors define the style and layout of the resulting figure:
 
-* `div.bw-blip`
-the outermost container for the blip
-* `div.bw-blip > figure.bw-figure`
-the figure containing the blip image and its caption
-* `div.bw-blip > figure.bw-figure > img.bw-image`
-the photographic component of the blip
-* `div.bw-blip > figure.bw-figure > figcaption.bw-caption`
-the figure caption containing information about the blip
-* `div.bw-blip > figure.bw-figure > figcaption > header.bw-caption-header`
-the head component of the caption containing the date and title of the blip, and your Blipfoto username
-* `div.bw-blip > figure.bw-figure > figcaption.bw-caption > div.bw-caption-content`
-the text between the opening Blipper Widget shortcode and the closing Blipper Widget: `[blipper_widget]this is the content[/blipper_widget]`. There will be no content if there is only an opening tag or the widget is added to a widgetised area (e.g. a sidebar)
-* `div.bw-blip > figure.bw-figure > figcaption > footer.bw-caption-footer`
-the foot component of the caption containing the optional link back to your journal and the optional 'powered-by' link to the Blipfoto home page.
-* `div.bw-blip > figure.bw-figure > figcaption.bw-caption-link `
-the optional links back to your journal and the Blipfoto home page
-* `div.bw-blip > div.bw-text`
-the textual component of the blip.
+* `div.bw-blip`: the outermost container for the blip
+* `div.bw-blip > figure.bw-figure`: the figure containing the blip's photo and caption
+* `div.bw-blip > figure.bw-figure > img.bw-image`: the blip's photo
+* `div.bw-blip > figure.bw-figure > figcaption.bw-caption`: the blip's caption containing a header, some content and a footer (if all information is provided and its display is set to `show`)
+* `div.bw-blip > figure.bw-figure > figcaption > header.bw-caption-header`: the caption header containing the date and title of the blip, and your Blipfoto username
+* `div.bw-blip > figure.bw-figure > figcaption.bw-caption > div.bw-caption-content`: the caption content given by the text between the opening Blipper Widget shortcode and the closing Blipper Widget: `[blipper_widget]this is the content[/blipper_widget]`. Single-ise shortcodes and the classic widget to not generate caption content
+* `div.bw-blip > figure.bw-figure > figcaption > footer.bw-caption-footer`: the caltion footer containing the optional link back to your journal and the optional 'powered-by' link to the Blipfoto home page.
+* `div.bw-blip > figure.bw-figure > figcaption.bw-caption-link`: the links to your Blipfoto journal and to the Blipfoto home page
+* `div.bw-blip > div.bw-text`: the written component of the blip.
 
-You can ignore these classes and allow your blip to be styled according to your theme or other changes you've made using the Additional CSS in the Customiser or other stylesheet. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site looked originally.
+You can ignore these classes and allow your blip to be styled according to your theme or other changes you've made using the Customiser, a plugin or other stylesheet. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site looked originally.
 
 == Credits ==
 
-This plugin is loosely based on [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://mobile.twitter.com/lumpysimon). I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
+This plugin is loosely based on [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://twitter.com/lumpysimon). I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
 
-I used [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) plugin to guide me with how to implement not only the settings page and the widget back-end but also the shortcode.
+I used [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) as a guide to implementing not only the settings page and the widget back-end, but also the shortcode.
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
 
