@@ -140,8 +140,6 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 [Known problems and enhancement requests](https://github.com/pandammonium/blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
 
-NB To use this widget in a block-enabled theme, add the Blipper Widget shortcode to a Shortcode block.
-
 == Upgrade notice ==
 
 = 1.1.3 =
