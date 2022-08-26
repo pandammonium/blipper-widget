@@ -208,7 +208,7 @@ The following CSS selectors define the style and layout of the resulting figure:
 * `div.bw-blip > figure.bw-figure > img.bw-image`: the blip's photo
 * `div.bw-blip > figure.bw-figure > figcaption.bw-caption`: the blip's caption containing a header, some content and a footer (if all information is provided and its display is set to `show`)
 * `div.bw-blip > figure.bw-figure > figcaption > header.bw-caption-header`: the caption header containing the date and title of the blip, and your Blipfoto username
-* `div.bw-blip > figure.bw-figure > figcaption.bw-caption > div.bw-caption-content`: the caption content given by the text between the opening Blipper Widget shortcode and the closing Blipper Widget: `[blipper_widget]this is the content[/blipper_widget]`. Single-ise shortcodes and the classic widget to not generate caption content
+* `div.bw-blip > figure.bw-figure > figcaption.bw-caption > div.bw-caption-content`: the caption content given by the text between the opening Blipper Widget shortcode and the closing Blipper Widget: `[blipper_widget]this is the content[/blipper_widget]`. Single-use shortcodes and the classic widget to not generate caption content
 * `div.bw-blip > figure.bw-figure > figcaption > footer.bw-caption-footer`: the caltion footer containing the optional link back to your journal and the optional 'powered-by' link to the Blipfoto home page.
 * `div.bw-blip > figure.bw-figure > figcaption.bw-caption-link`: the links to your Blipfoto journal and to the Blipfoto home page
 * `div.bw-blip > div.bw-text`: the written component of the blip.
