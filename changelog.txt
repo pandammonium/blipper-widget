@@ -12,7 +12,7 @@
 * Adds classes to the blip tags so that they can be easily styled using the Additional CSS component of the Customiser or some other stylesheet.
 * Fixes display of widgets styled by the widget settings form.
 * Blipper Widget output checked and validated by [Nu Html Checker](https://validator.w3.org/nu/) by [W3C](https://www.w3.org/).
-* Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris(https://twitter.com/justnorris).
+* Readme file checked and validated by [WP Readme](https://wpreadme.com/) by [@justnorris](https://twitter.com/justnorris).
 * Tests for compatibility with WP 5.6.
 
 = 1.1 =
