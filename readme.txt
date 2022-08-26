@@ -69,7 +69,7 @@ Your use of the plugin is not monitored by the plugin.
 
 == Installation ==
 
-Follow [WordPress' instructions for installation of plugins](https://wordpress.org/support/article/managing-plugins/) to install this plugin, then authenticate the plugin using OAuth.
+Follow [WordPress' instructions for installation of plugins](https://wordpress.org/support/article/managing-plugins/#installing-plugins-1) to install this plugin, then authenticate the plugin using OAuth.
 
 = OAuth 2.0 authentication =
 
