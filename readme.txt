@@ -156,7 +156,7 @@ The Blipper Widget shortcode allows you to place your latest blip outside the wi
 
 If you don't know how to use shortcodes, please refer to [the article on shortcodes in the WordPress codex](https://codex.wordpress.org/Shortcode).
 
-The Blipper Widget shortcode, [blipper_widget], can be used singly or as a pair of start and end shortcodes:
+The Blipper Widget shortcode, `[blipper_widget]`, can be used singly or as a pair of start and end shortcodes:
 
 * single use: `[blipper_widget]`
 * paired use: `[blipper_widget] … [/blipper_widget]`.
