@@ -152,9 +152,9 @@ Update now to use the Blipper Widget shortcode in posts and pages. Please note t
 
 = How to use the shortcode =
 
-The Blipper Widget shortcode allows you to place your latest blip outside the widget areas in your theme, i.e. you can include it in a post or you can dedicate a whole page to it.
+The Blipper Widget shortcode allows you to place your latest blip in non-widget areas. That is, it allows you to place your latest blip in posts and pages, and provides compatibility with Gutenberg blocks. The shortcut can be used in a Shortcode block or some other block.
 
-If you don't know how to use shortcodes, please refer to [the article on shortcodes in the WordPress codex](https://codex.wordpress.org/Shortcode).
+NB If you don't know how to use shortcodes, please refer to [the article on shortcodes in the WordPress codex](https://codex.wordpress.org/Shortcode). If you need information on how to use the Shortcode block, please refer to (the WordPress support article on Shortcode blocks)[https://wordpress.org/support/article/shortcode-block/].
 
 The Blipper Widget shortcode, `[blipper_widget]`, can be used singly or as a pair of start and end shortcodes:
 
