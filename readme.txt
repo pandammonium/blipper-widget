@@ -50,7 +50,7 @@ Blipper Widget is independent of and unendorsed by Blipfoto.
 It does not allow you to:
 
 * publish blips
-* comment on or award stars or or hearts to blips
+* comment on or award stars or hearts to blips
 * follow other users.
 
 This plugin is subject to [Blipfoto's developer rules](https://www.blipfoto.com/developer/rules); hence by installing, activating and/or using Blipper Widget, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password) and publishing your blips on your WordPress website. You also consent to your username being displayed together with your image. Following [WordPress' restrictions in their developer information](https://wordpress.org/plugins/developers/), no links to Blipfoto (or other external links) are included without your explicit consent.
