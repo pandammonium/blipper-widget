@@ -140,7 +140,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 [Known problems and enhancement requests](https://github.com/pandammonium/wp-blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
 
-In addition, this plugin is not fully developed for use with Gutenberg blocks. There are workarounds to this, so please consider using one of these as outlined above.
+NB To use this widget in a block-enabled theme, add the Blipper Widget shortcode to a Shortcode block.
 
 == Upgrade notice ==
 
