@@ -144,6 +144,10 @@ In addition, this plugin is not fully developed for use with Gutenberg blocks. T
 
 == Upgrade notice ==
 
+= 1.1.3 =
+
+Update now to ensure compatibility with WP 6.0.1 (via the Blipper Widget shortcode).
+
 = 1.1 =
 
 Update now to use the Blipper Widget shortcode in posts and pages. Please note the change in consent in the Disclaimer section of the readme file.
