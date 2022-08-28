@@ -203,7 +203,6 @@ if (!class_exists('Blipper_Widget_Settings')) {
       _e('
       <div class="wrap">
         <h2>' . $plugin_data['Name'] . ' settings</h2>
-        <p>Settings for ' . $plugin_data['Name'] . ' v' . $plugin_data['Version'] . ' by ' . $plugin_data['Author'] . '.</p><p>' . $plugin_data['Description'] . '</p>
         <script type="text/javascript">pause(\'inside the options page\')</script>', 'blipper-widget');
         if ( !current_user_can( 'manage_options' ) ) {
           wp_die( __( 'You do not have permission to modify these settings.', 'blipper-widget' ) );
@@ -345,7 +344,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
       <p>Note that your plugin will no longer work. Remember to remove any widgets and shortcodes you\'ve added to your site.</p>
       <h4>Blipfoto username</h4>
       <p>You also need to enter your username in the appropriate field below. The widget will check that the access token is valid for your account.</p>
-      <h4>Add the widget</h4>
+      <h4>Add the widget or shortcode</h4>
       <p>All that\'s left to do now is to add the widget to one of your widget areas (e.g. sidebar, footer) or add the shortcode (to a page, post, etc.), style it and you\'re good to go!</p>', 'blipper-widget');
 
     }
