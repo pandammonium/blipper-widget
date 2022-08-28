@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+  configVersion="3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="https://www.phpdoc.org"
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/phpDocumentor/phpDocumentor/master/data/xsd/phpdoc.xsd"
+>
+  <paths>
+    <output>build/docs</output>
+    <cache>build/cache</cache>
+  </paths>
+  <version number="3.0.0">
+    <api format="php">
+      <source dsn=".">
+        <path>blipper-widget.php</path>
+        <path>classes/*</path>
+        <path>uninstall.php</path>
+        <path>index.php</path>
+      </source>
+      <ignore hidden="true" symlinks="true">
+        <path>includes/*</path>
+      </ignore>
+      <extensions>
+        <extension>php</extension>
+      </extensions>
+      <default-package-name>BlipperWidget</default-package-name>
+      <include-source>true</include-source>
+    </api>
+  </version>
+</phpdocumentor>
