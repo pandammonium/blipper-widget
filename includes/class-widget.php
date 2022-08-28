@@ -1,5 +1,13 @@
 <?php
 
+/**
+  * Blipper Widget shortcode and widget.
+  * @author   pandammonium
+  * @since    0.0.2
+  * @license  GPLv2 or later
+  *
+  */
+
 use blipper_widget\settings\blipper_widget_settings;
 
 if (!class_exists('Blipper_Widget')) {

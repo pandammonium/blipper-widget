@@ -2,15 +2,16 @@
 
 /**
   * Blipper Widget settings (back end).
-  * @author   pandammonium
-  * @since    0.0.2
-  * @license GPLv2 or later
-  *
   * These settings are set from the Blipper Widget settings page, as opposed to
   * on the back-end widget form. They are settings, such as OAuth credentials,
   * that are unlikely to be changed after they have been set. The settings on
   * the back-end form of the widget are more to do with the appearance of the
   * front-end widget. Therefore, it makes sense to keep them separate.
+  *
+  * @author   pandammonium
+  * @since    0.0.2
+  * @license  GPLv2 or later
+  *
   */
 
 namespace blipper_widget\settings;
@@ -24,6 +25,7 @@ use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponse
 use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
 
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
+
 if (!class_exists('Blipper_Widget_Settings')) {
 
   /**
