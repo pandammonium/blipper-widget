@@ -112,6 +112,7 @@ if (!class_exists('Blipper_Widget')) {
     * front-end of the widget.
     *
     * @since    0.0.1
+    * @api
     */
     public function widget( $args, $settings ) {
 
@@ -136,6 +137,7 @@ if (!class_exists('Blipper_Widget')) {
     * if desired.
     *
     * @since    0.0.1
+    * @api
     * @param    array     $settings  The settings currently saved in the database
     * @return void
     */
@@ -153,6 +155,7 @@ if (!class_exists('Blipper_Widget')) {
     * panel/customiser.
     *
     * @since    0.0.1
+    * @api
     * @param    array     $new_settings     The settings the user wants to change
     * @param    array     $old_settings     The settings currently saved in the database
     * @return   array     $settings         The validated settings based on the user's input to be saved in the database
@@ -318,7 +321,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
   /**
-    * Get the values to display.
+    * Get the values to display on the settings form.
     *
     * @since    0.0.1
     * @param    array     $settings         The widget settings saved in the
@@ -329,7 +332,7 @@ if (!class_exists('Blipper_Widget')) {
     private function blipper_widget_get_display_values( $settings ) {
 
       if ( BW_DEBUG ) {
-        error_log( 'Blipper_Widget::blipper_widget_get_display_values (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+        error_log( __( 'Blipper_Widget::blipper_widget_get_display_values', 'blipper-widget') . ' (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
       }
 
       $new_settings = array();
@@ -351,11 +354,11 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Please check your settings are valid and try again.' );
+          $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again.', 'blipper-widget' ) );
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user settings.' );
+          $this->blipper_widget_display_error_msg( $e, __( 'Something has gone wrong getting the user settings.', 'blipper-widget' ) );
 
         }
 
@@ -363,10 +366,13 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
+    /**
+     * Gets the display value.
+     */
     private function blipper_widget_get_display_value( $setting, $settings ) {
 
       if ( BW_DEBUG ) {
-        error_log( 'Blipper_Widget::blipper_widget_get_display_value (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
+        error_log( __( 'Blipper_Widget::blipper_widget_get_display_value', 'blipper-widget' ) . ' (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
       }
 
       try {
@@ -379,9 +385,9 @@ if (!class_exists('Blipper_Widget')) {
             } else if ( array_key_exists( $setting, $this->default_setting_values['common'] ) ) {
               return $this->default_setting_values['common'][$setting];
             } else {
-              throw new ErrorException( 'Invalid setting requested:  <strong>' . $setting . '</strong>.' );
+              throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>.' );
               if ( BW_DEBUG ) {
-                error_log( 'Invalid setting requested:' . $setting );
+                error_log( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
               }
               return '';
             }
@@ -1541,7 +1547,7 @@ if (!class_exists('Blipper_Widget')) {
         error_log( 'Blipper Widget: ' . $e->getMessage() . '. '. $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() );
         error_log( 'Blipper Widget: ' . $e->getMessage() . '. ' );
       }
-      _e( '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ) . '</span>. ' . $e->getMessage() . ' ' . $additional_info . ( $request_limit_reached ? ' Please try again in 15 minutes.' : '' ), 'blipper-widget' ) . '</p>' );
+      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>. ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
 
     }
 
@@ -1555,7 +1561,11 @@ if (!class_exists('Blipper_Widget')) {
       if ( $request_limit_reached ) {
         echo '<p>' .  __( 'The Blipfoto request limited has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
       } else {
-        echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+        if ( current_user_can( 'manage_options' ) ) {
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+        } else {
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+        }
       }
 
     }

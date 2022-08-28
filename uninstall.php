@@ -21,7 +21,9 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 if (!function_exists( 'blipper_widget_uninstall' )) {
 /**
-  * @since 0.0.3
+ * Uninstalls Blipper Widget.
+  * @since  0.0.3
+  * @return void
   */
   function blipper_widget_uninstall() {
 

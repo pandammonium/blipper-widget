@@ -8,7 +8,7 @@
   * the back-end form of the widget are more to do with the appearance of the
   * front-end widget. Therefore, it makes sense to keep them separate.
   *
-  * @author   pandammonium
+  * @author    pandammonium   pandammonium
   * @since    0.0.2
   * @license  GPLv2 or later
   *
@@ -26,24 +26,26 @@ use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthExcept
 
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
 
-if (!class_exists('Blipper_Widget_Settings')) {
+if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * The Blipper Widget settings (back end).
     * The widget settings in the back end; currently comprises authentication by OAuth2.
     *
     * @since 0.0.2
+    * @author    pandammonium
     */
   class Blipper_Widget_Settings {
 
   /**
     * @since    0.0.2
+    * @author    pandammonium
     * @property string[]    $blipper_widget_defaults   The widget's default settings
     */
     private $blipper_widget_defaults = array(
-        'username'              => '',
-        'access-token'          => '',
-      );
+      'username'              => '',
+      'access-token'          => '',
+    );
 
   ///**
   //  * @since    0.0.2
@@ -55,6 +57,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Constructs an instance of this class.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    void
     */
     public function __construct() {
@@ -78,6 +81,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Creates a new settings page for the widget in the WP admin settings menu.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    void
     */
     public function blipper_widget_admin_menu() {
@@ -101,6 +105,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Sets up the settings form on the Blipper Widget settings page.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    void
     */
     public function blipper_widget_admin_init() {
@@ -175,6 +180,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Callback function.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @param     array $args
     * @return    void
     */
@@ -194,6 +200,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Callback function.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    void
     */
     public function blipper_widget_options_page() {
@@ -241,6 +248,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * (This might become a loop at some point.)
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @param     array         $input             An array containing the settings
     *                                               that the user wants to set.
     * @return    string                           The validated setting.
@@ -310,6 +318,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Callback function.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    void
     */
     public function blipper_widget_oauth_instructions() {
@@ -356,6 +365,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * data from Blipfoto.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @internal
     * @param     string[]     The OAuth settings provided by the user.
     * @return    void
@@ -412,6 +422,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Check if the settings have been set or not.
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
@@ -425,6 +436,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * Return the settings in the database
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    array     The settings in the database or false if not set.
     */
     public function blipper_widget_get_settings() {
@@ -438,6 +450,7 @@ if (!class_exists('Blipper_Widget_Settings')) {
     * (see blipper_widget_admin_init)
     *
     * @since     0.0.2
+    * @author    pandammonium
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
