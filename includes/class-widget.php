@@ -8,6 +8,15 @@
   *
   */
 
+// If this file is called directly, abort:
+defined( 'ABSPATH' ) or die();
+defined( 'WPINC' ) or die();
+
+use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_Client;
+use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException;
+use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException;
+use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
+use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException;
 use blipper_widget\settings\blipper_widget_settings;
 
 if (!class_exists('Blipper_Widget')) {
