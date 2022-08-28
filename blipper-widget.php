@@ -42,7 +42,7 @@
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-require_once('includes/class-widget.php');
+require_once('classes/class-widget.php');
 // -------------------------------------------------------------------------- //
 
 /**

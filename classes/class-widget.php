@@ -420,27 +420,27 @@ if (!class_exists('Blipper_Widget')) {
     private function load_blipfoto_dependencies() {
 
       $folders = array(
-          'Traits' => array(
-            'Helper'
-            ),
-          'Exceptions' => array(
-            'BaseException',
-            'ApiResponseException',
-            'InvalidResponseException',
-            'NetworkException',
-            'OAuthException',
-            'FileException'
-            ),
-          'Api' => array(
-            'Client',
-            'OAuth',
-            'Request',
-            'Response',
-            'File'
-            )
-          );
+        'Traits' => array(
+          'Helper'
+          ),
+        'Exceptions' => array(
+          'BaseException',
+          'ApiResponseException',
+          'InvalidResponseException',
+          'NetworkException',
+          'OAuthException',
+          'FileException'
+          ),
+        'Api' => array(
+          'Client',
+          'OAuth',
+          'Request',
+          'Response',
+          'File'
+          )
+        );
 
-      $path = plugin_dir_path( __FILE__ ) . 'Blipfoto/';
+      $path = plugin_dir_path( __FILE__ ) . '../includes/Blipfoto/';
 
       foreach ( $folders as $folder => $files ) {
         foreach ( $files as $file ) {
