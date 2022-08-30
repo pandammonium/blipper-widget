@@ -1085,7 +1085,9 @@ if (!class_exists('Blipper_Widget')) {
         'title' => array(),
       ),
     );
-    error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
+    if ( BW_DEBUG ) {
+      error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
+    }
     return wp_kses( $html, $allowed_html );
 
   }
