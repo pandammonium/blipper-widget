@@ -207,31 +207,82 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
       $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
       $plugin_data = get_plugin_data($plugin_base, false, true);
-      _e('
+      ?>
       <div class="wrap">
-        <h2>' . $plugin_data['Name'] . ' settings</h2>
-        <script type="text/javascript">pause(\'inside the options page\')</script>', 'blipper-widget');
+        <h2><?php
+          printf(
+            // translators: %s is the name of the plugin:
+            __('%s', 'blipper-widget'),
+            $plugin_data['Name']
+          );
+        ?> settings</h2>
+        <script type="text/javascript">pause(\'inside the options page\')</script>
+          <?php
         if ( !current_user_can( 'manage_options' ) ) {
           wp_die( __( 'You do not have permission to modify these settings.', 'blipper-widget' ) );
         } else {
-          _e('
+          ?>
             <div class="notice">
-              <p><strong><abbr title="Nota Bene \'note well\'">NB</abbr> ' . $plugin_data['Name'] . ' is a classic widget with a shortcode. Although there is no ' . $plugin_data['Name'] . ' block, ' . $plugin_data['Name'] . ' can still be used in block-enabled themes.</strong></p>
-              <p>There are two ways to get ' . $plugin_data['Name'] . ' to work with block-enabled themes. The first is a workaround; the second uses existing ' . $plugin_data['Name'] . ' functionality:</p>
+              <p>
+                <strong>
+                  <abbr title="<?php
+                    printf(
+                      // translators: NB stands for Latin 'nota bene', which translates to 'note well' in English
+                      __('Nota Bene \'note well\'', 'blipper-widget')
+                    );?>">NB
+                  </abbr>
+                    <?php
+                      printf(
+                        // translators: %1$s: plugin name
+                        __( '%1$s is a classic widget with a shortcode. Although there is no %1$s block, %1$s can still be used in block-enabled themes.', 'blipper-widget' ),
+                        $plugin_data['Name']
+                      );
+                    ?>
+                  </strong>
+              </p>
+              <p><?php
+                printf(
+                    // translators: %1$s: plugin name
+                  __( 'There are two ways to get %1$s to work with block-enabled themes. The first is a workaround; the second uses existing %1$s functionality:', 'blipper-widget' ),
+                  $plugin_data['Name']
+                ); ?>
+              </p>
               <ol>
-                <li>Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add ' . $plugin_data['Name'] . ' to any widget-enabled location on your site.</li>
-                <li>Use the ' . $plugin_data['Name'] . ' shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a> anywhere a shortcode may be used. Example: <code>[blipper_widget title=\'' . $plugin_data['Name'] . '\' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code></li>
+                <li><?php
+                  printf(
+                    // translators: %1$s: plugin name
+                    __( 'Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add %1$s to any widget-enabled location on your site.', 'blipper-widget' ),
+                    $plugin_data['Name']
+                  ); ?>
+                </li>
+                <li><?php
+                  printf(
+                    // translators: %1$s: plugin name
+                    __( 'Use the %1$s shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a> anywhere a shortcode may be used. Example: <code>[blipper_widget title=\'%1$s\' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code>', 'blipper-widget' ),
+                    $plugin_data['Name']
+                  ); ?>
+                </li>
               </ol>
               <p>Either way, you must fill out the form below.</p>
             </div>
-            <form action="options.php" method="POST">', 'blipper-widget');
-              // Render a few hidden fields that tell WP which settings are going to be updated on this page:
-              settings_fields( 'blipper-widget-settings' );
-              // Output all the sections and fields that have been added to the options page (with slug options-wp-blipper):
-              do_settings_sections( 'blipper-widget' );
-              submit_button();
-            _e('          </form>', 'blipper-widget');
-            _e('<p>' . $plugin_data['Name'] . ' version ' . $plugin_data['Version'] . '.</p>', 'blipper-widget');
+            <form action="options.php" method="POST">
+              <?php
+                // Render a few hidden fields that tell WP which settings are going to be updated on this page:
+                settings_fields( 'blipper-widget-settings' );
+                // Output all the sections and fields that have been added to the options page (with slug options-wp-blipper):
+                do_settings_sections( 'blipper-widget' );
+                submit_button();
+              ?>
+            </form>
+          <p><?php
+            printf(
+              // translators: 1: plugin name; 2: plugin version number
+              __( '%1$s version %2$s', 'blipper-widget' ),
+              $plugin_data['Name'],
+              $plugin_data['Version']
+            ); ?>
+          </p>
+        <?php
           }
         ?>
       </div>
