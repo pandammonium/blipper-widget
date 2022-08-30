@@ -113,16 +113,6 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 * Refactors the blipper widget code.
 * Improves the readme text and formatting.
 
-= 1.1.3 =
-
-* Tests compatibility with WordPress 6.0.1. One of the following two methods must be used for Blipper Widget to work with block-enabled themes:
-  * install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used
- * use the shortcode.
-* Tests Blipper Widget with the [Classic Widgets](https://en-gb.wordpress.org/plugins/classic-widgets/) plugin with block themes.
-* Tests Blipper Widget shortcode with block themes.
-
-[More details](https://pandammonium.org/?p=18422).
-
 [Previous version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
 = Known issues =

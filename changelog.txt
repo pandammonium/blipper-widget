@@ -8,6 +8,8 @@
 * Tests Blipper Widget with the [Classic Widgets](https://en-gb.wordpress.org/plugins/classic-widgets/) plugin with block themes.
 * Tests Blipper Widget shortcode with block themes.
 
+[More details](https://pandammonium.org/?p=18422).
+
 = 1.1.2 =
 
 * Improves error handling.
