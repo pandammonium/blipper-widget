@@ -50,7 +50,8 @@ Blipper Widget is independent of and unendorsed by Blipfoto.
 It does not allow you to:
 
 * publish blips
-* comment on or award stars or hearts to blips
+* comment on blips
+* award stars or hearts to blips
 * follow other users.
 
 This plugin is subject to [Blipfoto's developer rules](https://www.blipfoto.com/developer/rules); hence by installing, activating and/or using Blipper Widget, you consent to it performing actions involving your Blipfoto account, including, but not limited to, obtaining your account details (but never your password) and publishing your blips on your WordPress website. You also consent to your username being displayed together with your image. Following [WordPress' restrictions in their developer information](https://wordpress.org/plugins/developers/), no links to Blipfoto (or other external links) are included without your explicit consent.
@@ -91,7 +92,7 @@ Yes and no. The plugin needs your username so it knows which Blipfoto account to
 * You need to install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used on your site.
 * You need to add the Blipper Widget shortcode to a Shortcode block.
 * You need at least one blip in your Blipfoto account.
-* Amend any necessary data indicated by error messages and try again.
+* You may have received an error message. Amend any necessary data indicated and try again.
 * If you have refreshed your OAuth app credentials or access token at Blipfoto, you will need to update those details on the Blipper Widget settings page.
 * You might have hit [the rate limit set by Blipfoto](https://www.blipfoto.com/developer/api/guides/rate-limits); try again in fifteen minutes or so. Tip: hide any widget-enabled areas that show the Blipper Widget on pages and posts with the Blipper Widget shortcode to reduce the number of requests to Blipfoto.
 
@@ -110,8 +111,8 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 = 1.1.3 =
 
 * Tests compatibility with WordPress 6.0.1. One of the following two methods must be used for Blipper Widget to work with block-enabled themes:
- ** install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used
- ** use the shortcode.
+  * install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/) to be used
+ * use the shortcode.
 * Tests Blipper Widget with the [Classic Widgets](https://en-gb.wordpress.org/plugins/classic-widgets/) plugin with block themes.
 * Tests Blipper Widget shortcode with block themes.
 
@@ -194,47 +195,9 @@ You can use the paired shortcodes to add text to your blip's caption like this:
 
 The shortcode version of Blipper Widget always uses CSS to style the blip. The classic widget can be styled using either CSS or the Blipper Widget settings form. Blipper Widget provides various CSS selectors to style its HTML output.
 
-A blip comprises a photo and optional text. Blipper Widget adds metadata including your username and the blip title. The blip photo and the metadata are displayed as an HTML `<figure>` with the photo given as the `<img>` and the metadata as the `<figcaption>`. Any blip text follows the figure if set to display. The figure and text are wrapped in `<div>` tags.
+A blip comprises a photo, an optional title, optional text and optional tags. Blipper Widget adds metadata including your username, but does not display the blip's tags. There is [an example of how to use CSS to style a blip](https://pandammonium.org/wordpress/wordpress-dev/blipper-widget/blipper-widget-example/#css-code) on [my Blipper Widget Example page](https://pandammonium.org/wordpress/wordpress-dev/blipper-widget/blipper-widget-example/). Blipfoto provides the HTML for the blip's text.
 
-The following CSS selectors define the style and layout of the resulting HTML:
-
-*The outermost container for the blip:*
-
-`div.bw-blip`
-
-*The figure containing the blip's photo and caption:*
-
-`div.bw-blip > figure.bw-figure`
-
-*The blip's photo:*
-
-`div.bw-blip > figure.bw-figure > img.bw-image`
-
-*The blip's caption containing a header, some content and a footer* (if all information is provided and its display is set to `show`):
-
-`div.bw-blip > figure.bw-figure > figcaption.bw-caption`
-
-*The caption header containing the date and title of the blip, and your Blipfoto username:*
-
-`div.bw-blip > figure.bw-figure > figcaption > header.bw-caption-header`
-
-*The caption content given by the text between the opening Blipper Widget shortcode and the closing Blipper Widget* (paired shortcode only):
-
-`[blipper_widget]this is the content[/blipper_widget]`
-
-*The caption footer containing the optional link back to your journal and the optional 'powered-by' link to the Blipfoto home page:*
-
-`div.bw-blip > figure.bw-figure > figcaption > footer.bw-caption-footer`
-
-*The links to your Blipfoto journal and to the Blipfoto home page:*
-
-`div.bw-blip > figure.bw-figure > figcaption.bw-caption-link`
-
-*The written component of the blip:*
-
-`div.bw-blip > div.bw-text`
-
-You can ignore these CSS selectors and allow your blip to be styled according to your theme or other changes you've made using the Customiser, a plugin or other stylesheet. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site looked originally.
+You can ignore the provided CSS selectors to allow your theme to style your blip. Alternatively, you can use them to give your blips a unique look. Many blippers like to see their photos on a dark background, reflecting how Blipfoto's site originally looked.
 
 == Acknowledgements ==
 
