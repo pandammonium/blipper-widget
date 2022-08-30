@@ -207,4 +207,6 @@ I used [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) as a gui
 
 In addition, I used [WP-Spamshield](https://wordpress.org/plugins/wp-spamshield/) as a model of how to implement uninstallation code.
 
-I also had help from an anonymous person with some of the jQuery code.
+I had help from an anonymous person with some of the [jQuery](https://jquery.com/) code.
+
+The [WP Readme](https://wpreadme.com) tool has been invaluable for checking the formatting of this readme file.
