@@ -1,5 +1,5 @@
 === Blipper Widget ===
-Stable tag: 1.1.3
+Stable tag: 1.2.0
 Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image,shortcode,shortcodes
@@ -107,6 +107,11 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.2.0 =
+
+* Refactors the blipper widget code.
+* Improves the readme text and formatting.
 
 = 1.1.3 =
 
