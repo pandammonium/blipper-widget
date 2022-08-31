@@ -262,7 +262,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
                 <li><?php
                   printf(
                     // translators: %1$s: plugin name
-                    __( 'Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add %1$s to any widget-enabled location on your site.', 'blipper-widget' ),
+                    __( 'Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add %1$s to any widget-enabled location on your site. %1$s has been tested with <a href="https://en-gb.wordpress.org/plugins/classic-widgets/">Classic Widgets</a>.', 'blipper-widget' ),
                     $plugin_data['Name']
                   ); ?>
                 </li>
