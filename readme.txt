@@ -113,6 +113,8 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 * Refactors the blipper widget code.
 * Improves the readme text and formatting.
 
+[More details](https://pandammonium.org/blipper-widget-1-2-0-is-released/)
+
 [Previous version history](https://plugins.trac.wordpress.org/browser/blipper-widget/trunk/changelog.txt)
 
 = Known issues =
