@@ -93,7 +93,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
       $plugin_data = $this->blipper_widget_get_plugin_data();
 
-      $result = add_options_page(
+      add_options_page(
         // translators: $plugin_data['Name']: the plugin name; do not translate
         // text to be displayed in the title tags of the page when the menu is selected (not to be confused with page header):
         __( $plugin_data['Name'] . ' TITLE TAGS settings', 'blipper-widget' ),
@@ -108,9 +108,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // position in the menu order this item should appear:
         8
       );
-      if ( !$result ) {
-        $this->blipper_widget_no_access_to_options();
-      }
     }
 
   /**
@@ -233,7 +230,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         <script type="text/javascript">pause(\'inside the options page\')</script>
           <?php
         if ( !current_user_can( 'manage_options' ) ) {
-          blipper_widget_no_access_to_options();
+          $this->blipper_widget_no_access_to_options( $plugin_data );
         } else {
           ?>
             <div class="notice">
@@ -288,17 +285,17 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
                 submit_button();
               ?>
             </form>
-          <p><?php
-            printf(
-              // translators: 1: plugin name; 2: plugin version number
-              __( '%1$s version %2$s', 'blipper-widget' ),
-              $plugin_data['Name'],
-              $plugin_data['Version']
-            ); ?>
-          </p>
         <?php
           }
         ?>
+        <p><?php
+          printf(
+            // translators: 1: plugin name; 2: plugin version number
+            __( '%1$s version %2$s', 'blipper-widget' ),
+            $plugin_data['Name'],
+            $plugin_data['Version']
+          ); ?>
+        </p>
       </div>
       <?php
 
@@ -662,9 +659,19 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @author pandammonium
    * @return void
    */
-    private function blipper_widget_no_access_to_options() {
+    private function blipper_widget_no_access_to_options( $plugin_data ) {
 
-      wp_die( __( 'You do not have permission to modify these settings.', 'blipper-widget' ) );
+      ?>
+      <div class="error">
+        <?php
+      printf(
+        // translators: %s: Plugin name; do not translate
+        __( 'You do not have permission to modify the settings for %s.', 'blipper-widget' ),
+        $plugin_data['Name']
+      );
+      ?>
+    </div>
+    <?php
 
     }
 
