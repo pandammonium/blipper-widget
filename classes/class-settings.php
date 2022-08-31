@@ -96,9 +96,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       add_options_page(
         // translators: $plugin_data['Name']: the plugin name; do not translate
         // text to be displayed in the title tags of the page when the menu is selected (not to be confused with page header):
-        __( $plugin_data['Name'] . ' TITLE TAGS settings', 'blipper-widget' ),
+        __( $plugin_data['Name'] . '  settings', 'blipper-widget' ),
         // text to be used for the menu:
-        __( $plugin_data['Name'] . ' MENU TITLE', 'blipper-widget' ),
+        __( $plugin_data['Name'], 'blipper-widget' ),
         // capability required for this menu to be displayed to the user:
         'manage_options',
         // slug name to refer to this menu by:
