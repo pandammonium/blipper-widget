@@ -47,6 +47,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       'access-token'          => '',
     );
 
+  /**
+   * @ignore
+   */
+   // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
+   private static $nota_bene = 'Nota bene \'note well\'';
+
   ///**
   //  * @since    0.0.2
   //  * @property array    $blipper_widget_settings   The widget's user-defined settings
@@ -74,7 +80,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       ) {
         add_action( 'admin_init', array( &$this, 'blipper_widget_admin_init' ) );
       }
-
     }
 
   /**
@@ -86,19 +91,26 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
     public function blipper_widget_admin_menu() {
 
-      add_options_page(
-        // page title (not to be confused with page header):
-        // translators: do not translate Blipper Widget: it is the name of this plugin
-        __( 'Blipper Widget settings', 'blipper-widget' ),
-        // menu title:
-        __( 'Blipper Widget', 'blipper-widget' ),
-        // capability required to access options page:
+      $plugin_data = $this->blipper_widget_get_plugin_data();
+
+      $result = add_options_page(
+        // translators: $plugin_data['Name']: the plugin name; do not translate
+        // text to be displayed in the title tags of the page when the menu is selected (not to be confused with page header):
+        __( $plugin_data['Name'] . ' TITLE TAGS settings', 'blipper-widget' ),
+        // text to be used for the menu:
+        __( $plugin_data['Name'] . ' MENU TITLE', 'blipper-widget' ),
+        // capability required for this menu to be displayed to the user:
         'manage_options',
-        // menu slug:
+        // slug name to refer to this menu by:
         'blipper-widget',
-        // callback function:
-        array( &$this, 'blipper_widget_options_page' )
+        // function to be called to output the content for this page:
+        array( &$this, 'blipper_widget_options_page' ),
+        // position in the menu order this item should appear:
+        8
       );
+      if ( !$result ) {
+        $this->blipper_widget_no_access_to_options();
+      }
     }
 
   /**
@@ -136,6 +148,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // field id:
         'blipper-widget-username',
         // field title:
+        // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
         array( &$this, 'wp_blipper_field_render'),
@@ -147,6 +160,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         array(
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[username]',
+          // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto username here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-username',
           'setting'     => 'username',
@@ -156,6 +170,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // field id:
         'blipper-widget-oauth-access-token',
         // field title:
+        // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
         array( &$this, 'wp_blipper_field_render'),
@@ -167,6 +182,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         array(
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[access-token]',
+          // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto access token here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-access-token',
           'setting'     => 'access-token',
@@ -188,7 +204,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
       $value = false == $settings ? $this->blipper_widget_defaults[$args['setting']] : $settings[$args['setting']];
-
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
@@ -205,21 +220,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
     public function blipper_widget_options_page() {
 
-      $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
-      $plugin_data = get_plugin_data($plugin_base, false, true);
+      $plugin_data = $this->blipper_widget_get_plugin_data();
       ?>
       <div class="wrap">
         <h2><?php
           printf(
-            // translators: %s is the name of the plugin:
-            __('%s', 'blipper-widget'),
+            // translators: 1 is the name of the plugin:
+            __('%1$s', 'blipper-widget'),
             $plugin_data['Name']
           );
         ?> settings</h2>
         <script type="text/javascript">pause(\'inside the options page\')</script>
           <?php
         if ( !current_user_can( 'manage_options' ) ) {
-          wp_die( __( 'You do not have permission to modify these settings.', 'blipper-widget' ) );
+          blipper_widget_no_access_to_options();
         } else {
           ?>
             <div class="notice">
@@ -227,10 +241,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
                 <strong>
                   <abbr title="<?php
                     printf(
-                      // translators: NB stands for Latin 'nota bene', which translates to 'note well' in English
-                      __('Nota Bene \'note well\'', 'blipper-widget')
-                    );?>">NB
-                  </abbr>
+                      // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
+                      __( '%s', 'blipper-widget'),
+                      self::$nota_bene
+                    );?>">NB</abbr>
                     <?php
                       printf(
                         // translators: %1$s: plugin name
@@ -374,39 +388,167 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
     public function blipper_widget_oauth_instructions() {
 
-      $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
-      $plugin_data = get_plugin_data($plugin_base, false, true);
-
-      _e('
-        <p>You need to authorise access to your Blipfoto account before you can use this plugin. <em>You can revoke access at any time.</em></p><p>Just follow the instructions below to authorise access and to revoke access.</p>
-        <h4>How to authorise your Blipfoto account</h4>
-        <p>To allow WordPress to access your Blipfoto account, you need to carry out a few simple steps:</p>
-        <ol>
-          <li>Open the <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">the Blipfoto apps page</a> in a new tab or window.</li>
-          <li>Press the <i>Create new app</i> button.</li>
-          <li>In the <i>Name</i> field, give your app any name you like, for example, <i>My super-duper app</i>.</li>
-          <li>The <i>Type</i> field should be set to <i>Web application</i>.</li>
-          <li>Optionally, describe your app in the <i>Description</i> field, so you know what it does.</li>
-          <li>In the <i>Website</i> field, enter the URL of your website (most likely <code> ' . home_url() . '</code>).</li>
-          <li>Leave the <i>Redirect URI</i> field blank.</li>
-          <li>Indicate that you agree to the <i>Developer rules</i>.</li>
-          <li>Press the <i>Create a new app</i> button.</li>
-          <li>You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>. Copy and paste your <i>Access Token</i> only into the corresponding field below.</li>
-        </ol>
-        <p><abbr title="Nota Bene \'note well\'">NB</abbr> Whereas authorisation gives ' . $plugin_data['Name'] . ' permission to access your Blipfoto account, it does not give ' . $plugin_data['Name'] . ' access to your password.</p>
-      <h4>How to revoke access to your Blipfoto account</h4>
-      <p>It\'s simple to revoke access. We hope you don\'t want to do this, but if you do, the instructions are laid out below:</p>
+      $plugin_data = $this->blipper_widget_get_plugin_data();
+      ?>
+      <p><?php
+        printf(
+          // translators: 'Blipfoto' is the sanme of a service and should not be translated
+          __( 'You need to authorise access to your Blipfoto account before you can use this plugin. <em>You can revoke access at any time.</em>', 'blipper-widget' )
+        ); ?>
+      </p>
+      <p><?php
+        printf(
+          __( 'Just follow the instructions below to authorise access and to revoke access.', 'blipper-widget' )
+        ); ?>
+      </p>
+      <h4><?php
+        printf(
+          // translators: 'Blipfoto' is the sanme of a service and should not be translated
+          __( 'How to authorise your Blipfoto account', 'blipper-widget' )
+        ); ?>
+      </h4>
+      <p><?php
+        printf(
+          // translators: 'Blipfoto' is the sanme of a service and should not be translated
+          __( 'To allow WordPress to access your Blipfoto account, you need to carry out a few simple steps:', 'blipper-widget' )
+        ); ?>
+      </p>
       <ol>
-        <li>Go to <a href="https://www.blipfoto.com/settings/apps" rel="nofollow">your Blipfoto app settings</a>.</li>
-        <li>Select the app whose access you want to revoke (the one you created using the above instructions).</li>
-        <li>Press the <i>Save Changes</i> button.</li>
+        <li><?php
+          printf(
+            // translators: 'Blipfoto' is the sanme of a service and should not be translated
+            __( 'Open the <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">the Blipfoto apps page</a> in a new tab or window.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Create New App' should not be translated because it is taken from the Blipfoto website
+            __( 'Press the <i>Create new app</i> button.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'super-duper' is a reduplicative of 'super' meaning 'excellent, superior'
+            __( 'In the <i>Name</i> field, give your app any name you like, for example, <i>My super-duper app</i>.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Type' should not be translated because it is taken from the Blipfoto website
+            __( 'The <i>Type</i> field should be set to <i>Web application</i>.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Description' should not be translated because it is taken from the Blipfoto website
+            __( 'Optionally, describe your app in the <i>Description</i> field, so you know what it does.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Website' should not be translated because it is taken from the Blipfoto website. %s: the URL of this website
+            __( 'In the <i>Website</i> field, enter the URL of your website (most likely <code> %s</code>).', 'blipper-widget' ),
+            home_url()
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Redirect URI' should not be translated because it is taken from the Blipfoto website
+            __( 'Leave the <i>Redirect URI</i> field blank.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Developer rules' should not be translated because it is taken from the Blipfoto website
+            __( 'Indicate that you agree to the <i>Developer rules</i>.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Create a new app' should not be translated because it is taken from the Blipfoto website
+            __( 'Press the <i>Create a new app</i> button.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators:  'Client ID', 'Client Secret' and 'Access Token'      should not be translated because it is taken from the Blipfoto website
+            __( 'You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>. Copy and paste your <i>Access Token</i> only into the corresponding field below.', 'blipper-widget' )
+          ); ?>
+        </li>
       </ol>
-      <p>Note that your plugin will no longer work. Remember to remove any widgets and shortcodes you\'ve added to your site.</p>
-      <h4>Blipfoto username</h4>
-      <p>You also need to enter your username in the appropriate field below. The widget will check that the access token is valid for your account.</p>
-      <h4>Add the widget or shortcode</h4>
-      <p>All that\'s left to do now is to add the widget to one of your widget areas (e.g. sidebar, footer) or add the shortcode (to a page, post, etc.), style it and you\'re good to go!</p>', 'blipper-widget');
-
+      <p>
+        <abbr title="<?php
+          printf(
+            // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
+            __( '%s', 'blipper-widget'),
+            self::$nota_bene
+          );?>">NB</abbr>
+        <?php
+          printf(
+            // translators: %1$s: plugin name
+            __( 'Whereas authorisation gives %1$s permission to access your Blipfoto account, it does not give %1$s access to your password.', 'blipper-widget' ),
+            $plugin_data['Name']
+        ); ?>
+      </p>
+      <h4><?php
+        printf(
+          // translators: 'Blipfoto' is the sanme of a service and should not be translated
+          __( 'How to revoke access to your Blipfoto account', 'blipper-widget' )
+        ); ?>
+      </h4>
+      <p><?php
+        printf(
+          __( 'It\'s simple to revoke access. We hope you don\'t want to do this, but if you do, the instructions are laid out below:', 'blipper-widget' )
+        ); ?>
+      </p>
+      <ol>
+        <li><?php
+          printf(
+            // translators: 'Save Changes' should not be translated because it is taken from the Blipfoto website
+            __( 'Go to <a href="https://www.blipfoto.com/settings/apps" rel="nofollow">your Blipfoto app settings</a>.', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Save Changes' should not be translated because it is taken from the Blipfoto website
+            __( 'Select the app whose access you want to revoke (the one you created using the above instructions).', 'blipper-widget' )
+          ); ?>
+        </li>
+        <li><?php
+          printf(
+            // translators: 'Save Changes' should not be translated because it is taken from the Blipfoto website
+            __( 'Press the <i>Save Changes</i> button.', 'blipper-widget' )
+          ); ?>
+        </li>
+      </ol>
+      <p><?php
+        printf(
+          __( 'Note that your plugin will no longer work. Remember to remove any widgets and shortcodes you\'ve added to your site.', 'blipper-widget' )
+        ); ?>
+      </p>
+      <h4><?php
+        printf(
+          // translators: 'Blipfoto' is the sanme of a service and should not be translated
+          __( 'Blipfoto username', 'blipper-widget' )
+        ); ?>
+      </h4>
+      <p><?php
+        printf(
+          __( 'You also need to enter your username in the appropriate field below. The widget will check that the access token is valid for your account.', 'blipper-widget' )
+        ); ?>
+      </p>
+      <h4><?php
+        printf(
+          __( 'Add the widget or shortcode', 'blipper-widget' )
+        ); ?>
+      </h4>
+      <p><?php
+        printf(
+          // translators:
+          __( 'All that\'s left to do now is to add the widget to one of your widget areas (e.g. sidebar, footer) or add the shortcode (to a page, post, etc.), style it and you\'re good to go!', 'blipper-widget' )
+        ); ?>
+      </p>
+      <?php
     }
 
   /**
@@ -435,6 +577,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
+          // translators: do not translate 'Blipfoto': it is the name of a service
           __( 'Unable to connect to Blipfoto. Please check the OAuth settings.', 'blipper-widget' )
         );
       }
@@ -462,6 +605,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-credentials',
+            // translators: do not translate 'Blipfoto': it is the name of a service
             __( 'Unable to connect to your Blipfoto user profile.<br>Please check you have correctly copied <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">your access token at Blipfoto</a> and pasted it into the settings below.<br>If you have refreshed your Blipfoto OAuth access token, you need to update it below.<br>If you have entered it correctly, try <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Blipfoto</a> and entering it below.', 'blipper-widget' )
           );
         }
@@ -511,5 +655,34 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
     }
 
+  /**
+   * What to do if the user doesn't have permission to acess the options.
+   *
+   * @since 1.2.1
+   * @author pandammonium
+   * @return void
+   */
+    private function blipper_widget_no_access_to_options() {
+
+      wp_die( __( 'You do not have permission to modify these settings.', 'blipper-widget' ) );
+
+    }
+
+  /**
+   * Gets the header information from the main plugin file.
+   *
+   * @since 1.2.1
+   * @author pandammonium
+   * @return array
+   */
+    private function blipper_widget_get_plugin_data() {
+
+      $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
+      $plugin_data = get_plugin_data($plugin_base, false, true);
+      return $plugin_data;
+
+    }
+
   }
+
 }
