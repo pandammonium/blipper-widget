@@ -143,7 +143,7 @@ Using the shortcode will style tour latest blip according to your CSS.
 
 = How to use the shortcode =
 
-NB If you don't know how to use WordPress shortcodes, please refer to [the WordPress codex article on shortcodes](https://codex.wordpress.org/Shortcode). If you don't know how to use the Shortcode block, please refer to (the WordPress support article on Shortcode blocks)[https://wordpress.org/support/article/shortcode-block/].
+NB If you don't know how to use WordPress shortcodes, please refer to [the WordPress codex article on shortcodes](https://codex.wordpress.org/Shortcode). If you don't know how to use the Shortcode block, please refer to [the WordPress support article on Shortcode blocks](https://wordpress.org/support/article/shortcode-block/).
 
 The Blipper Widget shortcode `[blipper_widget]` can be used singly or as a pair of start and end shortcodes:
 
