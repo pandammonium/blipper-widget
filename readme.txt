@@ -139,7 +139,7 @@ In block-enabled themes, Blipper Widget is added with the shortcode. It can be a
 
 The shortcode is also used to place Blipper Widget outside widget areas, such as posts and pages in both classic and block-enabled themes.
 
-Using the shortcode will style tour latest blip according to your CSS.
+Using the shortcode will style your latest blip according to your CSS.
 
 = How to use the shortcode =
 
