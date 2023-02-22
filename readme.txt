@@ -5,7 +5,7 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image,shortcode,shortcodes
 Requires at least: 4.3
 Tested up to: 6.1.1
-Requires PHP: 7.4+
+Requires PHP: 8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ NB Blipper Widget is a classic widget with a shortcode. Although there is no Bli
 There are two ways to get Blipper Widget to work with block-enabled themes. The first is a workaround; the second uses existing Blipper Widget functionality:
 
 1. Install [a plugin that enables classic widgets](https://en-gb.wordpress.org/plugins/search/classic+widgets/). This will allow you to add Blipper Widget to any widget-enabled location on your site.
-2. Use the Blipper Widget shortcode in a WP [Shortcode block](https://wordpress.org/support/article/shortcode-block/). Example: [blipper_widget title='Blipper Widget' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]
+2. Use the Blipper Widget shortcode in a WP [Shortcode block](https://wordpress.org/support/article/shortcode-block/). Example: `[blipper_widget title='Blipper Widget' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]`.
 
 ***
 
