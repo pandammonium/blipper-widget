@@ -5,7 +5,7 @@ Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image,shortcode,shortcodes
 Requires at least: 4.3
 Tested up to: 6.1.1
-Requires PHP: 8.2
+Requires PHP: 7.4+
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
