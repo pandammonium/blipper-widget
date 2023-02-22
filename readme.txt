@@ -1,5 +1,5 @@
 === Blipper Widget ===
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Contributors: pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image,shortcode,shortcodes

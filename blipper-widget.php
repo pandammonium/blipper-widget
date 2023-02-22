@@ -3,9 +3,9 @@
 /**
   * The main file for Blipper Widget.
   * Plugin Name:        Blipper Widget
-  * Plugin URI:         http://pandammonium.org/wordpress-dev/blipper-widget/
+  * Plugin URI:         https://wordpress.org/plugins/blipper-widget/
   * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
-  * Version:            1.2.1
+  * Version:            1.2.2
   * Author:             Caity Ross
   * Author URI:         http://pandammonium.org/
   * License:            GPL-2.0+
