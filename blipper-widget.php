@@ -71,14 +71,16 @@ if (!function_exists('blipper_widget_add_settings_link')) {
   *
   * @since 0.0.1
   */
-  function blipper_widget_add_settings_link( $links ) {
-    $links[] = '<a href="' .
-      esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) .
-      '">' . __('Settings', 'blipper-widget') . '</a>';
+  function blipper_widget_add_settings_link( $links, $file ) {
 
+    if ( strpos( $file, 'blipper-widget.php' ) !== false ) {
+
+      $links = array_merge( $links, array( '<a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">' . __('Settings', 'blipper-widget') . '</a>' ) );
+
+    }
     return $links;
   }
-  add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'blipper_widget_add_settings_link' );
+  add_filter( 'plugin_action_links', 'blipper_widget_add_settings_link', 10, 2 );
 }
 
 if (!function_exists('blipper_widget_exception')) {
