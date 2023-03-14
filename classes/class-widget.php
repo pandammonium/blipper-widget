@@ -549,7 +549,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e, '', true );
 
         } catch ( blipper_widget_BaseException $e ) {
 
@@ -1522,7 +1522,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param    $additional_info    Extra information to help the user.
      * @since    1.1.1
       */
-    private function blipper_widget_display_error_msg($e, $additional_info) {
+    private function blipper_widget_display_error_msg($e, $additional_info, $request_limit_reached) {
 
       if ( BW_DEBUG ) {
         error_log( $this->blipper_widget_get_exception_class( $e ) . '.' );
@@ -1543,7 +1543,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param    $additional_info    Extra information to help the user.
      * @since    1.1.1
       */
-    private function blipper_widget_display_private_error_msg($e, $additional_info, $request_limit_reached ) {
+    private function blipper_widget_display_private_error_msg($e, $additional_info, bool $request_limit_reached = false ) {
 
       if ( BW_DEBUG ) {
         error_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . $e->getMessage() );
