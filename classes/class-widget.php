@@ -354,11 +354,11 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again.', 'blipper-widget' ) );
+          $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again', 'blipper-widget' ) );
 
       } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, __( 'Something has gone wrong getting the user settings.', 'blipper-widget' ) );
+        $this->blipper_widget_display_error_msg( $e, __( 'Something has gone wrong getting the user settings', 'blipper-widget' ) );
 
       }
 
@@ -399,7 +399,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user settings.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user settings' );
 
         }
 
@@ -486,11 +486,11 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( blipper_widget_OAuthException $e ) {
 
-        $this->blipper_widget_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+        $this->blipper_widget_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue' );
 
       } catch ( Exception $e ) {
 
-        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user.' );
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the user' );
 
       }
 
@@ -518,11 +518,11 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Please try again later.' );
+          $this->blipper_widget_display_error_msg( $e, 'Please try again later' );
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong creating the client.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong creating the client' );
 
         }
       }
@@ -557,11 +557,11 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
         }
       } else {
         if ( BW_DEBUG ) {
@@ -612,7 +612,7 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( Exception $e ) {
 
-        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user profile.' );
+        $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user profile' );
 
       }
 
@@ -635,7 +635,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user settings.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user settings' );
 
         }
 
@@ -660,7 +660,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account' );
 
         }
 
@@ -695,7 +695,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal' );
 
         }
 
@@ -720,7 +720,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips).' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips)' );
 
         }
 
@@ -740,7 +740,7 @@ if (!class_exists('Blipper_Widget')) {
               $continue = true;
             break;
             default:
-              throw new blipper_widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' .count( $blips ) . '. Something has gone wrong.  Please try again.' );
+              throw new blipper_widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' . count( $blips ) . '. Something has gone wrong.  Please try again' );
           }
 
         } catch ( blipper_widget_BaseException $e ) {
@@ -782,7 +782,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details' );
 
         }
 
@@ -808,7 +808,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text' );
 
         }
       }
@@ -840,7 +840,7 @@ if (!class_exists('Blipper_Widget')) {
           $this->blipper_widget_display_error_msg( $e, '' );
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the image URL.' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
 
         }
 
@@ -963,7 +963,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip).' );
+          $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
 
         } finally {
           if ( BW_DEBUG ) {
@@ -1563,10 +1563,10 @@ if (!class_exists('Blipper_Widget')) {
       if ( $request_limit_reached ) {
         echo '<p>' .  __( 'The Blipfoto request limited has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
       } else {
-        if ( current_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+        if ( falsecurrent_user_can( 'manage_options' ) ) {
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         } else {
-          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '</p>';
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         }
       }
 
