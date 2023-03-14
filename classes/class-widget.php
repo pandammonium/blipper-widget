@@ -356,11 +356,11 @@ if (!class_exists('Blipper_Widget')) {
 
           $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again.', 'blipper-widget' ) );
 
-        } catch ( Exception $e ) {
+      } catch ( Exception $e ) {
 
           $this->blipper_widget_display_error_msg( $e, __( 'Something has gone wrong getting the user settings.', 'blipper-widget' ) );
 
-        }
+      }
 
       return $new_settings;
 
@@ -610,7 +610,7 @@ if (!class_exists('Blipper_Widget')) {
 
         $this->blipper_widget_display_error_msg( $e, '' );
 
-        } catch ( Exception $e ) {
+      } catch ( Exception $e ) {
 
         $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting your user profile.' );
 

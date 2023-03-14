@@ -1,24 +1,24 @@
 <?php
 
 /**
-  * The main file for Blipper Widget.
-  * Plugin Name:        Blipper Widget
-  * Plugin URI:         https://wordpress.org/plugins/blipper-widget/
-  * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
-  * Version:            1.2.2
-  * Author:             Caity Ross
-  * Author URI:         http://pandammonium.org/
-  * License:            GPL-2.0+
-  * License URI:        http://www.gnu.org/licenses/gpl-2.0.txt
-  * Text Domain:        blipper-widget
-  * Domain Path:        /languages
-  * @link               http://pandammonium.org/wordpress-dev/blipper-widget/
-  * @since              0.0.1
-  * @package            Blipper_Widget
-  * @author             pandammonium
-  * @license            GPLv2 or later
-  * @wordpress-plugin
-  */
+ * The main file for Blipper Widget.
+ * Plugin Name:        Blipper Widget
+ * Plugin URI:         https://wordpress.org/plugins/blipper-widget/
+ * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
+ * Version:            1.2.2
+ * Author:             Caity Ross
+ * Author URI:         http://pandammonium.org/
+ * License:            GPL-2.0+
+ * License URI:        http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:        blipper-widget
+ * Domain Path:        /languages
+ * @link               http://pandammonium.org/wordpress-dev/blipper-widget/
+ * @since              0.0.1
+ * @package            Blipper_Widget
+ * @author             pandammonium
+ * @license            GPLv2 or later
+ * @wordpress-plugin
+ */
 
 /**
  * Copyright 2015 Caity Ross
