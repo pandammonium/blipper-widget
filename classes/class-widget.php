@@ -1546,10 +1546,10 @@ if (!class_exists('Blipper_Widget')) {
     private function blipper_widget_display_private_error_msg($e, $additional_info, $request_limit_reached ) {
 
       if ( BW_DEBUG ) {
-        error_log( 'Blipper Widget: ' . $e->getMessage() . '. '. $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() );
-        error_log( 'Blipper Widget: ' . $e->getMessage() . '. ' );
+        error_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . $e->getMessage() );
+        error_log( 'In ' . $e->getFile() . ' on line ' . $e->getLine() );
       }
-      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>. ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
+      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>. ERROR ' . $e->getCode() . ': ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
 
     }
 
@@ -1561,7 +1561,7 @@ if (!class_exists('Blipper_Widget')) {
     private function blipper_widget_display_public_error_msg( $request_limit_reached ) {
 
       if ( $request_limit_reached ) {
-        echo '<p>' .  __( 'The Blipfoto request limited has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
+        echo '<p>' .  __( 'The Blipfoto request limit has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '.</p>';
       } else {
         if ( falsecurrent_user_can( 'manage_options' ) ) {
           echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
