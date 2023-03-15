@@ -1549,7 +1549,7 @@ if (!class_exists('Blipper_Widget')) {
         error_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . $e->getMessage() );
         error_log( 'In ' . $e->getFile() . ' on line ' . $e->getLine() );
       }
-      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>. ERROR ' . $e->getCode() . ': ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
+      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>: ERROR ' . $e->getCode() . ' ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
 
     }
 
