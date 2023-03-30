@@ -2,7 +2,7 @@
 Stable tag: 1.2.3
 Requires at least: 4.3
 Tested up to: 6.2
-Requires PHP: 7.4
+Requires PHP: 8.0
 Contributors: lumpysimon, pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,blipfoto,widgets,daily photo,365 project,images,image,shortcodes
@@ -107,6 +107,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.2.3 =
+
+* Enhances performance by caching the generated HTML that renders the blip.
 
 = 1.2.2 =
 

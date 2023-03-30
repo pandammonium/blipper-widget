@@ -8,7 +8,7 @@
  * Version:            1.2.3
  * Requires at least:  4.3
  * Tested up to:       6.2
- * Requires PHP:       7.4
+ * Requires PHP:       8.0
  * Author:             Caity Ross
  * Author URI:         http://pandammonium.org/
  * License:            GPL-2.0 or later
@@ -98,4 +98,32 @@ if (!function_exists('blipper_widget_exception')) {
     _e('<p class="blipper-widget error">Blipper Widget: An unexpected error has occurred. ' . $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
   set_exception_handler('blipper_widget_exception');
+}
+
+if ( !function_exists( 'blipper_widget_log' ) ) {
+  /**
+   * Logs the provided data either to the WP error log or to the display.
+   *
+   * Uses the `$echo` flag to determine whether to log to the WP error log or
+   * to the display.
+   *
+   * @author pandammonium
+   * @since 1.2.3
+   *
+   * @param string sdata_name The name of or label for the data.
+   * @param mixed $data The data to be logged.
+   * @param bool $echo
+   * * `true`: Echo the data name and the data
+   * * `false`: Send the data name and the data to the error log (default)
+   */
+  function blipper_widget_log( string $data_name, mixed $data, bool $echo = false ) {
+    if ( BW_DEBUG ) {
+      $bw_prefix = 'BW | ';
+      if ( $echo ) {
+        echo $bw_prefix . print_r( $data_name, false ) . ': ' . var_export( $data, false );
+      } else {
+        error_log( $bw_prefix . print_r( $data_name, true ) . ': ' . var_export( $data, true ) );
+      }
+    }
+  }
 }
