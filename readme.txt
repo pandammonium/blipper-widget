@@ -108,6 +108,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 == Changelog ==
 
+= 1.2.2 =
+
+* Enhances formatting of examples.
+
 = 1.2.1 =
 
 * Ensures compatability with WordPress 6.1.1.
