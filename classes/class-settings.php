@@ -11,6 +11,7 @@
   * @author    pandammonium   pandammonium
   * @since    0.0.2
   * @license  GPLv2 or later
+  * @package  Pandammonium-BlipperWidget-Settings
   *
   */
 

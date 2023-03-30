@@ -5,8 +5,11 @@
   * @author   pandammonium
   * @since    0.0.2
   * @license  GPLv2 or later
+  * @package  Pandammonium-BlipperWidget-Widget
   *
   */
+
+namespace blipper_widget\widget;
 
 // If this file is called directly, abort:
 defined( 'ABSPATH' ) or die();

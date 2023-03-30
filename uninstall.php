@@ -9,6 +9,7 @@
   * @author   pandammonium
   * @since    0.0.3
   * @license  GPLv2 or later
+  * @package  Pandammonium-BlipperWidget-Uninstall
   */
 
 // If this file is called directly, abort:

@@ -23,7 +23,7 @@
       <extensions>
         <extension>php</extension>
       </extensions>
-      <default-package-name>BlipperWidget</default-package-name>
+      <default-package-name>Pandammonium-BlipperWidget</default-package-name>
       <include-source>true</include-source>
     </api>
   </version>
