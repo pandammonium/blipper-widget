@@ -33,36 +33,41 @@ if (!class_exists('Blipper_Widget')) {
       * @since    0.0.1
       * @property array     $default_setting_values   The widget's default settings
       */
-    private $default_setting_values = array (
-      'widget'     => array (
-        'border-style'           => 'inherit',
-        'border-width'           => 'inherit',
-        'border-color'           => 'inherit',
-        'background-color'       => 'inherit',
-        'color'                  => 'inherit',
-        'link-color'             => 'initial',
-        'padding'                => '0',                     // in pixels
-        'style-control'          => 'widget-settings-only',  // 'css'
-      ),
-      'shortcode'  => array (
-        'title-level'            => 'h2',                    // 'h1'–'h6','p'
-        'display-desc-text'      => 'hide',                  // 'show'
-      ),
-      'common'     => array (
-        'title'                  => 'My latest blip',
-        'display-date'           => 'show',                  // 'hide'
-        'display-journal-title'  => 'hide',                  // 'show'
-        'display-powered-by'     => 'hide',                  // 'show'
-        'add-link-to-blip'       => 'hide',                  // 'show'
-      ),
-    );
+    private $default_setting_values = array ();
 
-  /**
-    * @since    1.1.1
-    * @property array     $style_control_classes   The classes used for styling
-    *                                              the widget.
-    */
-    private $style_control_classes = array ();
+    /**
+     * @var string Defines the length of time the cache should be retained for in
+     * minutes. Must have a numeric value (i.e. `true ===
+     * is_numeric($this->cache_expiry)`).
+     * Default: `'60'`.
+     * @access private
+     *
+     * @author pandammonium
+     * @since 1.2.3
+     */
+    private string $cache_expiry;
+    /**
+     * @var string The key used to identify each cache. Generated using the
+     * MD5 algorithm, which isn't recommended for secure cryptographic
+     * applications; its use here is only to generate a unique key from the
+     * provided data, so additional security is not required.
+     * * Default: `''`.
+     * @access private
+     *
+     * @author pandammonium
+     * @since 1.2.3
+     */
+    private string $cache_key;
+    /**
+     * @const The prefix used in the cache key to distinguish it from other
+     * transient keys.
+     * * Default: `''`.
+     * @access private
+     *
+     * @author pandammonium
+     * @since 1.2.3
+     */
+    private const CACHE_PREFIX = 'bw_';
 
     /**
       * @since    1.1.1
@@ -99,8 +104,36 @@ if (!class_exists('Blipper_Widget')) {
       // return true if the widget is on a sidebar.  The widget isn't necessarily
       // on a sidebar when the OAuth access settings are set.
       $this->load_dependencies();
+
+      $this->default_setting_values = array (
+        'widget'     => array (
+          'border-style'           => 'inherit',
+          'border-width'           => 'inherit',
+          'border-color'           => 'inherit',
+          'background-color'       => 'inherit',
+          'color'                  => 'inherit',
+          'link-color'             => 'initial',
+          'padding'                => '0',                     // in pixels
+          'style-control'          => 'widget-settings-only',  // 'css'
+        ),
+        'shortcode'  => array (
+          'title-level'            => 'h2',                    // 'h1'–'h6','p'
+          'display-desc-text'      => 'hide',                  // 'show'
+        ),
+        'common'     => array (
+          'title'                  => 'My latest blip',
+          'display-date'           => 'show',                  // 'hide'
+          'display-journal-title'  => 'hide',                  // 'show'
+          'display-powered-by'     => 'hide',                  // 'show'
+          'add-link-to-blip'       => 'hide',                  // 'show'
+        ),
+      );
       $this->settings = new blipper_widget_settings();
+      $this->style_control_classes = array ();
       $this->client = null;
+      $this->cache_expiry = '60';
+      $this->cache_key = '';
+
 
       // function to load WP Blipper:
       // add_action( 'admin_notices', 'blipper_widget_settings_check' );
@@ -125,13 +158,12 @@ if (!class_exists('Blipper_Widget')) {
 
       echo $args['before_widget'];
 
+      $the_title = '';
       if ( ! empty( $settings['title'] ) ) {
-        echo $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
+        $the_title = $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
       }
 
-      if ( $this->blipper_widget_create_blipfoto_client( $settings ) ) {
-        $this->blipper_widget_display_blip( $settings, true );
-      }
+      echo $this->render_the_blip( $args, $settings, $the_title );
 
       echo $args['after_widget'];
 
@@ -169,7 +201,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function update( $new_settings, $old_settings ) {
 
-      $settings = null;
+      $settings = array();;
       $title                  = $this->blipper_widget_validate( $new_settings, $old_settings, 'title' );
       $display_date           = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-date' );
       $display_journal_title  = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-journal-title' );
@@ -222,33 +254,68 @@ if (!class_exists('Blipper_Widget')) {
      */
     public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode="", $print=false) {
 
-    $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
+      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      blipper_widget_log( 'arguments', func_get_args() );
 
-    $args = shortcode_atts( $settings, $atts, $shortcode );
-    extract( $args );
-    if ( BW_DEBUG ) {
-      error_log( "Collated arguments: " . json_encode( $args, JSON_PRETTY_PRINT ) . "\n" );
-    }
+      $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
 
-     $the_title = '';
-    if ( ! empty( $args['title'] ) ) {
-      if ( ! ( $args['title-level'] === 'h1' ||
-               $args['title-level'] === 'h2' ||
-               $args['title-level'] === 'h3' ||
-               $args['title-level'] === 'h4' ||
-               $args['title-level'] === 'h5' ||
-               $args['title-level'] === 'h6' ||
-               $args['title-level'] === 'p' ) ) {
-        $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
+      $args = shortcode_atts( $settings, $atts, $shortcode );
+      extract( $args );
+
+      $the_title = '';
+      if ( ! empty( $args['title'] ) ) {
+        if ( ! ( $args['title-level'] === 'h1' ||
+                 $args['title-level'] === 'h2' ||
+                 $args['title-level'] === 'h3' ||
+                 $args['title-level'] === 'h4' ||
+                 $args['title-level'] === 'h5' ||
+                 $args['title-level'] === 'h6' ||
+                 $args['title-level'] === 'p' ) ) {
+          $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
+        }
+        $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
       }
-      $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
+
+      return $this->render_the_blip( $args, $settings, $the_title, $content );
+
     }
 
-    if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-      return $the_title . $this->blipper_widget_get_blip( $args, false, $content );
-    }
+    /**
+     * Gets the HTML to render the blip.
+     *
+     * If the blip has been cached, the cached blip is used; otherwise the HTML is
+     * generated from scratch.
+     *
+     * @author pandammonium
+     * @since 1.2.3
+     *
+     * @param string[] $args
+     * @param string[] $settings The array of settings from either the widget or the
+     * shortcode.
+     * @param string The formatted title to be used for this blip.
+     * @return string|bool The HTML that will render the blip.
+     */
+    private function render_the_blip( array $args, array $settings, string $the_title, $content = null ) {
 
-  }
+      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      blipper_widget_log( 'arguments', func_get_args() );
+
+      // blipper_widget_log( 'settings as string', implode( ' ', $settings ) );
+      $cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $settings ) . $the_title );
+      blipper_widget_log( 'cache_key', $cache_key );
+      $result = $this->get_cache( $cache_key, $this->cache_expiry );
+      blipper_widget_log( 'cache result', false === $result ? 'not found' : 'found' );
+
+      if ( false === $result ) {
+        if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
+           $the_blip = $the_title . $this->blipper_widget_get_blip( $args, false, $content );
+          $this->set_cache( $the_blip );
+          return $the_blip;
+        }
+      } else {
+        return $result;
+      }
+    }
 
     /**
       * Validate the input.
@@ -413,7 +480,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function load_dependencies() {
 
-      require( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
+      require_once( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
 
       $this->load_blipfoto_dependencies();
 
@@ -1124,7 +1191,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
 
-      echo $this->blipper_widget_get_blip( $settings, $is_widget, $content );
+      return $this->blipper_widget_get_blip( $settings, $is_widget, $content );
 
     }
 
@@ -1685,6 +1752,72 @@ if (!class_exists('Blipper_Widget')) {
         }( jQuery ) );
         </script>
       <?php
+    }
+
+    /**
+     * Caches the given data.
+     *
+     *
+     *
+     * @author dartiss, pandammonium
+     * @since 2.0.0
+     *
+     * @param int $i The current line number of the readme file.
+     * @return void
+     */
+    private function set_cache( mixed $data_to_cache ): void {
+
+      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      blipper_widget_log( 'arguments', func_get_args() );
+
+      $result = false;
+
+      $cached_info = array();
+      try {
+        if ( is_numeric( $this->cache_expiry ) ) {
+
+          $transient = get_transient( $this->cache_key );
+          if ( false === $transient ) {
+            $result = set_transient( $this->cache_key, $data_to_cache, 60 * $this->cache_expiry );
+          } else {
+            // Don't fail if the cache already exists:
+            $result = true;
+          }
+        } else {
+          if ( 'no' !== strtolower( $this->cache_expiry ) ) {
+            throw new Exception( 'Cache expiration is invalid. Expected integer; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
+          }
+        }
+      } catch( Exception $e ) {
+        blipper_widget_exception( $e );
+      }
+      try {
+        if ( false === $result ) {
+          $deleted = delete_transient( $this->cache_key );
+          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( $this->cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
+          throw new Exception( 'Failed to set cache ' . $this->cache_key . '. ' . $deleted_msg, E_USER_WARNING );
+        }
+      } catch( Exception $e ) {
+        blipper_widget_exception( $e );
+      }
+    }
+
+    private function get_cache( string $cache_key, string $cache_expiry ): bool|array|string {
+
+      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      blipper_widget_log( 'arguments', func_get_args() );
+
+      $this->cache_expiry = $cache_expiry;
+      $this->cache_key = $cache_key;
+
+      blipper_widget_log( 'cache expiry', $this->cache_expiry );
+      if ( is_numeric( $this->cache_expiry ) ) {
+        $transient = get_transient( $this->cache_key );
+        blipper_widget_log( 'transient', $transient );
+        return $transient;
+      } else {
+        throw new PRP_Exception( 'Cache expiry time is invalid: ' . $this->cache_expiry, PRP_Exception::PRP_ERROR_BAD_CACHE );
+      }
     }
 
   }
