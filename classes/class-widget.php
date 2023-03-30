@@ -21,18 +21,18 @@ use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResp
 use blipper_widget\settings\blipper_widget_settings;
 
 if (!class_exists('Blipper_Widget')) {
-/**
- * The Blipper Widget class.
- *
- * @since 0.0.2
- */
+  /**
+   * The Blipper Widget class.
+   *
+   * @since 0.0.2
+   */
   class Blipper_Widget extends WP_Widget {
 
-  /**
-    * The default widget settings.
-    * @since    0.0.1
-    * @property array     $default_setting_values   The widget's default settings
-    */
+    /**
+      * The default widget settings.
+      * @since    0.0.1
+      * @property array     $default_setting_values   The widget's default settings
+      */
     private $default_setting_values = array (
       'widget'     => array (
         'border-style'           => 'inherit',
@@ -64,25 +64,31 @@ if (!class_exists('Blipper_Widget')) {
     */
     private $style_control_classes = array ();
 
-  /**
-    * @since    0.0.1
-    * @property blipper_widget_Client     $client   The Blipfoto client
-    */
-    private $client;
+    /**
+      * @since    1.1.1
+      * @property array     $style_control_classes   The classes used for styling
+      *                                              the widget.
+      */
+      private $style_control_classes;
 
-  /**
-    * @since    0.0.1
-    * @property blipper_widget_settings   $settings The Blipper Widget settings
-    */
-    private $settings;
+    /**
+      * @since    0.0.1
+      * @property blipper_widget_Client     $client   The Blipfoto client
+      */
+      private $client;
 
-  /**
-    * Construct an instance of the widget.
-    *
-    * @since    0.0.1
-    */
+    /**
+      * @since    0.0.1
+      * @property blipper_widget_settings   $settings The Blipper Widget settings
+      */
+      private $settings;
+
+    /**
+      * Construct an instance of the widget.
+      *
+      * @since    0.0.1
+      */
     public function __construct() {
-
       $params = array(
         'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
         'name'        => __( 'Blipper Widget', 'blipper-widget' ),
@@ -108,13 +114,13 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Render the widget on the WP site in a widget-enabled area.  This is the
-    * front-end of the widget.
-    *
-    * @since    0.0.1
-    * @api
-    */
+    /**
+      * Render the widget on the WP site in a widget-enabled area.  This is the
+      * front-end of the widget.
+      *
+      * @since    0.0.1
+      * @api
+      */
     public function widget( $args, $settings ) {
 
       echo $args['before_widget'];
@@ -131,17 +137,17 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Render the form used in the widget admin settings panel or the WordPress
-    * customiser.  This is the back-end of the widget.  The form displays the
-    * settings already saved in the database, and allows the user to change them
-    * if desired.
-    *
-    * @since    0.0.1
-    * @api
-    * @param    array     $settings  The settings currently saved in the database
-    * @return void
-    */
+    /**
+      * Render the form used in the widget admin settings panel or the WordPress
+      * customiser.  This is the back-end of the widget.  The form displays the
+      * settings already saved in the database, and allows the user to change them
+      * if desired.
+      *
+      * @since    0.0.1
+      * @api
+      * @param    array     $settings  The settings currently saved in the database
+      * @return void
+      */
     public function form( $settings ) {
 
       if ( BW_DEBUG ) {
@@ -151,16 +157,16 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Update the widget settings that were set using the form in the admin
-    * panel/customiser.
-    *
-    * @since    0.0.1
-    * @api
-    * @param    array     $new_settings     The settings the user wants to change
-    * @param    array     $old_settings     The settings currently saved in the database
-    * @return   array     $settings         The validated settings based on the user's input to be saved in the database
-    */
+    /**
+      * Update the widget settings that were set using the form in the admin
+      * panel/customiser.
+      *
+      * @since    0.0.1
+      * @api
+      * @param    array     $new_settings     The settings the user wants to change
+      * @param    array     $old_settings     The settings currently saved in the database
+      * @return   array     $settings         The validated settings based on the user's input to be saved in the database
+      */
     public function update( $new_settings, $old_settings ) {
 
       $settings = null;
@@ -203,22 +209,22 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-   * Add a shortcode so the widget can be placed in a post or on a page.
-   *
-   * @param array    $atts        The settings (attributes) included in the
-   *                                shortcode.  Not all the default settings are
-   *                                necessarily supported.
-   * @param string   $content     The content, if any, from between the shortcode
-   *                                tags.
-   *
-   * @since 1.1
-   */
-  public function blipper_widget_shortcode_blip_display( $atts, $content=null, $shortcode="", $print=false) {
 
     if ( BW_DEBUG ) {
       error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
     }
+    /**
+     * Add a shortcode so the widget can be placed in a post or on a page.
+     *
+     * @param array    $atts        The settings (attributes) included in the
+     *                                shortcode.  Not all the default settings are
+     *                                necessarily supported.
+     * @param string   $content     The content, if any, from between the shortcode
+     *                                tags.
+     *
+     * @since 1.1
+     */
+    public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode="", $print=false) {
 
     $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
 
@@ -248,18 +254,18 @@ if (!class_exists('Blipper_Widget')) {
 
   }
 
-  /**
-    * Validate the input.
-    * Make sure the input comprises only printable/alphanumeric (depending on the
-    * field) characters; otherwise, return an empty string/the default value.
-    *
-    * @since    0.0.1
-    * @param    array     $new_settings     The setting the user wants to change
-    * @param    array     $old_settings     The setting currently saved in the
-    *                                         database
-    * @param    string    $setting_field    The setting to validate.
-    * @return   string    $settings         The validated setting.
-    */
+    /**
+      * Validate the input.
+      * Make sure the input comprises only printable/alphanumeric (depending on the
+      * field) characters; otherwise, return an empty string/the default value.
+      *
+      * @since    0.0.1
+      * @param    array     $new_settings     The setting the user wants to change
+      * @param    array     $old_settings     The setting currently saved in the
+      *                                         database
+      * @param    string    $setting_field    The setting to validate.
+      * @return   string    $settings         The validated setting.
+      */
     private function blipper_widget_validate( $new_settings, $old_settings, $setting_field ) {
 
       if ( BW_DEBUG ) {
@@ -321,15 +327,15 @@ if (!class_exists('Blipper_Widget')) {
       return $settings;
     }
 
-  /**
-    * Get the values to display on the settings form.
-    *
-    * @since    0.0.1
-    * @param    array     $settings         The widget settings saved in the
-    *                                         database.
-    * @return   array                       The widget settings saved in the
-    *                                         database
-    */
+    /**
+      * Get the values to display on the settings form.
+      *
+      * @since    0.0.1
+      * @param    array     $settings         The widget settings saved in the
+      *                                         database.
+      * @return   array                       The widget settings saved in the
+      *                                         database
+      */
     private function blipper_widget_get_display_values( $settings ) {
 
       if ( BW_DEBUG ) {
@@ -406,11 +412,11 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Load the files this widget needs.
-    *
-    * @since    0.0.1
-    */
+    /**
+      * Load the files this widget needs.
+      *
+      * @since    0.0.1
+      */
     private function load_dependencies() {
 
       require( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
@@ -419,11 +425,11 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Load the Blipfoto API.
-    *
-    * @since    0.0.1
-    */
+    /**
+      * Load the Blipfoto API.
+      *
+      * @since    0.0.1
+      */
     private function load_blipfoto_dependencies() {
 
       $folders = array(
@@ -456,15 +462,15 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
-  /**
-    * Construct an instance of the Blipfoto client and test it's ok
-    *
-    * @since    0.0.1
-    * @param    array     $settings         The settings just saved in the
-    *                                         database
-    * @return   bool      $client_ok        True if the client was created
-    *                                         successfully, else false
-    */
+    /**
+      * Construct an instance of the Blipfoto client and test it's ok
+      *
+      * @since    0.0.1
+      * @param    array     $settings         The settings just saved in the
+      *                                         database
+      * @return   bool      $client_ok        True if the client was created
+      *                                         successfully, else false
+      */
     private function blipper_widget_create_blipfoto_client( $settings ) {
 
       $client_ok = false;
@@ -573,23 +579,23 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-    * Get the blip using the settings stored in the database.
-    *
-    * @since    1.1
-    * @param    array     $settings         The settings saved in the database
-    * @param    bool      $is_widget        True if the blip is to be displayed in
-    *                                         a widget; false if it is to be
-    *                                         displayed elsewhere
-    * @param    string    $content          The content from the shortcode (i.e.
-    *                                         the stuff that goes between the
-    *                                         opening shortcode tag and the
-    *                                         closing shortcode tag).  Not
-    *                                         accessible from the widget settings
-    *                                         when in a widgety area
-    * @return   string                      The blip encoded in HTML
-    */
-    private function blipper_widget_get_blip( $settings, $is_widget, $content=null ) {
+    /**
+      * Get the blip using the settings stored in the database.
+      *
+      * @since    1.1
+      * @param    array     $settings         The settings saved in the database
+      * @param    bool      $is_widget        True if the blip is to be displayed in
+      *                                         a widget; false if it is to be
+      *                                         displayed elsewhere
+      * @param    string    $content          The content from the shortcode (i.e.
+      *                                         the stuff that goes between the
+      *                                         opening shortcode tag and the
+      *                                         closing shortcode tag).  Not
+      *                                         accessible from the widget settings
+      *                                         when in a widgety area
+      * @return   string                      The blip encoded in HTML
+      */
+    private function blipper_widget_get_blip( $settings, $is_widget, $content = null ) {
 
       $user_profile = null;
       $user_settings = null;
@@ -978,168 +984,170 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-  /**
-   * Return the class or style attributes (and their values) used to style the
-   * given element.
-   *
-   * @since    1.1.1
-   * @access   private
-   * @param    string     $element         The element to be styled
-   * @param    bool       $is_widget       Only bother with style attributes if
-   *                                         the blip is to be displayed in a
-   *                                         widget (true) or not (false)
-   * @param    bool       $style_control   The user setting indicating whether
-   *                                         widgets should be styled using the
-   *                                         widget settings form only (true) or
-   *                                         CSS only (false)
-   * @param    array      $settings        The user-defined settings containing
-   *                                         the style data
-   */
-  private function blipper_widget_get_styling( $element, $is_widget, $style_control, $settings ) {
+    /**
+     * Return the class or style attributes (and their values) used to style the
+     * given element.
+     *
+     * @since    1.1.1
+     * @access   private
+     * @param    string     $element         The element to be styled
+     * @param    bool       $is_widget       Only bother with style attributes if
+     *                                         the blip is to be displayed in a
+     *                                         widget (true) or not (false)
+     * @param    bool       $style_control   The user setting indicating whether
+     *                                         widgets should be styled using the
+     *                                         widget settings form only (true) or
+     *                                         CSS only (false)
+     * @param    array      $settings        The user-defined settings containing
+     *                                         the style data
+     */
+    private function blipper_widget_get_styling( $element, $is_widget, $style_control, $settings ) {
+
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
     if ( BW_DEBUG ) {
       error_log( 'Blipper_Widget::blipper_widget_get_styling( ' . $element . ', ' . (int)$is_widget . ', ' . (int)$style_control . ' )' );
     }
+      // If the blip is not to be displayed in a widget or if the widget is to be
+      // styled using CSS only, return a class attribute.
+      // If the blip is to be displayed in a widget using the widget settings only,
+      // return a style attribute.
+      // The default is an empty string either way.
+      switch ( $element ) {
+        case 'div|blip':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-blip\'' ) :
+            ( ' style=\'' .  $this->blipper_widget_get_style( $settings, 'border-style')
+              . $this->blipper_widget_get_style( $settings, 'border-width')
+              . $this->blipper_widget_get_style( $settings, 'border-color')
+              . '\'' );
+        case 'figure':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-figure\'' ) :
+            ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'background-color' )
+              . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
+        case 'img':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-image\'' ) :
+            ( ' style=\'margin:auto;\'' );
+        case 'figcaption':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-caption\'' ) :
+            ( ' style=\'padding-top:7px;line-height:2;'
+              . $this->blipper_widget_get_style( $settings, 'color' )
+              . '\'' );
+        case 'header':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-caption-header\'' ) :
+            ( '' );
+        case 'footer':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-caption-footer\'' ) :
+            ( ' style=\'font-size:75%;margin-bottom:0;\'' );
+        case 'div|content':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-caption-content\'' ) :
+            ( '' );
+        case 'link':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-caption-link\'' ) :
+            ( ' style=\''
+              . $this->blipper_widget_get_style( $settings, 'link-color' )
+              . 'text-decoration:none;\'' );
+        case 'div|desc-text':
+          return ( ! $is_widget || ! $style_control ) ?
+            ( ' class=\'bw-text\'' ) :
+            ( '' );
+        default:
+          return '';
+      }
 
-    // If the blip is not to be displayed in a widget or if the widget is to be
-    // styled using CSS only, return a class attribute.
-    // If the blip is to be displayed in a widget using the widget settings only,
-    // return a style attribute.
-    // The default is an empty string either way.
-    switch ( $element ) {
-      case 'div|blip':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-blip\'' ) :
-          ( ' style=\'' .  $this->blipper_widget_get_style( $settings, 'border-style')
-            . $this->blipper_widget_get_style( $settings, 'border-width')
-            . $this->blipper_widget_get_style( $settings, 'border-color')
-            . '\'' );
-      case 'figure':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-figure\'' ) :
-          ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'background-color' )
-            . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
-      case 'img':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-image\'' ) :
-          ( ' style=\'margin:auto;\'' );
-      case 'figcaption':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-caption\'' ) :
-          ( ' style=\'padding-top:7px;line-height:2;'
-            . $this->blipper_widget_get_style( $settings, 'color' )
-            . '\'' );
-      case 'header':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-caption-header\'' ) :
-          ( '' );
-      case 'footer':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-caption-footer\'' ) :
-          ( ' style=\'font-size:75%;margin-bottom:0;\'' );
-      case 'div|content':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-caption-content\'' ) :
-          ( '' );
-      case 'link':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-caption-link\'' ) :
-          ( ' style=\''
-            . $this->blipper_widget_get_style( $settings, 'link-color' )
-            . 'text-decoration:none;\'' );
-      case 'div|desc-text':
-        return ( ! $is_widget || ! $style_control ) ?
-          ( ' class=\'bw-text\'' ) :
-          ( '' );
-      default:
-        return '';
     }
 
-  }
+    /**
+     * Sanitise third-party HTML.
+     *
+     * @since     1.1.1
+     * @access    private
+     * @param     string     $html   The HTML string to be sanitised.
+     * @return    string             The sanitised HTML string.
+     *
+     */
+    private function blipper_widget_sanitise_html( $html ) {
 
-  /**
-   * Sanitise third-party HTML.
-   *
-   * @since     1.1.1
-   * @access    private
-   * @param     string     $html   The HTML string to be sanitised.
-   * @return    string             The sanitised HTML string.
-   *
-   */
-  private function blipper_widget_sanitise_html( $html ) {
+      $allowed_html = array(
+        'p' => array(),
+        'h1' => array(),
+        'h2' => array(),
+        'h3' => array(),
+        'h4' => array(),
+        'h5' => array(),
+        'h6' => array(),
+        'i' => array(),
+        'b' => array(),
+        'em' => array(),
+        'div' => array(),
+        'br' => array(),
+        'a' => array(
+          'href' => array(),
+          'title' => array(),
+        ),
+      );
+      if ( BW_DEBUG ) {
+        error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
+      }
+      return wp_kses( $html, $allowed_html );
 
-    $allowed_html = array(
-      'p' => array(),
-      'h1' => array(),
-      'h2' => array(),
-      'h3' => array(),
-      'h4' => array(),
-      'h5' => array(),
-      'h6' => array(),
-      'i' => array(),
-      'b' => array(),
-      'em' => array(),
-      'div' => array(),
-      'br' => array(),
-      'a' => array(
-        'href' => array(),
-        'title' => array(),
-      ),
-    );
-    if ( BW_DEBUG ) {
-      error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
     }
-    return wp_kses( $html, $allowed_html );
 
-  }
-
-  /**
-   * Sanitise URL.
-   *
-   * @since     1.1.1
-   * @access    private
-   * @param     string     $html   The URL to be sanitised.
-   * @return    string             The sanitised URL.
-   *
-   */
-  private function blipper_widget_sanitise_url( $url ) {
+    /**
+     * Sanitise URL.
+     *
+     * @since     1.1.1
+     * @access    private
+     * @param     string     $html   The URL to be sanitised.
+     * @return    string             The sanitised URL.
+     *
+     */
+    private function blipper_widget_sanitise_url( $url ) {
 
     if ( BW_DEBUG ) {
       error_log( "Blipper_Widget::blipper_widget_sanitise_url:\n$url ⟹\n" . esc_url( $url ) );
     }
 
-    return esc_url( $url );
+      return esc_url( $url );
 
-  }
+    }
 
-  /**
-    * Display the blip using the settings stored in the database.
-    *
-    * @since    0.0.1
-    * @param    array     $settings         The settings saved in the database
-    * @param    bool      $is_widget        True if the blip is to be displayed in
-    *                                         a widget; false if it is to be
-    *                                         displayed elsewhere
-    * @param    string    $content          The content from the shortcode (i.e.
-    *                                         the stuff that comes between the
-    *                                         opening shortcode tag and the
-    *                                         closing shortcode tag).  Not
-    *                                         accessible from the widget settings
-    *                                         when in a widgety area
-    */
+    /**
+      * Display the blip using the settings stored in the database.
+      *
+      * @since    0.0.1
+      * @param    array     $settings         The settings saved in the database
+      * @param    bool      $is_widget        True if the blip is to be displayed in
+      *                                         a widget; false if it is to be
+      *                                         displayed elsewhere
+      * @param    string    $content          The content from the shortcode (i.e.
+      *                                         the stuff that comes between the
+      *                                         opening shortcode tag and the
+      *                                         closing shortcode tag).  Not
+      *                                         accessible from the widget settings
+      *                                         when in a widgety area
+      */
     private function blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
 
       echo $this->blipper_widget_get_blip( $settings, $is_widget, $content );
 
     }
 
-  /**
-    * Display the back-end widget form.
-    *
-    * @since     0.0.1
-    * @access    private
-    * @param     array         $settings       The settings saved in the database
-    */
+    /**
+      * Display the back-end widget form.
+      *
+      * @since     0.0.1
+      * @access    private
+      * @param     array         $settings       The settings saved in the database
+      */
     private function blipper_widget_display_form( $settings ) {
 
       if ( BW_DEBUG ) {
@@ -1503,16 +1511,18 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     private function blipper_widget_log_display_values( $settings, $display_element, $function_name ) {
-        $message =
-          array_key_exists( $display_element, $settings )
-          ? ( empty( $settings[$display_element] )
-            ? ( "Key has no value; using default (widget): " . $this->default_setting_values['widget'][$display_element] )
-            : ( "Value: " . $settings[$display_element] )
-            )
-          : ( "No key, no value; adding default (common): " . $this->default_setting_values['common']['display-journal-title'] );
-        if ( BW_DEBUG ) {
-          error_log( "Blipper_Widget::$function_name( $display_element )" . "\t" . $message . "\n" );
-        }
+
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
+      $message =
+        array_key_exists( $display_element, $settings )
+        ? ( empty( $settings[$display_element] )
+          ? ( "key has no value; using default (widget): " . $this->default_setting_values['widget'][$display_element] )
+          : ( $settings[$display_element] )
+          )
+        : ( "No key, no value; adding default (common): " . $this->default_setting_values['common']['display-journal-title'] );
+      // blipper_widget_log( $display_element, $message );
     }
 
     /**
@@ -1522,7 +1532,7 @@ if (!class_exists('Blipper_Widget')) {
      *                                 about the error
      * @param    $additional_info    Extra information to help the user.
      * @since    1.1.1
-      */
+    */
     private function blipper_widget_display_error_msg($e, $additional_info, $request_limit_reached) {
 
       if ( BW_DEBUG ) {
