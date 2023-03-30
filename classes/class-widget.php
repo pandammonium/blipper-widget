@@ -209,10 +209,6 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-
-    if ( BW_DEBUG ) {
-      error_log( "Blipper_Widget::blipper_widget_shortcode_blip_display( \$atts: " . json_encode( $atts, JSON_PRETTY_PRINT ) . "), \$content: '" . $content . "', \$shortcode: " . $shortcode . ")\n" );
-    }
     /**
      * Add a shortcode so the widget can be placed in a post or on a page.
      *
@@ -338,9 +334,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_get_display_values( $settings ) {
 
-      if ( BW_DEBUG ) {
-        error_log( __( 'Blipper_Widget::blipper_widget_get_display_values', 'blipper-widget') . ' (' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
-      }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $new_settings = array();
 
@@ -378,9 +373,8 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function blipper_widget_get_display_value( $setting, $settings ) {
 
-      if ( BW_DEBUG ) {
-        error_log( __( 'Blipper_Widget::blipper_widget_get_display_value', 'blipper-widget' ) . ' (' . json_encode( $setting, JSON_PRETTY_PRINT ) . ', ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ')');
-      }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       try {
 
@@ -473,6 +467,9 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_create_blipfoto_client( $settings ) {
 
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
       $client_ok = false;
       $this->client = null;
 
@@ -515,12 +512,8 @@ if (!class_exists('Blipper_Widget')) {
             throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
           } else {
             $client_ok = true;
-            if ( BW_DEBUG ) {
-              error_log( 'Blipper_Widget::blipper_widget_create_blipfoto_client( \$settings: ' . json_encode( $settings, JSON_PRETTY_PRINT ) . ' )' );
-            }
-            if ( BW_DEBUG ) {
-              error_log( 'Client: ' . json_encode( $this->client, JSON_PRETTY_PRINT ) );
-            }
+            // blipper_widget_log( 'client', $this->client );
+
           }
 
         } catch ( blipper_widget_ApiResponseException $e ) {
@@ -973,9 +966,7 @@ if (!class_exists('Blipper_Widget')) {
           $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
 
         } finally {
-          if ( BW_DEBUG ) {
-            error_log( "The completed blip:\n" . $the_blip );
-          }
+          blipper_widget_log( 'The completed blip', $the_blip );
         }
 
       }
@@ -1006,9 +997,6 @@ if (!class_exists('Blipper_Widget')) {
       // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       // blipper_widget_log( 'arguments', func_get_args() );
 
-    if ( BW_DEBUG ) {
-      error_log( 'Blipper_Widget::blipper_widget_get_styling( ' . $element . ', ' . (int)$is_widget . ', ' . (int)$style_control . ' )' );
-    }
       // If the blip is not to be displayed in a widget or if the widget is to be
       // styled using CSS only, return a class attribute.
       // If the blip is to be displayed in a widget using the widget settings only,
@@ -1112,9 +1100,8 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function blipper_widget_sanitise_url( $url ) {
 
-    if ( BW_DEBUG ) {
-      error_log( "Blipper_Widget::blipper_widget_sanitise_url:\n$url ⟹\n" . esc_url( $url ) );
-    }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       return esc_url( $url );
 
@@ -1150,9 +1137,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_display_form( $settings ) {
 
-      if ( BW_DEBUG ) {
-        error_log( "Blipper_Widget::blipper_widget_display_form( " . json_encode( $settings, JSON_PRETTY_PRINT ) . ')' );
-      }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $oauth_settings = $this->settings->blipper_widget_get_settings();
 
@@ -1654,15 +1640,14 @@ if (!class_exists('Blipper_Widget')) {
      * Add the WP colour picker.
      */
     public function blipper_widget_load_colour_picker() {
-      if ( BW_DEBUG ) {
-        error_log( "Blipper_Widget::blipper_widget_load_colour_picker()" );
-      }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
     }
 
     public function blipper_widget_enqueue_scripts( $hook_suffix ) {
-      // if ( BW_DEBUG ) {
-      //   error_log( "Blipper_Widget::blipper_widget_enqueue()" .\tHook suffix: $hook_suffix\n" );
-      // }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
       if ( 'widgets.php' === $hook_suffix ) {
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
