@@ -15,7 +15,7 @@
  * @link               http://pandammonium.org/wordpress-dev/blipper-widget/
  * @since              0.0.1
  * @package            Blipper_Widget
- * @author             pandammonium
+ * @author             lumpysimon, pandammonium
  * @license            GPLv2 or later
  * @wordpress-plugin
  */

@@ -1,6 +1,6 @@
 === Blipper Widget ===
 Stable tag: 1.2.2
-Contributors: pandammonium
+Contributors: lumpysimon, pandammonium
 Donate link: https://pandammonium.org/donate/
 Tags: photos,photo,blipfoto,widget,daily photo,photo display,image display,365 project,images,image,shortcode,shortcodes
 Requires at least: 4.3
@@ -203,7 +203,7 @@ You can ignore the provided CSS selectors to allow your theme to style your blip
 
 == Acknowledgements ==
 
-This plugin is loosely based on [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://twitter.com/lumpysimon). I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
+This plugin is based on aspects of [BlipPress](https://wordpress.org/plugins/blippress/) by [Simon Blackbourne](https://twitter.com/lumpysimon). I very much appreciate having his work to guide me with the use of [the Blipfoto API](https://www.blipfoto.com/developer/api).
 
 I used [Rotating Tweets](https://wordpress.org/plugins/rotatingtweets/) as a guide to implementing not only the settings page and the widget back-end, but also the shortcode.
 
