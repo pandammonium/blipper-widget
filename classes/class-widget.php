@@ -9,8 +9,6 @@
   *
   */
 
-namespace blipper_widget\widget;
-
 // If this file is called directly, abort:
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
