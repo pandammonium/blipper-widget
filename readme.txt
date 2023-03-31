@@ -110,7 +110,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 = 1.2.3 =
 
-* Enhances performance by caching the generated HTML that renders the blip.
+* Enhances performance by caching the generated HTML that renders the blip. The blip will be cached for one hour. It is not yet possible to change this time or stop caching from happening.
 
 = 1.2.2 =
 
