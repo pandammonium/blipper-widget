@@ -50,8 +50,13 @@ require_once('classes/class-widget.php');
 /**
  * @ignore
  */
-define( 'BW_DEBUG', false );
+define( 'BW_DEBUG', true );
+/**
+ * @ignore
+ */
+define( 'BW_PREFIX', 'BW | ' );
 
+define( 'BW_VERSION', '1.2.3' );
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('register_blipper_widget')) {
@@ -93,9 +98,13 @@ if (!function_exists('blipper_widget_exception')) {
   */
   function blipper_widget_exception( $e ) {
     if ( BW_DEBUG ) {
-      error_log( 'Blipper Widget: ' . $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
+      error_log( BW_PREFIX . $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
-    _e('<p class="blipper-widget error">Blipper Widget: An unexpected error has occurred. ' . $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
+    $trace = $e->getTrace();
+    $function = $trace[ 0 ][ 'function' ];
+    error_log( $function );
+    return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
+    // return $msg;
   }
   set_exception_handler('blipper_widget_exception');
 }
@@ -118,12 +127,14 @@ if ( !function_exists( 'blipper_widget_log' ) ) {
    */
   function blipper_widget_log( string $data_name, mixed $data, bool $echo = false ) {
     if ( BW_DEBUG ) {
-      $bw_prefix = 'BW | ';
       if ( $echo ) {
-        echo $bw_prefix . print_r( $data_name, false ) . ': ' . var_export( $data, false );
+        echo 'Blipper Widget: ' . print_r( $data_name, false ) . ': ' . var_export( $data, false );
       } else {
-        error_log( $bw_prefix . print_r( $data_name, true ) . ': ' . var_export( $data, true ) );
+        error_log( BW_PREFIX . print_r( $data_name, true ) . ': ' . var_export( $data, true ) );
       }
+      return BW_PREFIX . print_r( $data_name, true ) . ': ' . var_export( $data, true );
+    } else {
+      return '';
     }
   }
 }

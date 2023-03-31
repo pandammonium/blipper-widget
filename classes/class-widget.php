@@ -300,20 +300,33 @@ if (!class_exists('Blipper_Widget')) {
       blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       blipper_widget_log( 'arguments', func_get_args() );
 
-      // blipper_widget_log( 'settings as string', implode( ' ', $settings ) );
-      $cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $settings ) . $the_title );
-      blipper_widget_log( 'cache_key', $cache_key );
-      $result = $this->get_cache( $cache_key, $this->cache_expiry );
-      blipper_widget_log( 'cache result', false === $result ? 'not found' : 'found' );
+      $settings_string = implode( ' ', $settings );
+      blipper_widget_log( 'settings is string', gettype( $settings_string ) );
+      blipper_widget_log( 'settings as string', $settings_string );
 
-      if ( false === $result ) {
-        if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
-           $the_blip = $the_title . $this->blipper_widget_get_blip( $args, false, $content );
-          $this->set_cache( $the_blip );
-          return $the_blip;
+      $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $settings ) . $the_title );
+
+      try {
+        $the_cache = $this->get_cache();
+
+        if ( false === $the_cache ) {
+
+          // The blip does not exist in the cache, so it needs to be generated:
+
+          if ( $this->blipper_widget_create_blipfoto_client( $args ) ) {
+            $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . $this->blipper_widget_get_blip( $args, false, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
+
+            // Save the blip in the cache for next time:
+            $this->set_cache( $the_blip );
+            return $the_blip;
+          }
+        } else {
+
+          // The blip has been cached recently; return the cached blip:
+          return $the_cache;
         }
-      } else {
-        return $result;
+      } catch ( Exception $e ) {
+        return blipper_widget_exception( $e );
       }
     }
 
@@ -1032,8 +1045,8 @@ if (!class_exists('Blipper_Widget')) {
 
           $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
 
-        } finally {
-          blipper_widget_log( 'The completed blip', $the_blip );
+        // } finally {
+        //   blipper_widget_log( 'The completed blip', $the_blip );
         }
 
       }
@@ -1770,9 +1783,12 @@ if (!class_exists('Blipper_Widget')) {
       blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       blipper_widget_log( 'arguments', func_get_args() );
 
-      $result = false;
+      blipper_widget_log( 'cache key', $this->cache_key );
+      blipper_widget_log( 'cache expiry', $this->cache_expiry );
 
+      $result = false;
       $cached_info = array();
+
       try {
         if ( is_numeric( $this->cache_expiry ) ) {
 
@@ -1785,39 +1801,36 @@ if (!class_exists('Blipper_Widget')) {
           }
         } else {
           if ( 'no' !== strtolower( $this->cache_expiry ) ) {
-            throw new Exception( 'Cache expiration is invalid. Expected integer; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
+            throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
           }
         }
-      } catch( Exception $e ) {
-        blipper_widget_exception( $e );
-      }
-      try {
         if ( false === $result ) {
           $deleted = delete_transient( $this->cache_key );
           $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( $this->cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
           throw new Exception( 'Failed to set cache ' . $this->cache_key . '. ' . $deleted_msg, E_USER_WARNING );
         }
       } catch( Exception $e ) {
-        blipper_widget_exception( $e );
+        throw( $e );
       }
     }
 
-    private function get_cache( string $cache_key, string $cache_expiry ): bool|array|string {
+    private function get_cache(): bool|array|string {
 
       blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       blipper_widget_log( 'arguments', func_get_args() );
 
-      $this->cache_expiry = $cache_expiry;
-      $this->cache_key = $cache_key;
-
+      blipper_widget_log( 'cache key', $this->cache_key );
       blipper_widget_log( 'cache expiry', $this->cache_expiry );
+
       if ( is_numeric( $this->cache_expiry ) ) {
         $transient = get_transient( $this->cache_key );
         blipper_widget_log( 'transient', $transient );
         return $transient;
       } else {
-        throw new PRP_Exception( 'Cache expiry time is invalid: ' . $this->cache_expiry, PRP_Exception::PRP_ERROR_BAD_CACHE );
+        throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
       }
+      blipper_widget_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+
     }
 
   }
