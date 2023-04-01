@@ -111,6 +111,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 = 1.2.3 =
 
 * Enhances performance by caching the generated HTML that renders the blip. The blip will be cached for one hour. It is not yet possible to change this time or stop caching from happening.
+* Ensures compatility with WordPress 6.2.
 
 = 1.2.2 =
 
@@ -135,6 +136,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 [Known problems and enhancement requests](https://github.com/pandammonium/blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
 
 == Upgrade notice ==
+
+= 1.2.3 =
+
+Update now to add caching functionality to save hammering the Blipfoto servers, and to ensure compatibility with WP 6.2.
 
 = 1.1.3 =
 

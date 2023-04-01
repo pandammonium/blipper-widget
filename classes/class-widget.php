@@ -88,6 +88,17 @@ if (!class_exists('Blipper_Widget')) {
       */
       private $settings;
 
+      private const QUOTES = array(
+       '“' => '',
+       '”' => '',
+       '‘' => '',
+       '’' => '',
+       '&#8217;' => '',
+       '&#8217;' => '',
+       '&#8220;' => '',
+       '&#8221;' => ''
+      );
+
     /**
       * Construct an instance of the widget.
       *
@@ -131,7 +142,7 @@ if (!class_exists('Blipper_Widget')) {
       $this->settings = new blipper_widget_settings();
       $this->style_control_classes = array ();
       $this->client = null;
-      $this->cache_expiry = '60';
+      $this->cache_expiry = '60'; // minutes
       $this->cache_key = '';
 
 
@@ -252,32 +263,40 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @since 1.1
      */
-    public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode="", $print=false) {
+    public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
-      $settings = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
+      try {
+        $atts = $this->normalise_attributes( $atts, $shortcode );
 
-      $args = shortcode_atts( $settings, $atts, $shortcode );
-      extract( $args );
+        $defaults = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
 
-      $the_title = '';
-      if ( ! empty( $args['title'] ) ) {
-        if ( ! ( $args['title-level'] === 'h1' ||
-                 $args['title-level'] === 'h2' ||
-                 $args['title-level'] === 'h3' ||
-                 $args['title-level'] === 'h4' ||
-                 $args['title-level'] === 'h5' ||
-                 $args['title-level'] === 'h6' ||
-                 $args['title-level'] === 'p' ) ) {
-          $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
+        // blipper_widget_log( 'default settings', $defaults );
+        // blipper_widget_log( 'user settings', $atts );
+
+        $args = shortcode_atts( $defaults, $atts, $shortcode );
+        extract( $args );
+
+        $the_title = '';
+        if ( ! empty( $args['title'] ) ) {
+          if ( ! ( $args['title-level'] === 'h1' ||
+                   $args['title-level'] === 'h2' ||
+                   $args['title-level'] === 'h3' ||
+                   $args['title-level'] === 'h4' ||
+                   $args['title-level'] === 'h5' ||
+                   $args['title-level'] === 'h6' ||
+                   $args['title-level'] === 'p' ) ) {
+            $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
+          }
+          $the_title = '<' . $args['title-level'] . ' class=\'bw-title\'>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
-        $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
+
+        return $this->render_the_blip( $args, $defaults, $the_title, $content );
+      } catch( Exception $e ) {
+        return blipper_widget_exception( $e );
       }
-
-      return $this->render_the_blip( $args, $settings, $the_title, $content );
-
     }
 
     /**
@@ -295,19 +314,16 @@ if (!class_exists('Blipper_Widget')) {
      * @param string The formatted title to be used for this blip.
      * @return string|bool The HTML that will render the blip.
      */
-    private function render_the_blip( array $args, array $settings, string $the_title, $content = null ) {
+    private function render_the_blip( array $args, array $defaults, string $the_title, $content = null ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
-      $settings_string = implode( ' ', $settings );
-      blipper_widget_log( 'settings is string', gettype( $settings_string ) );
-      blipper_widget_log( 'settings as string', $settings_string );
-
-      $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $settings ) . $the_title );
+      $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $args ) . $the_title );
 
       try {
         $the_cache = $this->get_cache();
+        // blipper_widget_log( 'This blip has been cached', false === $the_cache ? 'no' : 'yes' );
 
         if ( false === $the_cache ) {
 
@@ -328,6 +344,45 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Exception $e ) {
         return blipper_widget_exception( $e );
       }
+    }
+
+    /**
+     * Normalise the arguments from the shortcode
+     */
+    private function normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
+
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
+      // blipper_widget_log( 'type of attributes', gettype( $atts ) );
+
+      if ( null === $atts ) {
+        return null;
+      } else {
+        switch( gettype( $atts ) ) {
+          case 'array':
+            if ( isset( $atts[ 'title' ] ) ) {
+              $atts[ 'title' ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts[ 'title' ]);
+              $i = 0;
+              foreach ( $atts as $key => $value ) {
+                if ( ( $i === $key ) && isset( $atts[ $key ] ) ) {
+                  $atts[ $key ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts[ $key ]);
+                  $atts[ 'title' ] .= ' ' . $atts[ $key ];
+                  unset( $atts[ $i ] );
+                  ++$i;
+                }
+              }
+            }
+          break;
+          case 'string':
+            $atts = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts);
+          break;
+          default:
+            throw new Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $atts, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
+        }
+      }
+      // blipper_widget_log( 'normalised attributes', $atts );
+      return $atts;
     }
 
     /**
