@@ -50,7 +50,7 @@ require_once('classes/class-widget.php');
 /**
  * @ignore
  */
-define( 'BW_DEBUG', true );
+define( 'BW_DEBUG', false );
 /**
  * @ignore
  */
