@@ -293,7 +293,7 @@ if (!class_exists('Blipper_Widget')) {
                    $args['title-level'] === 'p' ) ) {
             $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
           }
-          $the_title = '<' . $args['title-level'] . ' class=\'bw-title\'>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
+          $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
 
         return $this->render_the_blip( $args, $defaults, $the_title, $content );
