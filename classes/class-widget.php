@@ -167,6 +167,9 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function widget( $args, $settings ) {
 
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
       echo $args['before_widget'];
 
       $the_title = '';
@@ -212,7 +215,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function update( $new_settings, $old_settings ) {
 
-      $settings = array();;
+      $settings = array();
       $title                  = $this->blipper_widget_validate( $new_settings, $old_settings, 'title' );
       $display_date           = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-date' );
       $display_journal_title  = $this->blipper_widget_validate( $new_settings, $old_settings, 'display-journal-title' );
@@ -491,7 +494,7 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again', 'blipper-widget' ) );
+        $this->blipper_widget_display_error_msg( $e, __( 'Please check your settings are valid and try again', 'blipper-widget' ) );
 
       } catch ( Exception $e ) {
 
@@ -531,7 +534,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -614,7 +617,7 @@ if (!class_exists('Blipper_Widget')) {
         $oauth_settings = $this->settings->blipper_widget_get_settings();
 
         if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
-          throw new ErrorException( 'Missing username and access token.');
+          throw new blipper_widget_OAuthException( 'Missing username and access token.');
         } else if ( empty( $oauth_settings['username'] ) ) {
           throw new blipper_widget_OAuthException( 'Missing username.' );
         } else if ( empty( $oauth_settings['access-token'] ) ) {
@@ -625,7 +628,7 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( blipper_widget_OAuthException $e ) {
 
-        $this->blipper_widget_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue' );
+        $this->blipper_widget_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
 
       } catch ( Exception $e ) {
 
@@ -680,7 +683,7 @@ if (!class_exists('Blipper_Widget')) {
           }
         } catch ( blipper_widget_OAuthException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
@@ -688,7 +691,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_BaseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( ErrorException $e ) {
 
@@ -743,7 +746,7 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( blipper_widget_ApiResponseException $e ) {
 
-        $this->blipper_widget_display_error_msg( $e, '' );
+        $this->blipper_widget_display_error_msg( $e );
 
       } catch ( Exception $e ) {
 
@@ -766,7 +769,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -791,7 +794,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -826,7 +829,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -851,7 +854,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -880,11 +883,11 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_BaseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         }
 
@@ -913,7 +916,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -939,7 +942,7 @@ if (!class_exists('Blipper_Widget')) {
           }
         } catch ( blipper_widget_ApiResponseException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
 
         } catch ( Exception $e ) {
 
@@ -972,7 +975,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( ErrorException $e ) {
 
-          $this->blipper_widget_display_error_msg( $e, '' );
+          $this->blipper_widget_display_error_msg( $e );
         } catch ( Exception $e ) {
 
           $this->blipper_widget_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
@@ -1654,7 +1657,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param    $additional_info    Extra information to help the user.
      * @since    1.1.1
     */
-    private function blipper_widget_display_error_msg($e, $additional_info, $request_limit_reached) {
+    private function blipper_widget_display_error_msg( $e, $additional_info = '', $request_limit_reached = false ) {
 
       if ( BW_DEBUG ) {
         error_log( $this->blipper_widget_get_exception_class( $e ) . '.' );
@@ -1662,7 +1665,7 @@ if (!class_exists('Blipper_Widget')) {
       if ( current_user_can( 'manage_options' ) ) {
         $this->blipper_widget_display_private_error_msg( $e, $additional_info, $request_limit_reached );
       } else {
-        $this->blipper_widget_display_public_error_msg( $e, $request_limit_reached );
+        $this->blipper_widget_display_public_error_msg( $request_limit_reached );
       }
 
     }
@@ -1675,13 +1678,12 @@ if (!class_exists('Blipper_Widget')) {
      * @param    $additional_info    Extra information to help the user.
      * @since    1.1.1
       */
-    private function blipper_widget_display_private_error_msg($e, $additional_info, bool $request_limit_reached = false ) {
+    private function blipper_widget_display_private_error_msg( $e, $additional_info = '', bool $request_limit_reached = false ) {
 
-      if ( BW_DEBUG ) {
-        error_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . $e->getMessage() );
+      blipper_widget_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . __( $e->getMessage(), 'blipper-widget' ), false );
         error_log( 'In ' . $e->getFile() . ' on line ' . $e->getLine() );
-      }
-      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>: ERROR ' . $e->getCode() . ' ' . $e->getMessage() . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes.', 'blipper-widget' ) : '' ) . '</p>';
+
+      echo '<p><span class=\'' . $this->blipper_widget_get_css_error_classes( $e ) . '\'>' . __( $this->blipper_widget_get_exception_class( $e ), 'blipper-widget' ) . '</span>: ERROR ' . $e->getCode() . ' ' . __( $e->getMessage(), 'blipper-widget' ) . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( '. Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
 
     }
 
@@ -1690,15 +1692,15 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @since    1.1.1
      */
-    private function blipper_widget_display_public_error_msg( $request_limit_reached ) {
+    private function blipper_widget_display_public_error_msg( $request_limit_reached = false ) {
 
       if ( $request_limit_reached ) {
-        echo '<p>' .  __( 'The Blipfoto request limit has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '.</p>';
+        echo '<p>' .  __( 'The Blipfoto request limit has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
       } else {
-        if ( falsecurrent_user_can( 'manage_options' ) ) {
-          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
+        if ( current_user_can( 'manage_options' ) ) {
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         } else {
-          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
+          echo '<p>' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         }
       }
 
@@ -1835,11 +1837,11 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function set_cache( mixed $data_to_cache ): void {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
-      blipper_widget_log( 'cache key', $this->cache_key );
-      blipper_widget_log( 'cache expiry', $this->cache_expiry );
+      // blipper_widget_log( 'cache key', $this->cache_key );
+      // blipper_widget_log( 'cache expiry', $this->cache_expiry );
 
       $result = false;
       $cached_info = array();
@@ -1871,20 +1873,20 @@ if (!class_exists('Blipper_Widget')) {
 
     private function get_cache(): bool|array|string {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
-      blipper_widget_log( 'cache key', $this->cache_key );
-      blipper_widget_log( 'cache expiry', $this->cache_expiry );
+      // blipper_widget_log( 'cache key', $this->cache_key );
+      // blipper_widget_log( 'cache expiry', $this->cache_expiry );
 
       if ( is_numeric( $this->cache_expiry ) ) {
         $transient = get_transient( $this->cache_key );
-        blipper_widget_log( 'transient', $transient );
+        // blipper_widget_log( 'transient', $transient );
         return $transient;
       } else {
         throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
       }
-      blipper_widget_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+      // blipper_widget_log( 'cache exists', false === $transient ? 'not found' : 'found' );
 
     }
 

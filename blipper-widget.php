@@ -97,14 +97,12 @@ if (!function_exists('blipper_widget_exception')) {
   * @since 0.0.1
   */
   function blipper_widget_exception( $e ) {
-    if ( BW_DEBUG ) {
-      error_log( BW_PREFIX . $e->getMessage() . ' on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
-    }
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
-    error_log( $function );
+    if ( BW_DEBUG ) {
+      error_log( BW_PREFIX . wp_strip_all_tags( $e->getMessage() ) . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
+    }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
-    // return $msg;
   }
   set_exception_handler('blipper_widget_exception');
 }
