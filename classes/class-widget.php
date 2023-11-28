@@ -157,6 +157,8 @@ if (!class_exists('Blipper_Widget')) {
 
       add_shortcode('blipper_widget', array( $this, 'blipper_widget_shortcode_blip_display') );
 
+      // blipper_widget_log( 'this', $this );
+
     }
 
     /**
@@ -168,8 +170,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function widget( $args, $settings ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       echo $args['before_widget'];
 
@@ -178,7 +180,7 @@ if (!class_exists('Blipper_Widget')) {
         $the_title = $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
       }
 
-      echo $this->render_the_blip( $args, $settings, $the_title );
+      echo $this->render_the_blip( $args, $settings, $the_title, true );
 
       echo $args['after_widget'];
 
@@ -197,8 +199,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function form( $settings ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $this->blipper_widget_display_form( $this->blipper_widget_get_display_values( $settings ) );
 
@@ -216,8 +218,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function update( $new_settings, $old_settings ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $settings = array();
       $title                  = $this->blipper_widget_validate( $new_settings, $old_settings, 'title' );
@@ -248,13 +250,13 @@ if (!class_exists('Blipper_Widget')) {
       $settings['padding']                = $padding;
       $settings['style-control']          = $style_control;
 
-      if ( BW_DEBUG ) {
-        blipper_widget_log( 'New settings', $new_settings );
-        blipper_widget_log( 'Old settings', $old_settings );
-        blipper_widget_log( 'Actual settings', $settings );
-      }
+      // blipper_widget_log( 'old settings', $old_settings );
+      // blipper_widget_log( 'new settings', $new_settings );
 
-      $settings['updated'] = !empty( array_diff( $old_settings, $new_settings ) ) ? true : false;
+      $updated_settings_only = array_diff( $old_settings, $new_settings );
+      // blipper_widget_log( 'Updated settings', $updated_settings_only );
+      $settings['updated'] = empty( $updated_settings_only ) ? false : true;
+      // blipper_widget_log( 'settings updated', $settings['updated'] );
 
       return $settings;
 
@@ -274,7 +276,7 @@ if (!class_exists('Blipper_Widget')) {
     public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
 
         blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-        blipper_widget_log( 'arguments', func_get_args() );
+        // blipper_widget_log( 'arguments', func_get_args() );
 
       try {
         $atts = $this->normalise_attributes( $atts, $shortcode );
@@ -301,7 +303,7 @@ if (!class_exists('Blipper_Widget')) {
           $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
 
-        return $this->render_the_blip( $args, $defaults, $the_title, $content );
+        return $this->render_the_blip( $args, $defaults, $the_title, false, $content );
       } catch( Exception $e ) {
         return blipper_widget_exception( $e );
       }
@@ -323,22 +325,22 @@ if (!class_exists('Blipper_Widget')) {
      * @param string The formatted title to be used for this blip.
      * @return string|bool The HTML that will render the blip or false on failure.
      */
-    private function render_the_blip( array $args, array $settings, string $the_title, $content = null ) {
+    private function render_the_blip( array $args, array $settings, string $the_title, $is_widget, $content = null ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $args ) . $the_title );
 
       try {
         $the_cache = $this->get_cache();
-        blipper_widget_log( 'This blip has been cached', false === $the_cache ? 'no' : 'yes' );
-        blipper_widget_log( 'This blip\'s settings have changed', false === $settings['updated'] ? 'no' : 'yes' );
+        // blipper_widget_log( 'This blip has been cached', false === $the_cache ? 'no' : 'yes' );
+        // blipper_widget_log( 'This blip\'s settings have changed', false === $settings['updated'] ? 'no' : 'yes' );
 
         if ( false === $the_cache || $settings['updated'] ) {
 
           // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
-          return $this->generate_blip( $args, $settings, $the_title, $content );
+          return $this->generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
         } else {
 
@@ -353,13 +355,13 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Generate the blip from scratch
      */
-     private function generate_blip( array $args, array $settings, string $the_title, $content ) {
+     private function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       if ( $this->blipper_widget_create_blipfoto_client() ) {
-        $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . $this->blipper_widget_get_blip( $args, $settings, false, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
+        $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . $this->blipper_widget_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
 
         // Save the blip in the cache for next time:
         $this->set_cache( $the_blip );
@@ -419,28 +421,24 @@ if (!class_exists('Blipper_Widget')) {
       * @param    array     $old_settings     The setting currently saved in the
       *                                         database
       * @param    string    $setting_field    The setting to validate.
-      * @return   string    $settings         The validated setting.
+      * @return   string    $setting          The validated setting.
       */
     private function blipper_widget_validate( $new_settings, $old_settings, $setting_field ) {
 
-      $settings = null;
-      if ( BW_DEBUG ) {
-        error_log( "Blipper_Widget::blipper_widget_validate( $setting_field )" );
-      }
-      if ( BW_DEBUG ) {
-        error_log( "\tCurrent value:   " . ( array_key_exists( $setting_field, $old_settings ) ? $old_settings[$setting_field] : "undefined" ) );
-      }
-      if ( BW_DEBUG ) {
-        error_log( "\tProposed value:  " . ( array_key_exists( $setting_field, $new_settings ) ? $new_settings[$setting_field] : "undefined" ) );
-      }
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
+      $setting = null;
+
+      // blipper_widget_log( 'setting field', $setting_field );
+      // blipper_widget_log( 'old setting', $old_settings[$setting_field] );
+      // blipper_widget_log( 'proposed setting', $old_settings[$setting_field] );
 
       if ( array_key_exists( $setting_field, $old_settings ) && array_key_exists( $setting_field, $new_settings ) ) {
         if ( $new_settings[$setting_field] === $old_settings[$setting_field] ) {
-          $settings =  $old_settings[$setting_field];
-          if ( BW_DEBUG ) {
-            error_log( "\tValue unchanged\n" );
-          }
-          return $settings;
+          $setting =  $old_settings[$setting_field];
+          // blipper_widget_log( 'setting unchanged', $setting );
+          return $setting;
         }
       }
 
@@ -452,11 +450,11 @@ if (!class_exists('Blipper_Widget')) {
         case 'title':
           if ( array_key_exists( $setting_field, $new_settings ) ) {
             if ( true == ctype_print( $new_settings[$setting_field] ) ) {
-              $settings = trim( $new_settings[$setting_field] );
+              $setting = trim( $new_settings[$setting_field] );
             } else if ( empty( $new_settings[$setting_field] ) ) {
-              $settings = '';
+              $setting = '';
             } else {
-              $settings = 'Please enter printable characters only or leave the field blank';
+              $setting = 'Please enter printable characters only or leave the field blank';
             }
           }
         break;
@@ -464,29 +462,22 @@ if (!class_exists('Blipper_Widget')) {
         case 'display-journal-title':
         case 'add-link-to-blip':
         case 'display-powered-by':
-          $settings = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'show' : 'hide' ) : 'hide';
+          $setting = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'show' : 'hide' ) : 'hide';
         break;
         default:
           if ( array_key_exists( $setting_field, $new_settings ) ) {
             if ( ! empty( $new_settings[$setting_field] ) ) {
-              $settings = $new_settings[$setting_field];
+              $setting = $new_settings[$setting_field];
             } else {
-              if ( BW_DEBUG ) {
-                error_log( "\t$setting_field is empty" );
-              }
+              // blipper_widget_log( 'setting field', 'is empty' );
             }
           } else {
-            if ( BW_DEBUG ) {
-              error_log( "\t$setting_field does not exist" );
-            }
+            // blipper_widget_log( 'setting field', 'does not exist' );
           }
       }
+      // blipper_widget_log( 'new setting', $setting );
 
-      if ( BW_DEBUG ) {
-        error_log( "\tNew value:       " . var_export( $settings, true ) . "\n" );
-      }
-
-      return $settings;
+      return $setting;
     }
 
     /**
@@ -500,8 +491,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_get_display_values( $settings ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $new_settings = array();
 
@@ -519,6 +510,7 @@ if (!class_exists('Blipper_Widget')) {
         $new_settings['link-color'] = $this->blipper_widget_get_display_value( 'link-color', $settings );
         $new_settings['padding'] = $this->blipper_widget_get_display_value( 'padding', $settings );
         $new_settings['style-control'] = $this->blipper_widget_get_display_value( 'style-control', $settings );
+        $new_settings['updated'] = $this->blipper_widget_get_display_value( 'updated', $settings );
 
       } catch ( ErrorException $e ) {
 
@@ -529,6 +521,8 @@ if (!class_exists('Blipper_Widget')) {
         $this->blipper_widget_display_error_msg( $e, __( 'Something has gone wrong getting the user settings', 'blipper-widget' ) );
 
       }
+
+      // blipper_widget_log( 'new settings', $new_settings );
 
       return $new_settings;
 
@@ -552,10 +546,10 @@ if (!class_exists('Blipper_Widget')) {
             } else if ( array_key_exists( $setting, $this->default_setting_values['common'] ) ) {
               return $this->default_setting_values['common'][$setting];
             } else {
-              throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>.' );
               if ( BW_DEBUG ) {
                 error_log( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
               }
+              throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>.' );
               return '';
             }
           }
@@ -633,8 +627,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_create_blipfoto_client( $args = null ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $client_ok = false;
       $this->client = null;
@@ -757,8 +751,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function blipper_widget_get_blip( $args, $settings, $is_widget, $content = null ) {
 
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       $user_profile = null;
       $user_settings = null;
@@ -1022,13 +1016,15 @@ if (!class_exists('Blipper_Widget')) {
         // Display the blip.
         try {
 
-          // Given that all the data used to determines $style_control is passed
-          // to blipper_widget_get_styling, it might seem pointless to calculate
-          // here once and pass to that function; but this way, it's only
-          // calculated once.  I don't really know how much this affects
-          // performance.  Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
-          // Need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used.
-          $style_control = $is_widget ? isset( $settings['style-control'] ) ? ( $settings['style-control'] === $this->default_setting_values['widget']['style-control'] ) : true : false;
+          // Given that all the data used to determines $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
+
+          // Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
+
+          // Need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used:
+          // blipper_widget_log( 'is widget', $is_widget );
+          // blipper_widget_log( 'style control is set', isset( $settings['style-control'] ) );
+          $style_control = $is_widget ? ( isset( $settings['style-control'] ) ? ( $settings['style-control'] === $this->default_setting_values['widget']['style-control'] ) : true ) : false;
+          // blipper_widget_log( 'style control', $style_control );
 
           $the_blip = "<div" . $this->blipper_widget_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
 
@@ -1167,58 +1163,57 @@ if (!class_exists('Blipper_Widget')) {
       // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       // blipper_widget_log( 'arguments', func_get_args() );
 
-      // If the blip is not to be displayed in a widget or if the widget is to be
-      // styled using CSS only, return a class attribute.
-      // If the blip is to be displayed in a widget using the widget settings only,
-      // return a style attribute.
+      // If the blip is not to be displayed in a widget or if the widget is to be styled using CSS only, return a class attribute.
+      // If the blip is to be displayed in a widget using the widget settings only, return a style attribute.
       // The default is an empty string either way.
+      $use_class = ( ! $is_widget || ! $style_control );
       switch ( $element ) {
         case 'div|blip':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-blip\'' ) :
-            ( ' style=\'' .  $this->blipper_widget_get_style( $settings, 'border-style')
-              . $this->blipper_widget_get_style( $settings, 'border-width')
-              . $this->blipper_widget_get_style( $settings, 'border-color')
-              . '\'' );
+        return $use_class ?
+          ( ' class=\'bw-blip\'' ) :
+          ( ' style=\'' .  $this->blipper_widget_get_style( $settings, 'border-style')
+            . $this->blipper_widget_get_style( $settings, 'border-width')
+            . $this->blipper_widget_get_style( $settings, 'border-color')
+            . '\'' );
         case 'figure':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-figure\'' ) :
-            ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'background-color' )
-              . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
+        return $use_class ?
+          ( ' class=\'bw-figure\'' ) :
+          ( ' style=\'' . $this->blipper_widget_get_style( $settings, 'background-color' )
+            . $this->blipper_widget_get_style( $settings, 'padding' ) . '\'' );
         case 'img':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-image\'' ) :
-            ( ' style=\'margin:auto;\'' );
+        return $use_class ?
+          ( ' class=\'bw-image\'' ) :
+          ( ' style=\'margin:auto;\'' );
         case 'figcaption':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-caption\'' ) :
-            ( ' style=\'padding-top:7px;line-height:2;'
-              . $this->blipper_widget_get_style( $settings, 'color' )
-              . '\'' );
+        return $use_class ?
+          ( ' class=\'bw-caption\'' ) :
+          ( ' style=\'padding-top:7px;line-height:2;'
+            . $this->blipper_widget_get_style( $settings, 'color' )
+            . '\'' );
         case 'header':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-caption-header\'' ) :
-            ( '' );
+        return $use_class ?
+          ( ' class=\'bw-caption-header\'' ) :
+          ( '' );
         case 'footer':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-caption-footer\'' ) :
-            ( ' style=\'font-size:75%;margin-bottom:0;\'' );
+        return $use_class ?
+          ( ' class=\'bw-caption-footer\'' ) :
+          ( ' style=\'font-size:75%;margin-bottom:0;\'' );
         case 'div|content':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-caption-content\'' ) :
-            ( '' );
+        return $use_class ?
+          ( ' class=\'bw-caption-content\'' ) :
+          ( '' );
         case 'link':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-caption-link\'' ) :
-            ( ' style=\''
-              . $this->blipper_widget_get_style( $settings, 'link-color' )
-              . 'text-decoration:none;\'' );
+        return $use_class ?
+          ( ' class=\'bw-caption-link\'' ) :
+          ( ' style=\''
+            . $this->blipper_widget_get_style( $settings, 'link-color' )
+            . 'text-decoration:none;\'' );
         case 'div|desc-text':
-          return ( ! $is_widget || ! $style_control ) ?
-            ( ' class=\'bw-text\'' ) :
-            ( '' );
+        return $use_class ?
+          ( ' class=\'bw-text\'' ) :
+          ( '' );
         default:
-          return '';
+        return '';
       }
 
     }
@@ -1252,9 +1247,9 @@ if (!class_exists('Blipper_Widget')) {
           'title' => array(),
         ),
       );
-      if ( BW_DEBUG ) {
-        error_log( "Dirty HTML: $html\nClean HTML: " . wp_kses( $html, $allowed_html ) );
-      }
+      blipper_widget_log( 'dirty html', $html );
+      blipper_widget_log( 'clean html', wp_kses( $html, $allowed_html ) );
+
       return wp_kses( $html, $allowed_html );
 
     }
@@ -1293,8 +1288,9 @@ if (!class_exists('Blipper_Widget')) {
       *                                         when in a widgety area
       */
     private function blipper_widget_display_blip( $settings, $is_widget, $content=null ) {
-      blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      blipper_widget_log( 'arguments', func_get_args() );
+
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
 
       return $this->blipper_widget_get_blip( $settings, $is_widget, $content );
 
@@ -1437,17 +1433,11 @@ if (!class_exists('Blipper_Widget')) {
           </select>
         </p>
 
-        <?php if ( BW_DEBUG ) {
-          error_log(
-            "\n"
-            .  ' NAME: ' . $this->get_field_name( 'style-control' )
-            . "\n"
-            . ' ID: ' . $this->get_field_name( 'style-control' )
-            . "\n"
-            . ' DEFAULT VALUE: ' . $this->default_setting_values['widget']['style-control']
-            . "\n"
-            . ' ACTUAL VALUE: ' . $settings['style-control'] );
-        }
+        <?php
+          // blipper_widget_log( 'name', $this->get_field_name( 'style-control' ) );
+          // blipper_widget_log( 'id', $this->get_field_name( 'style-control' ) );
+          // blipper_widget_log( 'default value', $this->default_setting_values['widget']['style-control'] );
+          // blipper_widget_log('actual value', $settings['style-control'] );
         ?>
 
         <script>
@@ -1639,35 +1629,43 @@ if (!class_exists('Blipper_Widget')) {
 
     private function blipper_widget_get_style( $settings, $style_element ) {
 
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
       $this->blipper_widget_log_display_values( $settings, $style_element, 'blipper_widget_get_style' );
 
       $element = $style_element;
-      $style = '';
 
       switch( $style_element ) {
         case 'link-color':
           $element = 'color';
-          return array_key_exists( $style_element, $settings )
+          $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element]
+              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
               : $element . ':' . $settings[$style_element] . ';'
               )
             : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
+          // blipper_widget_log( 'style', $style );
+          return $style;
         case 'padding':
         case 'border-width':
-          return array_key_exists( $style_element, $settings )
+          $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element]
+              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
               : $element . ':' . $settings[$style_element] . 'px' . ';'
               )
             : $element . ':' . $this->default_setting_values['widget'][$style_element] . 'px' . ';';
+          // blipper_widget_log( 'style', $style );
+        return $style;
         default:
-          return array_key_exists( $style_element, $settings )
+          $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element]
+              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
               : $element . ':' . $settings[$style_element] . ';'
               )
             : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
+          // blipper_widget_log( 'style', $style );
+        return $style;
       }
 
     }
