@@ -126,6 +126,7 @@ if (!class_exists('Blipper_Widget')) {
           'link-color'             => 'initial',
           'padding'                => '0',                     // in pixels
           'style-control'          => 'widget-settings-only',  // 'css'
+          'updated'                => false,                   // true
         ),
         'shortcode'  => array (
           'title-level'            => 'h2',                    // 'h1'–'h6','p'
