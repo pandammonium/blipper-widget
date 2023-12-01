@@ -275,7 +275,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     public function blipper_widget_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
 
-        blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+        // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
         // blipper_widget_log( 'arguments', func_get_args() );
 
       try {
@@ -1016,7 +1016,7 @@ if (!class_exists('Blipper_Widget')) {
         // Display the blip.
         try {
 
-          // Given that all the data used to determines $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
+          // Given that all the data used to determine $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
 
           // Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
 
@@ -1247,8 +1247,8 @@ if (!class_exists('Blipper_Widget')) {
           'title' => array(),
         ),
       );
-      blipper_widget_log( 'dirty html', $html );
-      blipper_widget_log( 'clean html', wp_kses( $html, $allowed_html ) );
+      // blipper_widget_log( 'dirty html', $html );
+      // blipper_widget_log( 'clean html', wp_kses( $html, $allowed_html ) );
 
       return wp_kses( $html, $allowed_html );
 
@@ -1416,8 +1416,8 @@ if (!class_exists('Blipper_Widget')) {
         <h4>Styling</h4>
         <p class="description">You can style your widget in one of two ways.
           <ol class="description">
-            <li>If you select widget settings only, the default, the styles below will be used to style the widget.  Extra CSS settings will be ignored.  If you leave the default settings, the widget will be displayed using your normal sidebar style.</li>
-            <li>If you select CSS only, <em>the styles below will not apply</em> and your CSS styles will be used.  Each significant element has its own class, which you can use in the Additional CSS section of the Customiser or in a stylesheet.</li>
+            <li>If you select widget settings only, the default, the styles below will be used to style the widget.  Extra CSS settings will be ignored.  If you don't change any of the settings, the widget will be displayed according to the theme's CSS.</li>
+            <li>If you select CSS only, <em>the styles below will not apply</em> and your theme's CSS styles will be used.  Each significant element has its own class, which you can use in the Additional CSS section of the Customiser or in a stylesheet.</li>
           </ol>
           <label for="<?php echo $this->get_field_id( 'style-control' ); ?>">
             <?php _e( 'Style control', 'blipper-widget' ); ?>
@@ -1527,8 +1527,9 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['border-color'] ); ?>"
               placeholder="#"
-              data-default-color=""
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'border-color', true ); ?>"
             >
+            <?php //blipper_widget_log( 'border color', esc_attr( $settings['border-color'] ) ); ?>
           </p>
           <p class="description">
             Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
@@ -1536,9 +1537,9 @@ if (!class_exists('Blipper_Widget')) {
 
           <div class="option"><p class="description">
             <script type='text/javascript'>
-                jQuery(document).ready(function($) {
-                  $('.blipper-widget-colour-picker').wpColorPicker();
-                });
+              jQuery(document).ready(function($) {
+                $('.blipper-widget-colour-picker').wpColorPicker();
+              });
             </script>
             <label for="<?php echo $this->get_field_id( 'background-color' ); ?>">
               <?php _e( 'Background colour', 'blipper-widget' ); ?>
@@ -1550,11 +1551,12 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['background-color'] ); ?>"
               placeholder="#"
-              data-default-color=""
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'background-color', true ); ?>"
             >
+            <?php //blipper_widget_log( 'background color', esc_attr( $settings['background-color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget background colour.  Clearing your colour choice will use the colour set by your theme.
+            Pick a colour for the widget background colour.  If you don't pick a colour or delete the colour, the colour will be that defined by your theme.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
@@ -1573,11 +1575,12 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['color'] ); ?>"
               placeholder="#"
-              data-default-color=""
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'color', true ); ?>"
             >
+            <?php //blipper_widget_log( 'color', esc_attr( $settings['color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget text colour.  Clearing your colour choice will use the colour set by your theme.  The link text will always be the same colour as the surrounding text.
+            Pick a colour for the widget text colour.  If you don't pick a colour or delete the colour, the colour will be that defined by your theme; the link text will be the same colour as the surrounding text.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
@@ -1596,11 +1599,12 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['link-color'] ); ?>"
               placeholder="#"
-              data-default-color=""
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'link-color', true ); ?>"
             >
+            <?php //blipper_widget_log( 'link color', esc_attr( $settings['link-color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget link colour.  Clearing your colour choice will use the colour set by your theme.
+            Pick a colour for the widget link colour.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
@@ -1623,6 +1627,48 @@ if (!class_exists('Blipper_Widget')) {
           </p></div>
         </div>
         <?php
+      }
+
+    }
+
+    private function blipper_widget_get_default_setting( $setting_type, $setting, $is_color = false ) {
+
+      // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // blipper_widget_log( 'arguments', func_get_args() );
+
+      if ( array_key_exists( $setting_type, $this->default_setting_values ) ) {
+
+        if ( array_key_exists( $setting, $this->default_setting_values[$setting_type] ) ) {
+
+          if ( $is_color ) {
+            if ( 'inherit' === $this->default_setting_values[$setting_type][$setting] ) {
+              // The default behaviour is to inherit the theme's colour, but the colour picker doesn't like 'inherit' as a default colour choice.  Therefore, if the theme's colour is desired, then CSS will have to be used, unless the user knows the default colour and can set it in the colour picker.
+              switch ( $setting ) {
+                // Colours from the Blipfoto website:
+                case 'border-color':
+                case 'background-color':
+                  $default_setting = '#131313';
+                  break;
+                default:
+                  $default_setting = '#dddddd';
+              }
+            } else {
+              $default_setting = '#' . esc_attr( $this->default_setting_values[$setting_type][$setting] );
+            }
+          } else {
+            $default_setting = esc_attr( $this->default_setting_values[$setting_type][$setting] );
+          }
+
+          // blipper_widget_log( 'default ' . $setting_type . ' ' . $setting, $default_setting );
+
+          return $default_setting;
+
+        } else {
+          throw new Exception( 'Invalid setting ' . $setting );
+        }
+
+      } else {
+        throw new Exception( 'Invalid setting type ' . $setting_type );
       }
 
     }
