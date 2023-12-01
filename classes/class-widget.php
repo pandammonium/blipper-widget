@@ -1619,6 +1619,7 @@ if (!class_exists('Blipper_Widget')) {
               min="0"
               max="20"
               step="1"
+              placeholder="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'border-width' ); ?>"
               value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->blipper_widget_get_default_setting_value( 'widget', 'padding' ); ?>"
             >
           </p>
