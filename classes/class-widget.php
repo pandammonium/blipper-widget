@@ -1488,7 +1488,7 @@ if (!class_exists('Blipper_Widget')) {
             </select>
           </p>
           <p class="description">
-            The default style uses your theme's style.  The border won't show if the style is set to 'no line'.
+            The default style uses your theme's style.  The border won't show if the style is set to 'none'.
           </p></div>
 
           <div class="option"><p class="description">
