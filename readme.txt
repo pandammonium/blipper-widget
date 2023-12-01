@@ -179,7 +179,7 @@ There are settings you can change; these, with their default values [and alterna
 * `add-link-to-blip      = 'hide' ['show']`
 * `display-powered-by    = 'hide' ['show']`
 * `color                 = 'inherit'`
-* `link-color            = 'initial'`
+* `link-color            = 'inherit'`
 * `display-desc-text     = 'hide' ['show']`
 
 **Examples**
