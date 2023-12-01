@@ -1532,7 +1532,7 @@ if (!class_exists('Blipper_Widget')) {
             <?php //blipper_widget_log( 'border color', esc_attr( $settings['border-color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget border colour.  Clearing your colour choice will use the colour set by your theme.
+            Pick a colour for the widget border colour.  If you don't pick a colour or you delete the colour, the colour will be that defined by your theme.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
@@ -1556,7 +1556,7 @@ if (!class_exists('Blipper_Widget')) {
             <?php //blipper_widget_log( 'background color', esc_attr( $settings['background-color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget background colour.  If you don't pick a colour or delete the colour, the colour will be that defined by your theme.  If you pick a colour, including the default colour, that colour will be used instead.
+            Pick a colour for the widget background colour.  If you don't pick a colour or you delete the colour, the colour will be that defined by your theme.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
@@ -1580,7 +1580,7 @@ if (!class_exists('Blipper_Widget')) {
             <?php //blipper_widget_log( 'color', esc_attr( $settings['color'] ) ); ?>
           </p>
           <p class="description">
-            Pick a colour for the widget text colour.  If you don't pick a colour or delete the colour, the colour will be that defined by your theme; the link text will be the same colour as the surrounding text.  If you pick a colour, including the default colour, that colour will be used instead.
+            Pick a colour for the widget text colour.  If you don't pick a colour or you delete the colour, the colour will be that defined by your theme; the link text will be the same colour as the surrounding text.  If you pick a colour, including the default colour, that colour will be used instead.
           </p></div>
 
           <div class="option"><p class="description">
