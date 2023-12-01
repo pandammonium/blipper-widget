@@ -1527,7 +1527,7 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['border-color'] ); ?>"
               placeholder="#"
-              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'border-color', true ); ?>"
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'border-color', true ); ?>"
             >
             <?php //blipper_widget_log( 'border color', esc_attr( $settings['border-color'] ) ); ?>
           </p>
@@ -1551,7 +1551,7 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['background-color'] ); ?>"
               placeholder="#"
-              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'background-color', true ); ?>"
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'background-color', true ); ?>"
             >
             <?php //blipper_widget_log( 'background color', esc_attr( $settings['background-color'] ) ); ?>
           </p>
@@ -1575,7 +1575,7 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['color'] ); ?>"
               placeholder="#"
-              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'color', true ); ?>"
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'color', true ); ?>"
             >
             <?php //blipper_widget_log( 'color', esc_attr( $settings['color'] ) ); ?>
           </p>
@@ -1599,7 +1599,7 @@ if (!class_exists('Blipper_Widget')) {
               type="text"
               value="<?php echo esc_attr( $settings['link-color'] ); ?>"
               placeholder="#"
-              data-default-color="<?php echo $this->blipper_widget_get_default_setting( 'widget', 'link-color', true ); ?>"
+              data-default-color="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'link-color', true ); ?>"
             >
             <?php //blipper_widget_log( 'link color', esc_attr( $settings['link-color'] ) ); ?>
           </p>
@@ -1631,7 +1631,7 @@ if (!class_exists('Blipper_Widget')) {
 
     }
 
-    private function blipper_widget_get_default_setting( $setting_type, $setting, $is_color = false ) {
+    private function blipper_widget_get_default_setting_value( $setting_type, $setting, $is_color = false ) {
 
       // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       // blipper_widget_log( 'arguments', func_get_args() );
