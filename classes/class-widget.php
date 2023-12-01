@@ -1725,10 +1725,10 @@ if (!class_exists('Blipper_Widget')) {
       $message =
         array_key_exists( $display_element, $settings )
         ? ( empty( $settings[$display_element] )
-          ? ( "key has no value; using default (widget): " . $this->default_setting_values['widget'][$display_element] )
+          ? ( "key has no value; using default (widget): " . $this->blipper_widget_get_default_setting_value( 'widget', $display_element ) )
           : ( $settings[$display_element] )
           )
-        : ( "No key, no value; adding default (common): " . $this->default_setting_values['common']['display-journal-title'] );
+        : ( "No key, no value; adding default (common): " . $this->blipper_widget_get_default_setting_value( 'common', 'display-journal-title' ) );
       // blipper_widget_log( $display_element, $message );
     }
 
