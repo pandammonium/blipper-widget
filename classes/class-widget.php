@@ -298,7 +298,7 @@ if (!class_exists('Blipper_Widget')) {
                    $args['title-level'] === 'h5' ||
                    $args['title-level'] === 'h6' ||
                    $args['title-level'] === 'p' ) ) {
-            $args['title-level'] = $this->default_setting_values['shortcode']['title-level'];
+            $args['title-level'] = $this->blipper_widget_get_default_setting_value( 'shortcode', 'title-level' );
           }
           $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
@@ -1503,8 +1503,8 @@ if (!class_exists('Blipper_Widget')) {
               min="0"
               max="10"
               step="1"
-              placeholder="<?php echo $this->default_setting_values['widget']['border-width']; ?>"
-              value="<?php echo $settings['border-width'] ? esc_attr( $settings['border-width'] ) : $this->default_setting_values['widget']['border-width']; ?>"
+              placeholder="<?php echo $this->blipper_widget_get_default_setting_value( 'widget', 'border-width' ); ?>"
+              value="<?php echo $settings['border-width'] ? esc_attr( $settings['border-width'] ) : $this->blipper_widget_get_default_setting_value( 'widget', 'border-width' ); ?>"
             >
           </p>
           <p class="description">
@@ -1619,7 +1619,7 @@ if (!class_exists('Blipper_Widget')) {
               min="0"
               max="20"
               step="1"
-              value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->default_setting_values['widget']['padding']; ?>"
+              value="<?php echo $settings['padding'] ? esc_attr( $settings['padding'] ) : $this->blipper_widget_get_default_setting_value( 'widget', 'padding' ); ?>"
             >
           </p>
           <p class="description">
@@ -1687,29 +1687,29 @@ if (!class_exists('Blipper_Widget')) {
           $element = 'color';
           $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
+              ? $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . ';'
               : $element . ':' . $settings[$style_element] . ';'
               )
-            : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
+            : $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . ';';
           // blipper_widget_log( 'style', $style );
           return $style;
         case 'padding':
         case 'border-width':
           $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
+              ? $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . ';'
               : $element . ':' . $settings[$style_element] . 'px' . ';'
               )
-            : $element . ':' . $this->default_setting_values['widget'][$style_element] . 'px' . ';';
+            : $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . 'px' . ';';
           // blipper_widget_log( 'style', $style );
         return $style;
         default:
           $style = array_key_exists( $style_element, $settings )
             ? ( empty( $settings[$style_element] )
-              ? $element . ':' . $this->default_setting_values['widget'][$style_element] . ';'
+              ? $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . ';'
               : $element . ':' . $settings[$style_element] . ';'
               )
-            : $element . ':' . $this->default_setting_values['widget'][$style_element] . ';';
+            : $element . ':' . $this->blipper_widget_get_default_setting_value( 'widget', $style_element ) . ';';
           // blipper_widget_log( 'style', $style );
         return $style;
       }
