@@ -1508,7 +1508,7 @@ if (!class_exists('Blipper_Widget')) {
             >
           </p>
           <p class="description">
-            The border width is inherited from your theme by default, but you can choose a value between 0 and 10 pixels.  The border won't show if the width is zero.
+            The border width is inherited from your theme by default, but you can choose a value between 0 and 10 pixels.  The border won't show if the width is zero.  If you delete the value, the width will be defined by your theme.
           </p></div>
 
           <div class="option"><p class="description">
