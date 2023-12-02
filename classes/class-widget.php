@@ -124,7 +124,7 @@ if (!class_exists('Blipper_Widget')) {
           'background-color'       => 'inherit',
           'color'                  => 'inherit',
           'link-color'             => 'inherit',
-          'padding'                => '0',                     // in pixels
+          'padding'                => 'inherit',
           'style-control'          => 'widget-settings-only',  // 'css'
           'updated'                => false,                   // true
         ),
