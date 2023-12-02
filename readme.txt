@@ -172,14 +172,12 @@ The most straightforward use of the shortcode is single use. In the page or post
 
 There are settings you can change; these, with their default values [and alternative values where appropriate], are:
 
-* `title                 = 'My latest blip'`
-* `title-level           = 'h2'`
+* `title                 = 'My latest blip' [<text string>]`
+* `title-level           = 'h2' ['h1', 'h3', 'h4', 'h5', 'h6', 'p']`
 * `display-date          = 'show' ['hide']`
 * `display-journal-title = 'hide' ['show']`
 * `add-link-to-blip      = 'hide' ['show']`
 * `display-powered-by    = 'hide' ['show']`
-* `color                 = 'inherit'`
-* `link-color            = 'inherit'`
 * `display-desc-text     = 'hide' ['show']`
 
 **Examples**
