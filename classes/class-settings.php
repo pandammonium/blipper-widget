@@ -473,6 +473,11 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             __( 'You should now see your <i>Client ID</i>, <i>Client Secret</i> and <i>Access Token</i>. Copy and paste your <i>Access Token</i> only into the corresponding field below.', 'blipper-widget' )
           ); ?>
         </li>
+        <li><?php
+          printf(
+            __( 'Press the <i>Save Changes</i> button to save the data.', 'blipper-widget' )
+          ); ?>
+        </li>
       </ol>
       <p>
         <abbr title="<?php
