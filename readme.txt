@@ -1,7 +1,7 @@
 === Blipper Widget ===
 Stable tag: 1.2.4
 Requires at least: 4.3
-Tested up to: 6.2
+Tested up to: 6.4
 Requires PHP: 8.0
 Contributors: lumpysimon, pandammonium
 Donate link: https://pandammonium.org/donate/
