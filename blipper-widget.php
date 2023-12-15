@@ -56,7 +56,7 @@ define( 'BW_DEBUG', false );
  */
 define( 'BW_PREFIX', 'BW | ' );
 
-define( 'BW_VERSION', '1.2.3' );
+define( 'BW_VERSION', '1.2.4' );
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('register_blipper_widget')) {

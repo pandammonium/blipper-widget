@@ -1,5 +1,5 @@
 === Blipper Widget ===
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires at least: 4.3
 Tested up to: 6.2
 Requires PHP: 8.0
