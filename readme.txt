@@ -108,6 +108,14 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 == Changelog ==
 
+= 1.2.4 =
+
+* Fixes bug caused by cache: if the widget settings were changed in the Customiser, the cached version was still shown.
+* Fixes colour picker in the Customiser widget settings.
+* Improves wording of the Customiser widget settings.
+* Adds step to press save button in the backend settings.
+* Improves and fixes other minor issues.
+
 = 1.2.3 =
 
 * Enhances performance by caching the generated HTML that renders the blip. The blip will be cached for one hour. It is not yet possible to change this time or stop caching from happening.
@@ -136,6 +144,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 [Known problems and enhancement requests](https://github.com/pandammonium/blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
 
 == Upgrade notice ==
+
+= 1.2.4 =
+
+Upgrade now for fix bug caused by cache introduced in 1.2.3, and for other fixes and improvements.
 
 = 1.2.3 =
 
