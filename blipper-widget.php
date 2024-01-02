@@ -7,7 +7,7 @@
  * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
  * Version:            1.2.4
  * Requires at least:  4.3
- * Tested up to:       6.2
+ * Tested up to:       6.4
  * Requires PHP:       8.0
  * Author:             Caity Ross
  * Author URI:         http://pandammonium.org/
