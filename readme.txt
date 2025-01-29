@@ -110,6 +110,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 = 1.2.4 =
 
+* Fixes PHP warning, and in doing so improves behaviour of shortcode.
+
+= 1.2.4 =
+
 * Fixes bug caused by cache: if the widget settings were changed in the Customiser, the cached version was still shown.
 * Fixes colour picker in the Customiser widget settings.
 * Improves wording of the Customiser widget settings.
