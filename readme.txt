@@ -1,11 +1,11 @@
 === Blipper Widget ===
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 Requires at least: 4.3
-Tested up to: 6.4
+Tested up to: 6.7
 Requires PHP: 8.0
 Contributors: lumpysimon, pandammonium
 Donate link: https://pandammonium.org/donate/
-Tags: photos,blipfoto,widgets,daily photo,365 project,images,image,shortcodes
+Tags: blipfoto,photo,shortcodes,widgets
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,10 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 3. An example of the widget in use.
 
 == Changelog ==
+
+= 1.2.4 =
+
+* Fixes PHP warning, and in doing so improves behaviour of shortcode.
 
 = 1.2.4 =
 
