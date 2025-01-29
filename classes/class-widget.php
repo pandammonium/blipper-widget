@@ -143,7 +143,7 @@ if (!class_exists('Blipper_Widget')) {
       $this->settings = new blipper_widget_settings();
       $this->style_control_classes = array ();
       $this->client = null;
-      $this->cache_expiry = '60'; // minutes
+      $this->cache_expiry = DAY_IN_SECONDS;
       $this->cache_key = '';
 
 
@@ -1934,7 +1934,7 @@ if (!class_exists('Blipper_Widget')) {
 
           $transient = get_transient( $this->cache_key );
           if ( false === $transient ) {
-            $result = set_transient( $this->cache_key, $data_to_cache, 60 * $this->cache_expiry );
+            $result = set_transient( $this->cache_key, $data_to_cache, $this->cache_expiry );
           } else {
             // Don't fail if the cache already exists:
             $result = true;
