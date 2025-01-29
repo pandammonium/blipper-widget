@@ -26,7 +26,7 @@ There are two ways to get Blipper Widget to work with block-enabled themes. The 
 
 ***
 
-Currently, Blipper Widget:
+Blipper Widget:
 
 * displays the latest blip (image, title and username) in your Blipfoto account:
   * in a widget in a widget-enabled area
@@ -38,8 +38,6 @@ Currently, Blipper Widget:
 * displays a (powered by) link to the Blipfoto website (optional; off by default).
 
 The image in the blip is not stored on your server: the widget links to the best quality image made available by Blipfoto.
-
-See the plugin in action on [my WordPress site](https://pandammonium.org/my-latest-photo/).
 
 = About Blipfoto =
 
@@ -110,6 +108,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 = 1.2.4 =
 
+* Ensures compatibility with WordPress 6.7.
 * Fixes PHP warning, and in doing so improves behaviour of shortcode.
 
 = 1.2.4 =
@@ -123,7 +122,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 = 1.2.3 =
 
 * Enhances performance by caching the generated HTML that renders the blip. The blip will be cached for one hour. It is not yet possible to change this time or stop caching from happening.
-* Ensures compatility with WordPress 6.2.
+* Ensures compatibility with WordPress 6.2.
 
 = 1.2.2 =
 
@@ -131,7 +130,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 = 1.2.1 =
 
-* Ensures compatability with WordPress 6.1.1.
+* Ensures compatibility with WordPress 6.1.1.
 * Improves text for translation purposes.
 
 = 1.2.0 =
@@ -146,24 +145,6 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 = Known issues =
 
 [Known problems and enhancement requests](https://github.com/pandammonium/blipper-widget/issues) are recorded on the Blipper Widget repository on GitHub. Please add bug reports and suggestions there.
-
-== Upgrade notice ==
-
-= 1.2.4 =
-
-Upgrade now for fix bug caused by cache introduced in 1.2.3, and for other fixes and improvements.
-
-= 1.2.3 =
-
-Update now to add caching functionality to save hammering the Blipfoto servers, and to ensure compatibility with WP 6.2.
-
-= 1.1.3 =
-
-Update now to ensure compatibility with WP 6.0.1 (via the Blipper Widget shortcode).
-
-= 1.1 =
-
-Update now to use the Blipper Widget shortcode in posts and pages. Please note the change in consent in the Disclaimer section of the readme file.
 
 == Usage ==
 
