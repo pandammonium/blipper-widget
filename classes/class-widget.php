@@ -126,7 +126,6 @@ if (!class_exists('Blipper_Widget')) {
           'link-color'             => 'inherit',
           'padding'                => 'inherit',
           'style-control'          => 'widget-settings-only',  // 'css'
-          'updated'                => false,                   // true
         ),
         'shortcode'  => array (
           'title-level'            => 'h2',                    // 'h1'–'h6','p'
@@ -138,6 +137,7 @@ if (!class_exists('Blipper_Widget')) {
           'display-journal-title'  => 'hide',                  // 'show'
           'display-powered-by'     => 'hide',                  // 'show'
           'add-link-to-blip'       => 'hide',                  // 'show'
+          'updated'                => false,                   // true
         ),
       );
       $this->settings = new blipper_widget_settings();
@@ -253,10 +253,10 @@ if (!class_exists('Blipper_Widget')) {
       // blipper_widget_log( 'old settings', $old_settings );
       // blipper_widget_log( 'new settings', $new_settings );
 
-      $updated_settings_only = array_diff( $old_settings, $new_settings );
-      // blipper_widget_log( 'Updated settings', $updated_settings_only );
+      $updated_settings_only = array_diff_assoc( $old_settings, $new_settings );
+      blipper_widget_log( 'Updated settings', $updated_settings_only );
       $settings['updated'] = empty( $updated_settings_only ) ? false : true;
-      // blipper_widget_log( 'settings updated', $settings['updated'] );
+      blipper_widget_log( 'settings updated', $settings['updated'] );
 
       return $settings;
 
@@ -280,6 +280,7 @@ if (!class_exists('Blipper_Widget')) {
 
       try {
         $atts = $this->normalise_attributes( $atts, $shortcode );
+        // error_log( 'normalised atts: ' . var_export( $atts, true ) );
 
         $defaults = array_merge( $this->default_setting_values['shortcode'], $this->default_setting_values['common'] );
 
@@ -288,6 +289,9 @@ if (!class_exists('Blipper_Widget')) {
 
         $args = shortcode_atts( $defaults, $atts, $shortcode );
         extract( $args );
+
+        // Don't have any saved settings to compare the current ones with (unless we get the last-saved version of this location, if that's even possible or worthwhile), so have to set the updated flag to true regardless, otherwise the blip might not be rendered correctly:
+        $args['updated'] = true;
 
         $the_title = '';
         if ( ! empty( $args['title'] ) ) {
@@ -303,7 +307,9 @@ if (!class_exists('Blipper_Widget')) {
           $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
 
-        return $this->render_the_blip( $args, $defaults, $the_title, false, $content );
+        // blipper_widget_log( 'shortcode atts', $args );
+
+        return $this->render_the_blip( $defaults, $args, $the_title, false, $content );
       } catch( Exception $e ) {
         return blipper_widget_exception( $e );
       }
@@ -321,11 +327,11 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @param string[] $args The array of WP widget settings.
      * @param string[] $settings The array of BW settings from either the
-     * widget or the shortcode.
+     * widget or the shortcode (set by the user).
      * @param string The formatted title to be used for this blip.
      * @return string|bool The HTML that will render the blip or false on failure.
      */
-    private function render_the_blip( array $args, array $settings, string $the_title, $is_widget, $content = null ) {
+    private function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
 
       // blipper_widget_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
       // blipper_widget_log( 'arguments', func_get_args() );
@@ -334,15 +340,19 @@ if (!class_exists('Blipper_Widget')) {
 
       try {
         $the_cache = $this->get_cache();
-        // blipper_widget_log( 'This blip has been cached', false === $the_cache ? 'no' : 'yes' );
-        // blipper_widget_log( 'This blip\'s settings have changed', false === $settings['updated'] ? 'no' : 'yes' );
+        $updated = $settings['updated'];
 
-        if ( false === $the_cache || $settings['updated'] ) {
+        // blipper_widget_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
+        // blipper_widget_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
+
+        if ( empty( $the_cache ) || $updated ) {
+          // error_log( 'rendering the blip from scratch' );
 
           // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
           return $this->generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
         } else {
+          // error_log( 'rendering the blip from the cache' );
 
           // The blip has been cached recently and its settings have not changed, so return the cached blip:
           return $the_cache;
