@@ -69,7 +69,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
     public function __construct() {
 
-      add_action( 'admin_menu', array( &$this, 'blipper_widget_admin_menu' ) );
+      add_action( 'admin_menu', array( &$this, 'bw_admin_menu' ) );
       // Ensure the admin page is initialised only when needed:
       // Not calling this results in repeated error messages, if error messages
       // are displayed. Repeated error messages look pants.
@@ -79,7 +79,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         or 'options-general/php?page=blipper-widget'  === $GLOBALS['pagenow']
         )
       ) {
-        add_action( 'admin_init', array( &$this, 'blipper_widget_admin_init' ) );
+        add_action( 'admin_init', array( &$this, 'bw_admin_init' ) );
       }
     }
 
@@ -105,7 +105,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // slug name to refer to this menu by:
         'blipper-widget',
         // function to be called to output the content for this page:
-        array( &$this, 'blipper_widget_options_page' ),
+        array( &$this, 'bw_options_page' ),
         // position in the menu order this item should appear:
         8
       );
@@ -137,7 +137,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
         // section callback function to render information and instructions about
         // this section:
-        array( &$this, 'blipper_widget_oauth_instructions'),
+        array( &$this, 'bw_oauth_instructions'),
         // page id (i.e. menu slug):
         'blipper-widget'
       );
@@ -645,7 +645,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * Return the name of the options key in the database
-    * (see blipper_widget_admin_init)
+    * (see bw_admin_init)
     *
     * @since     0.0.2
     * @author    pandammonium
