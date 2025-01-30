@@ -1,12 +1,12 @@
 <?php
 
-namespace blipper_widget_Blipfoto\blipper_widget_Traits;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Traits;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-trait blipper_widget_Helper {
+trait Blipper_Widget_Helper {
 
 	/**
 	 * Get and optionally set the value for a property.

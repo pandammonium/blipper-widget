@@ -1,17 +1,17 @@
 <?php
 
-namespace blipper_widget_Blipfoto\blipper_widget_Api;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Api;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
-use blipper_widget_Blipfoto\blipper_widget_Traits\blipper_widget_Helper;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Traits\Blipper_Widget_Helper;
 
-class blipper_widget_Response {
+class Blipper_Widget_Response {
 
 //	use Helper;
 
@@ -31,12 +31,12 @@ class blipper_widget_Response {
 
 		// check status
 		if ($http_status != 200) {
-			throw new blipper_widget_InvalidResponseException(sprintf('API returned a %d HTTP status.', $http_status), 1);
+			throw new Blipper_Widget_InvalidResponseException(sprintf('API returned a %d HTTP status.', $http_status), 1);
 		}
 
 		$decoded = @json_decode($raw_body, true);
 		if (!is_array($decoded)) {
-			throw new blipper_widget_InvalidResponseException('API returned a malformed response.', 2);
+			throw new Blipper_Widget_InvalidResponseException('API returned a malformed response.', 2);
 		}
 
 		$this->body = $decoded;
@@ -46,9 +46,9 @@ class blipper_widget_Response {
 		$error = $this->error();
 		if ($error !== null) {
 			if ($error['code'] >= 30 && $error['code'] <= 35) {
-				throw new blipper_widget_OAuthException($error['message'], $error['code']);
+				throw new Blipper_Widget_OAuthException($error['message'], $error['code']);
 			} else {
-				throw new blipper_widget_ApiResponseException($error['message'], $error['code']);
+				throw new Blipper_Widget_ApiResponseException($error['message'], $error['code']);
 			}
 		}
 	}

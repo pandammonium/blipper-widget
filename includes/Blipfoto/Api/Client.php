@@ -1,21 +1,21 @@
 <?php
 
-namespace blipper_widget_Blipfoto\blipper_widget_Api;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Api;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
 use \ReflectionClass;
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_File;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException;
-use blipper_widget_Blipfoto\blipper_widget_Traits\blipper_widget_Helper;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_File;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Traits\Blipper_Widget_Helper;
 
-class blipper_widget_client {
+class Blipper_Widget_Client {
 
-	use blipper_widget_Helper;
+	use Blipper_Widget_Helper;
 
 	protected $id;
 	protected $secret;
@@ -27,7 +27,7 @@ class blipper_widget_client {
 
 	// Endpoint constants
 	const URI_API 			= 'https://api.blipfoto.com/4/';
-	const URI_AUTHORIZE 	= 'https://www.blipfoto.com/blipper_widget_OAuth/authorize/';
+	const URI_AUTHORIZE 	= 'https://www.blipfoto.com/Blipper_Widget_OAuth/authorize/';
 
 	// scope constants
 	const SCOPE_READ 		= 'read';
@@ -122,54 +122,54 @@ class blipper_widget_client {
 	}
 
 	/**
-	 * Convenience method for creating a new blipper_widget_Request instance.
+	 * Convenience method for creating a new Blipper_Widget_Request instance.
 	 *
 	 * @param mixed
-	 * @return blipper_widget_Request
+	 * @return Blipper_Widget_Request
 	 */	
 	public function request() {
-		return new blipper_widget_Request($this);
+		return new Blipper_Widget_Request($this);
 	}
 
 	/**
-	 * Convenience method for creating a new blipper_widget_OAuth instance.
+	 * Convenience method for creating a new Blipper_Widget_OAuth instance.
 	 *
-	 * @return blipper_widget_OAuth
+	 * @return Blipper_Widget_OAuth
 	 */
 	public function OAuth() {
-		return new blipper_widget_OAuth($this);
+		return new Blipper_Widget_OAuth($this);
 	}
 
 	/**
-	 * Convenience method for creating and sending a new GET blipper_widget_Request.
+	 * Convenience method for creating and sending a new GET Blipper_Widget_Request.
 	 */
 	public function get() {
 		return $this->run('GET', func_get_args());
 	}
 
 	/**
-	 * Convenience method for creating and sending a new POST blipper_widget_Request.
+	 * Convenience method for creating and sending a new POST Blipper_Widget_Request.
 	 */
 	public function post() {
 		return $this->run('POST', func_get_args());
 	}
 
 	/**
-	 * Convenience method for creating and sending a new PUT blipper_widget_Request.
+	 * Convenience method for creating and sending a new PUT Blipper_Widget_Request.
 	 */
 	public function put() {
 		return $this->run('PUT', func_get_args());
 	}
 
 	/**
-	 * Convenience method for creating and sending a new DELETE blipper_widget_Request.
+	 * Convenience method for creating and sending a new DELETE Blipper_Widget_Request.
 	 */
 	public function delete() {
 		return $this->run('DELETE', func_get_args());
 	}
 
 	/**
-	 * Convenience method for sending a blipper_widget_Request and returning a response.
+	 * Convenience method for sending a Blipper_Widget_Request and returning a response.
 	 *
 	 * @return Response
 	 * @throws OAuthException|ApiResponseException
@@ -196,7 +196,7 @@ class blipper_widget_client {
 	 */
 	protected function validateEndpoint($endpoint) {
 		if (!preg_match("/^https/", $endpoint)) {
-			throw new blipper_widget_NetworkException(sprintf('Invalid endpoint "%s" does not use the HTTPS protocol.', $endpoint), -1);
+			throw new Blipper_Widget_NetworkException(sprintf('Invalid endpoint "%s" does not use the HTTPS protocol.', $endpoint), -1);
 		}
 		return $endpoint;
 	}

@@ -1,20 +1,20 @@
 <?php
 
-namespace blipper_widget_Blipfoto\blipper_widget_Api;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Api;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_Client;
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_File;
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_Response;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException;
-use blipper_widget_Blipfoto\blipper_widget_Traits\blipper_widget_Helper;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_File;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Response;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Traits\Blipper_Widget_Helper;
 
-class blipper_widget_Request {
+class Blipper_Widget_Request {
 
-	use blipper_widget_Helper;
+	use Blipper_Widget_Helper;
 
 	protected $client;
 	protected $method;
@@ -27,13 +27,13 @@ class blipper_widget_Request {
 	/**
 	 * Create new Client instance.
 	 *
-	 * @param blipper_widget_Client $client
+	 * @param Blipper_Widget_Client $client
 	 * @param string $method (optional)
 	 * @param string $resource (optional)
 	 * @param array $params (optional)
 	 * @param array $files (optional)
 	 */
-	public function __construct(blipper_widget_Client $client, $method = 'GET', $resource = null, array $params = [], array $files = []) {
+	public function __construct(Blipper_Widget_Client $client, $method = 'GET', $resource = null, array $params = [], array $files = []) {
 		$this->client = $client;
 		$this->method($method);
 		$this->resource($resource);
@@ -191,10 +191,10 @@ class blipper_widget_Request {
 
 		// Check for curl error.
 		if ($error_code > 0) {
-			throw new blipper_widget_NetworkException($error_message, $error_code);
+			throw new Blipper_Widget_NetworkException($error_message, $error_code);
 		}
 
-		return new blipper_widget_Response($body, $http_status, $rate_limit);
+		return new Blipper_Widget_Response($body, $http_status, $rate_limit);
 	}
 
 	/**

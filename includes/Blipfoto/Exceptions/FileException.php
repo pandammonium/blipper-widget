@@ -4,14 +4,14 @@
 * For file upload issues.
 **/
 
-namespace blipper_widget_Blipfoto\blipper_widget_Exceptions;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Exception;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\BaseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\BaseException;
 
-class blipper_widget_FileException extends blipper_widget_BaseException {
+class Blipper_Widget_FileException extends Blipper_Widget_BaseException {
 	
 }

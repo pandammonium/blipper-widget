@@ -1,17 +1,17 @@
 <?php
 
-namespace blipper_widget_Blipfoto\blipper_widget_Api;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Api;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_FileException;
-use blipper_widget_Blipfoto\blipper_widget_Traits\blipper_widget_Helper;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_FileException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Traits\Blipper_Widget_Helper;
 
-class blipper_widget_File {
+class Blipper_Widget_File {
 
-	use blipper_widget_Helper;
+	use Blipper_Widget_Helper;
 
 	protected $path;
 
@@ -49,13 +49,13 @@ class blipper_widget_File {
 		$full_path = realpath($path);
 		$data = @getimagesize($full_path);
 		if (!$data) {
-			throw new blipper_widget_FileException(sprintf('File "%s" cannot be read.', $path), 1);
+			throw new Blipper_Widget_FileException(sprintf('File "%s" cannot be read.', $path), 1);
 		}
 		if ($data[2] != IMG_JPG) {
-			throw new blipper_widget_FileException(sprintf('File "%s" is not a JPG.', $path), 240);
+			throw new Blipper_Widget_FileException(sprintf('File "%s" is not a JPG.', $path), 240);
 		}
 		if ($data[0] < 600 || $data[1] < 600) {
-			throw new blipper_widget_FileException(sprintf('File "%s" is too small.', $path), 241);
+			throw new Blipper_Widget_FileException(sprintf('File "%s" is too small.', $path), 241);
 		}
 		return $full_path;
 	}

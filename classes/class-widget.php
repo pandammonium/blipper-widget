@@ -13,11 +13,11 @@
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_Client;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException;
 use blipper_widget\settings\blipper_widget_settings;
 
 if (!class_exists('Blipper_Widget')) {
@@ -78,7 +78,7 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
       * @since    0.0.1
-      * @property blipper_widget_Client     $client   The Blipfoto client
+      * @property Blipper_Widget_Client     $client   The Blipfoto client
       */
       private $client;
 
@@ -649,16 +649,16 @@ if (!class_exists('Blipper_Widget')) {
         $oauth_settings = $this->settings->bw_get_settings();
 
         if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
-          throw new blipper_widget_OAuthException( 'Missing username and access token.');
+          throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
         } else if ( empty( $oauth_settings['username'] ) ) {
-          throw new blipper_widget_OAuthException( 'Missing username.' );
+          throw new Blipper_Widget_OAuthException( 'Missing username.' );
         } else if ( empty( $oauth_settings['access-token'] ) ) {
-          throw new blipper_widget_OAuthException( 'Missing access token.' );
+          throw new Blipper_Widget_OAuthException( 'Missing access token.' );
         } else {
           $client_ok = true;
         }
 
-      } catch ( blipper_widget_OAuthException $e ) {
+      } catch ( Blipper_Widget_OAuthException $e ) {
 
         $this->bw_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
 
@@ -673,20 +673,20 @@ if (!class_exists('Blipper_Widget')) {
           $client_ok = false;
 
           // Create a new client using the OAuth settings from the database
-          $this->client = new blipper_widget_Client (
+          $this->client = new Blipper_Widget_Client (
             '',
             '',
             $oauth_settings['access-token']
           );
           if ( empty( $this->client ) || ! isset( $this->client ) ) {
-            throw new blipper_widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
+            throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
           } else {
             $client_ok = true;
             // blipper_widget_log( 'client', $this->client );
 
           }
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e, 'Please try again later' );
 
@@ -705,23 +705,23 @@ if (!class_exists('Blipper_Widget')) {
 
           if ( $user_profile->error() ) {
 
-            throw new blipper_widget_ApiResponseException( $user_profile->error() );
+            throw new Blipper_Widget_ApiResponseException( $user_profile->error() );
           }
           $user = $user_profile->data()['user'];
           if ( $user['username'] != $oauth_settings['username'] ) {
-            throw new blipper_widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
+            throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
           } else {
             $client_ok = true;
           }
-        } catch ( blipper_widget_OAuthException $e ) {
+        } catch ( Blipper_Widget_OAuthException $e ) {
 
           $this->bw_display_error_msg( $e );
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e, '', true );
 
-        } catch ( blipper_widget_BaseException $e ) {
+        } catch ( Blipper_Widget_BaseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -775,12 +775,12 @@ if (!class_exists('Blipper_Widget')) {
         $user_profile = $this->client->get( 'user/profile' );
 
         if ( $user_profile->error() ) {
-          throw new blipper_widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+          throw new Blipper_Widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
         } else {
           $continue = true;
         }
 
-      } catch ( blipper_widget_ApiResponseException $e ) {
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
 
         $this->bw_display_error_msg( $e );
 
@@ -798,12 +798,12 @@ if (!class_exists('Blipper_Widget')) {
           $user_settings = $this->client->get( 'user/settings' );
 
           if ( $user_settings->error() ) {
-            throw new blipper_widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+            throw new Blipper_Widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
           } else {
             $continue = true;
           }
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -823,12 +823,12 @@ if (!class_exists('Blipper_Widget')) {
           $user = $user_profile->data('user');
 
           if ( empty( $user ) ) {
-            throw new blipper_widget_ApiResponseException( 'Can\'t access your Blipfoto account data.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
+            throw new Blipper_Widget_ApiResponseException( 'Can\'t access your Blipfoto account data.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
           } else {
             $continue = true;
           }
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -858,12 +858,12 @@ if (!class_exists('Blipper_Widget')) {
           );
 
           if ( $journal->error() ) {
-            throw new blipper_widget_ApiResponseException( $journal->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+            throw new Blipper_Widget_ApiResponseException( $journal->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
           } else {
             $continue = true;
           }
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -914,10 +914,10 @@ if (!class_exists('Blipper_Widget')) {
               $continue = true;
             break;
             default:
-              throw new blipper_widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' . count( $blips ) . '. Something has gone wrong.  Please try again' );
+              throw new Blipper_Widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' . count( $blips ) . '. Something has gone wrong.  Please try again' );
           }
 
-        } catch ( blipper_widget_BaseException $e ) {
+        } catch ( Blipper_Widget_BaseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -945,12 +945,12 @@ if (!class_exists('Blipper_Widget')) {
           );
 
           if ( $details->error() ) {
-            throw new blipper_widget_ApiResponseException( $details->error() . '  Can\'t get the entry (blip) details.' );
+            throw new Blipper_Widget_ApiResponseException( $details->error() . '  Can\'t get the entry (blip) details.' );
           } else {
            $continue = true;
           }
 
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -974,9 +974,9 @@ if (!class_exists('Blipper_Widget')) {
           if ( isset( $descriptive_text ) ) {
             $continue = true;
           } else {
-            throw new blipper_widget_ApiResponseException('Did not get the descriptive text.');
+            throw new Blipper_Widget_ApiResponseException('Did not get the descriptive text.');
           }
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
 
           $this->bw_display_error_msg( $e );
 
@@ -1805,17 +1805,17 @@ if (!class_exists('Blipper_Widget')) {
     private function bw_get_exception_class( $e ) {
 
       switch ( get_class( $e ) ) {
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException':
           return 'Blipfoto error';
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException':
           return 'Blipfoto API response error';
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_FileException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_FileException':
           return 'File error';
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException':
           return 'Invalid response';
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException':
           return 'Network error';
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
           return 'OAuth error';
         case 'ErrorException':
         case 'Error':
@@ -1833,12 +1833,12 @@ if (!class_exists('Blipper_Widget')) {
     private function bw_get_css_error_classes( $e ) {
 
       switch ( get_class( $e ) ) {
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException':
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException':
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_FileException':
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_InvalidResponseException':
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_NetworkException':
-        case 'blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_FileException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException':
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
         case 'ErrorException':
           return 'error';
         case 'Exception':

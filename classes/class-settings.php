@@ -21,9 +21,9 @@ namespace blipper_widget\settings;
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Api\blipper_widget_client;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_ApiResponseException;
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_OAuthException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
 
@@ -571,12 +571,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       $client = null;
       $user_profile = null;
       try {
-        $client = new blipper_widget_client (
+        $client = new Blipper_Widget_Client (
          '',
          '',
          $oauth_settings['access-token']
         );
-      } catch ( blipper_widget_ApiResponseException $e ) {
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
         add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
@@ -595,16 +595,16 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           $user = $user_profile->data()['user'];
 
           if ( $user['username'] != $oauth_settings['username'] ) {
-            throw new blipper_widget_OAuthException( 'Please check the username you entered is correct.' );
+            throw new Blipper_Widget_OAuthException( 'Please check the username you entered is correct.' );
           }
 
-        } catch ( blipper_widget_OAuthException $e ) {
+        } catch ( Blipper_Widget_OAuthException $e ) {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-credentials',
             __( 'Error. ' . $e->getMessage(), 'blipper-widget' )
           );
-        } catch ( blipper_widget_ApiResponseException $e ) {
+        } catch ( Blipper_Widget_ApiResponseException $e ) {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-credentials',

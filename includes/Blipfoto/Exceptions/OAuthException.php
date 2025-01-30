@@ -4,14 +4,14 @@
 * For OAuth.
 **/
 
-namespace blipper_widget_Blipfoto\blipper_widget_Exceptions;
+namespace Blipper_Widget_Blipfoto\Blipper_Widget_Exception;
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use blipper_widget_Blipfoto\blipper_widget_Exceptions\blipper_widget_BaseException;
+use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException;
 
-class blipper_widget_OAuthException extends blipper_widget_BaseException {
+class Blipper_Widget_OAuthException extends Blipper_Widget_BaseException {
 	
 }
