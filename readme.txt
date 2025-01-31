@@ -106,7 +106,7 @@ No. You can only display the blips of one Blipfoto account, which must be your o
 
 == Changelog ==
 
-= 1.2.4 =
+= 1.2.5 =
 
 * Ensures compatibility with WordPress 6.7.
 * Fixes PHP warning, and in doing so improves behaviour of shortcode.
