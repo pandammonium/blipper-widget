@@ -59,26 +59,26 @@ define( 'BW_PREFIX', 'BW | ' );
 define( 'BW_VERSION', '1.2.5' );
 // --- Action hooks --------------------------------------------------------- //
 
-if (!function_exists('register_blipper_widget')) {
+if (!function_exists('bw_register_widget')) {
 /**
   * Register the WP Blipper widget
   *
   * @since 0.0.1
   */
-  function register_blipper_widget() {
+  function bw_register_widget() {
     register_widget( 'Blipper_Widget' );
   }
-  add_action( 'widgets_init', 'register_blipper_widget' );
+  add_action( 'widgets_init', 'bw_register_widget' );
 }
 
-if (!function_exists('blipper_widget_add_settings_link')) {
+if (!function_exists('bw_add_settings_link')) {
 /**
   * Add a link to the Blipper Widget settings page from the installed plugins
   * list.
   *
   * @since 0.0.1
   */
-  function blipper_widget_add_settings_link( $links, $file ) {
+  function bw_add_settings_link( $links, $file ) {
 
     if ( strpos( $file, 'blipper-widget.php' ) !== false ) {
 
@@ -87,16 +87,16 @@ if (!function_exists('blipper_widget_add_settings_link')) {
     }
     return $links;
   }
-  add_filter( 'plugin_action_links', 'blipper_widget_add_settings_link', 10, 2 );
+  add_filter( 'plugin_action_links', 'bw_add_settings_link', 10, 2 );
 }
 
-if (!function_exists('blipper_widget_exception')) {
+if (!function_exists('bw_exception')) {
 /**
   * Generic error handling
   *
   * @since 0.0.1
   */
-  function blipper_widget_exception( $e ) {
+  function bw_exception( $e ) {
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
     if ( BW_DEBUG ) {
@@ -104,10 +104,10 @@ if (!function_exists('blipper_widget_exception')) {
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
-  set_exception_handler('blipper_widget_exception');
+  set_exception_handler('bw_exception');
 }
 
-if ( !function_exists( 'blipper_widget_log' ) ) {
+if ( !function_exists( 'bw_log' ) ) {
   /**
    * Logs the provided data either to the WP error log or to the display.
    *
@@ -123,7 +123,7 @@ if ( !function_exists( 'blipper_widget_log' ) ) {
    * * `true`: Echo the data name and the data
    * * `false`: Send the data name and the data to the error log (default)
    */
-  function blipper_widget_log( string $data_name, mixed $data, bool $echo = false ) {
+  function bw_log( string $data_name, mixed $data, bool $echo = false ) {
     if ( BW_DEBUG ) {
       if ( $echo ) {
         echo 'Blipper Widget: ' . print_r( $data_name, false ) . ': ' . var_export( $data, false );
