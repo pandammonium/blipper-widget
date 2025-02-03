@@ -96,7 +96,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
 
       add_options_page(
         // translators: $plugin_data['Name']: the plugin name; do not translate
@@ -226,7 +226,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
       ?>
       <div class="wrap">
         <h2><?php
@@ -402,7 +402,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
       ?>
       <p><?php
         printf(
@@ -716,7 +716,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @author pandammonium
    * @return array
    */
-    private function bw_get_plugin_data() {
+    private static function bw_get_plugin_data() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
