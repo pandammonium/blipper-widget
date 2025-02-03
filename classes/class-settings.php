@@ -192,7 +192,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           'setting'     => 'access-token',
         )
       );
-
     }
 
   /**
@@ -213,7 +212,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
-
     }
 
   /**
@@ -309,7 +307,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         </p>
       </div>
       <?php
-
     }
 
   /**
@@ -655,7 +652,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'arguments', func_get_args() );
 
       return false !== get_option( 'blipper-widget-settings-oauth' );
-
     }
 
   /**
@@ -687,7 +683,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'arguments', func_get_args() );
 
       return 'blipper-widget-settings-oauth';
-
     }
 
   /**
@@ -712,7 +707,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       ?>
     </div>
     <?php
-
     }
 
   /**
@@ -729,7 +723,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
       $plugin_data = get_plugin_data($plugin_base, false, true);
       return $plugin_data;
-
     }
 
   }
