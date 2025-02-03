@@ -109,7 +109,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // slug name to refer to this menu by:
         'blipper-widget',
         // function to be called to output the content for this page:
-        array( &$this, 'bw_options_page' ),
+        array( Blipper_Widget_Settings::class, 'bw_options_page' ),
         // position in the menu order this item should appear:
         8
       );
@@ -222,7 +222,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_options_page() {
+    public static function bw_options_page() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -239,63 +239,63 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         <script type="text/javascript">pause(\'inside the options page\')</script>
           <?php
         if ( !current_user_can( 'manage_options' ) ) {
-          $this->bw_no_access_to_options( $plugin_data );
+          self::bw_no_access_to_options( $plugin_data );
         } else {
           ?>
-            <div class="notice">
-              <p>
-                <strong>
-                  <abbr title="<?php
+          <div class="notice">
+            <p>
+              <strong>
+                <abbr title="<?php
+                  printf(
+                    // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
+                    __( '%s', 'blipper-widget'),
+                    self::$nota_bene
+                  );?>">NB</abbr>
+                  <?php
                     printf(
-                      // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
-                      __( '%s', 'blipper-widget'),
-                      self::$nota_bene
-                    );?>">NB</abbr>
-                    <?php
-                      printf(
-                        // translators: %1$s: plugin name
-                        __( '%1$s is a classic widget with a shortcode. Although there is no %1$s block, %1$s can still be used in block-enabled themes.', 'blipper-widget' ),
-                        $plugin_data['Name']
-                      );
-                    ?>
-                  </strong>
-              </p>
-              <p><?php
+                      // translators: %1$s: plugin name
+                      __( '%1$s is a classic widget with a shortcode. Although there is no %1$s block, %1$s can still be used in block-enabled themes.', 'blipper-widget' ),
+                      $plugin_data['Name']
+                    );
+                  ?>
+                </strong>
+            </p>
+            <p><?php
+              printf(
+                  // translators: %1$s: plugin name
+                __( 'There are two ways to get %1$s to work with block-enabled themes. The first is a workaround; the second uses existing %1$s functionality:', 'blipper-widget' ),
+                $plugin_data['Name']
+              ); ?>
+            </p>
+            <ol>
+              <li><?php
                 printf(
-                    // translators: %1$s: plugin name
-                  __( 'There are two ways to get %1$s to work with block-enabled themes. The first is a workaround; the second uses existing %1$s functionality:', 'blipper-widget' ),
+                  // translators: %1$s: plugin name
+                  __( 'Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add %1$s to any widget-enabled location on your site. %1$s has been tested with <a href="https://en-gb.wordpress.org/plugins/classic-widgets/">Classic Widgets</a>.', 'blipper-widget' ),
                   $plugin_data['Name']
                 ); ?>
-              </p>
-              <ol>
-                <li><?php
-                  printf(
-                    // translators: %1$s: plugin name
-                    __( 'Install <a href="https://en-gb.wordpress.org/plugins/search/classic+widgets/">a plugin that enables classic widgets</a>. This will allow you to add %1$s to any widget-enabled location on your site. %1$s has been tested with <a href="https://en-gb.wordpress.org/plugins/classic-widgets/">Classic Widgets</a>.', 'blipper-widget' ),
-                    $plugin_data['Name']
-                  ); ?>
-                </li>
-                <li><?php
-                  printf(
-                    // translators: %1$s: plugin name
-                    __( 'Use the %1$s shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a> anywhere a shortcode may be used. Example: <code>[blipper_widget title=\'%1$s\' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code>', 'blipper-widget' ),
-                    $plugin_data['Name']
-                  ); ?>
-                </li>
-              </ol>
-              <p>Either way, you must fill out the form below.</p>
-            </div>
-            <form action="options.php" method="POST">
-              <?php
-                // Render a few hidden fields that tell WP which settings are going to be updated on this page:
-                settings_fields( 'blipper-widget-settings' );
-                // Output all the sections and fields that have been added to the options page (with slug options-wp-blipper):
-                do_settings_sections( 'blipper-widget' );
-                submit_button();
-              ?>
-            </form>
-        <?php
-          }
+              </li>
+              <li><?php
+                printf(
+                  // translators: %1$s: plugin name
+                  __( 'Use the %1$s shortcode in a WP <a href="https://wordpress.org/support/article/shortcode-block/">Shortcode block</a> anywhere a shortcode may be used. Example: <code>[blipper_widget title=\'%1$s\' add-link-to-blip=show display-journal-title=show display-powered-by=show display-desc-text=show]</code>', 'blipper-widget' ),
+                  $plugin_data['Name']
+                ); ?>
+              </li>
+            </ol>
+            <p>Either way, you must fill out the form below.</p>
+          </div>
+          <form action="options.php" method="POST">
+            <?php
+              // Render a few hidden fields that tell WP which settings are going to be updated on this page:
+              settings_fields( 'blipper-widget-settings' );
+              // Output all the sections and fields that have been added to the options page (with slug options-wp-blipper):
+              do_settings_sections( 'blipper-widget' );
+              submit_button();
+            ?>
+          </form>
+          <?php
+        }
         ?>
         <p><?php
           printf(
@@ -692,7 +692,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @author pandammonium
    * @return void
    */
-    private function bw_no_access_to_options( $plugin_data ) {
+    private static function bw_no_access_to_options( $plugin_data ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
