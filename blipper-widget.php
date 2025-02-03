@@ -131,15 +131,25 @@ if ( !function_exists( 'bw_log' ) ) {
    * * `true`: Echo the data name and the data
    * * `false`: Send the data name and the data to the error log (default)
    */
-  function bw_log( string $data_name, mixed $data, bool $echo = false ) {
+  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true ) {
     // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // bw_log( 'arguments', func_get_args() );
 
     if ( BW_DEBUG ) {
       if ( $echo ) {
-        echo 'Blipper Widget: ' . print_r( $data_name, false ) . ': ' . var_export( $data, false );
+        $string = 'Blipper Widget: ' . print_r( $data_name, false );
+        if ( $includes_data ) {
+          echo $string . ': ' . var_export( $data, false );
+        } else {
+          echo $string;
+        }
       } else {
-        error_log( BW_PREFIX . print_r( $data_name, true ) . ': ' . var_export( $data, true ) );
+        $string = BW_PREFIX . print_r( $data_name, true );
+        if ( $includes_data ) {
+          error_log( $string . ': ' . var_export( $data, true ) );
+        } else {
+          error_log( $string );
+        }
       }
       return BW_PREFIX . print_r( $data_name, true ) . ': ' . var_export( $data, true );
     } else {

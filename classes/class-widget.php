@@ -1743,10 +1743,8 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      bw_log( $this->bw_get_exception_class( $e ), null, false, false );
 
-      if ( BW_DEBUG ) {
-        error_log( $this->bw_get_exception_class( $e ) . '.' );
-      }
       if ( current_user_can( 'manage_options' ) ) {
         $this->bw_display_private_error_msg( $e, $additional_info, $request_limit_reached );
       } else {
