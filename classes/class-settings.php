@@ -581,8 +581,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     private function bw_test_connection( $oauth_settings ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $client = null;
       $user_profile = null;
