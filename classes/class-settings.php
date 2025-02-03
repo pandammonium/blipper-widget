@@ -41,9 +41,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
     * @since    0.0.2
     * @author    pandammonium
-    * @property string[]    $blipper_widget_defaults   The widget's default settings
+    * @property string[]    $bw_defaults   The widget's default settings
     */
-    private $blipper_widget_defaults = array(
+    private $bw_defaults = array(
       'username'              => '',
       'access-token'          => '',
     );
@@ -132,7 +132,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // option name:
         'blipper-widget-settings-oauth',
         // callback function to validate input
-        array( &$this, 'blipper_widget_oauth_validate' )
+        array( &$this, 'bw_oauth_validate' )
       );
 
       add_settings_section(
