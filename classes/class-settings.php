@@ -699,14 +699,14 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       ?>
       <div class="error">
         <?php
-      printf(
-        // translators: %s: Plugin name; do not translate
-        __( 'You do not have permission to modify the settings for %s.', 'blipper-widget' ),
-        $plugin_data['Name']
-      );
-      ?>
-    </div>
-    <?php
+        printf(
+          // translators: %s: Plugin name; do not translate
+          __( 'You do not have permission to modify the settings for %s.', 'blipper-widget' ),
+          $plugin_data['Name']
+        );
+        ?>
+      </div>
+      <?php
     }
 
   /**
