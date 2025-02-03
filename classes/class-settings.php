@@ -342,11 +342,13 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
       } else {
 
+        $is_valid = false;
         $settings = get_option( 'blipper-widget-settings-oauth' );
 
         $input['username'] = trim( esc_attr( $input['username'] ) );
         if ( true === ctype_print( $input['username'] ) ) {
           $output['username'] = $input['username'];
+          $is_valid = true;
         } else if ( empty( $input['username'] ) ) {
           add_settings_error(
             'wp-blipper-settings-group',
@@ -365,6 +367,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         $input['access-token'] = trim( esc_attr( $input['access-token'] ) );
         if ( true === ctype_alnum( $input['access-token'] ) ) {
           $output['access-token'] = $input['access-token'];
+          $is_valid = true;
         } else if ( empty( $input['access-token'] ) ) {
           add_settings_error(
             'wp-blipper-settings-group',
@@ -380,8 +383,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           $output['access-token'] = '';
         }
 
-        $this->bw_test_connection( $output );
-
+        if ( $is_valid ) {
+          $this->bw_test_connection( $output );
+        }
       }
 
       return $output;
