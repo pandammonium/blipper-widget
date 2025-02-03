@@ -68,6 +68,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function __construct() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       add_action( 'admin_menu', array( &$this, 'bw_admin_menu' ) );
       // Ensure the admin page is initialised only when needed:
@@ -91,6 +93,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function bw_admin_menu() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $plugin_data = $this->bw_get_plugin_data();
 
@@ -119,6 +123,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function bw_admin_init() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       register_setting(
         // option group:
@@ -199,6 +205,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function wp_blipper_field_render( $args ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
       $value = false == $settings ? $this->bw_defaults[$args['setting']] : $settings[$args['setting']];
@@ -217,6 +225,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function bw_options_page() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $plugin_data = $this->bw_get_plugin_data();
       ?>
@@ -317,6 +327,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    string                           The validated setting.
     */
     public function bw_oauth_validate( $input ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $output = $this->bw_defaults;
 
@@ -385,6 +397,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     public function bw_oauth_instructions() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $plugin_data = $this->bw_get_plugin_data();
       ?>
@@ -567,6 +581,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    void
     */
     private function bw_test_connection( $oauth_settings ) {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       $client = null;
       $user_profile = null;
@@ -625,6 +641,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                        stores the widget's OAuth settings.
     */
     public function bw_settings_have_been_set() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       return false != get_option( 'blipper-widget-settings-oauth' );
 
@@ -638,6 +656,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    array     The settings in the database or false if not set.
     */
     public function bw_get_settings() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       return get_option( 'blipper-widget-settings-oauth' );
 
@@ -653,6 +673,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                        stores the widget's OAuth settings.
     */
     public function bw_get_settings_db_name() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       return 'blipper-widget-settings-oauth';
 
@@ -666,6 +688,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @return void
    */
     private function bw_no_access_to_options( $plugin_data ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       ?>
       <div class="error">
@@ -689,6 +713,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @return array
    */
     private function bw_get_plugin_data() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
       $plugin_data = get_plugin_data($plugin_base, false, true);

@@ -170,7 +170,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function widget( $args, $settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       echo $args['before_widget'];
@@ -199,7 +199,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function form( $settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $this->bw_display_form( $this->bw_get_display_values( $settings ) );
@@ -218,7 +218,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     public function update( $new_settings, $old_settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $settings = array();
@@ -275,7 +275,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     public function bw_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
 
-        // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+        // bw_log( 'method', __METHOD__ . '()' );
         // bw_log( 'arguments', func_get_args() );
 
       try {
@@ -333,7 +333,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $args ) . $the_title );
@@ -367,7 +367,7 @@ if (!class_exists('Blipper_Widget')) {
      */
      private function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       if ( $this->bw_create_blipfoto_client() ) {
@@ -387,7 +387,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // bw_log( 'type of attributes', gettype( $atts ) );
@@ -435,7 +435,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_validate( $new_settings, $old_settings, $setting_field ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $setting = null;
@@ -501,7 +501,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_get_display_values( $settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $new_settings = array();
@@ -543,7 +543,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function bw_get_display_value( $setting, $settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       try {
@@ -637,8 +637,8 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_create_blipfoto_client( $args = null ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
-      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       $client_ok = false;
       $this->client = null;
@@ -761,7 +761,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_get_blip( $args, $settings, $is_widget, $content = null ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $user_profile = null;
@@ -1170,7 +1170,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function bw_get_styling( $element, $is_widget, $style_control, $settings ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // If the blip is not to be displayed in a widget or if the widget is to be styled using CSS only, return a class attribute.
@@ -1275,7 +1275,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function bw_sanitise_url( $url ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       return esc_url( $url );
@@ -1299,7 +1299,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_display_blip( $settings, $is_widget, $content=null ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       return $this->bw_get_blip( $settings, $is_widget, $content );
@@ -1315,7 +1315,7 @@ if (!class_exists('Blipper_Widget')) {
       */
     private function bw_display_form( $settings ) {
       // if ( BW_DEBUG ) {
-      //   bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      //   bw_log( 'method', __METHOD__ . '()' );
       //   bw_log( 'arguments', func_get_args() );
       // }
       $oauth_settings = $this->settings->bw_get_settings();
@@ -1644,7 +1644,7 @@ if (!class_exists('Blipper_Widget')) {
 
     private function bw_get_default_setting_value( $setting_type, $setting, $is_color = false ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       if ( array_key_exists( $setting_type, $this->default_setting_values ) ) {
@@ -1686,7 +1686,7 @@ if (!class_exists('Blipper_Widget')) {
 
     private function bw_get_style( $settings, $style_element ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $this->bw_log_display_values( $settings, $style_element, 'blipper_widget_get_style' );
@@ -1729,7 +1729,7 @@ if (!class_exists('Blipper_Widget')) {
 
     private function bw_log_display_values( $settings, $display_element, $function_name ) {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $message =
@@ -1870,12 +1870,12 @@ if (!class_exists('Blipper_Widget')) {
      * Add the WP colour picker.
      */
     public function bw_load_colour_picker() {
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
     }
 
     public function bw_enqueue_scripts( $hook_suffix ) {
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       if ( 'widgets.php' === $hook_suffix ) {
@@ -1930,7 +1930,7 @@ if (!class_exists('Blipper_Widget')) {
      */
     private function set_cache( mixed $data_to_cache ): void {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // bw_log( 'cache key', $this->cache_key );
@@ -1966,7 +1966,7 @@ if (!class_exists('Blipper_Widget')) {
 
     private function get_cache(): bool|array|string {
 
-      // bw_log( 'method', __CLASS__ . '::' . __FUNCTION__ );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // bw_log( 'cache key', $this->cache_key );
