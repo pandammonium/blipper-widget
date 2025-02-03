@@ -66,6 +66,9 @@ if (!function_exists('bw_register_widget')) {
   * @since 0.0.1
   */
   function bw_register_widget() {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+
     register_widget( 'Blipper_Widget' );
   }
   add_action( 'widgets_init', 'bw_register_widget' );
@@ -79,6 +82,8 @@ if (!function_exists('bw_add_settings_link')) {
   * @since 0.0.1
   */
   function bw_add_settings_link( $links, $file ) {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
 
     if ( strpos( $file, 'blipper-widget.php' ) !== false ) {
 
@@ -97,6 +102,9 @@ if (!function_exists('bw_exception')) {
   * @since 0.0.1
   */
   function bw_exception( $e ) {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
     if ( BW_DEBUG ) {
@@ -124,6 +132,9 @@ if ( !function_exists( 'bw_log' ) ) {
    * * `false`: Send the data name and the data to the error log (default)
    */
   function bw_log( string $data_name, mixed $data, bool $echo = false ) {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+
     if ( BW_DEBUG ) {
       if ( $echo ) {
         echo 'Blipper Widget: ' . print_r( $data_name, false ) . ': ' . var_export( $data, false );
