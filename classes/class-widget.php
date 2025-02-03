@@ -450,7 +450,7 @@ if (!class_exists('Blipper_Widget')) {
       switch ( $setting_field ) {
         case 'title':
           if ( array_key_exists( $setting_field, $new_settings ) ) {
-            if ( true == ctype_print( $new_settings[$setting_field] ) ) {
+            if ( true === ctype_print( $new_settings[$setting_field] ) ) {
               $setting = trim( $new_settings[$setting_field] );
             } else if ( empty( $new_settings[$setting_field] ) ) {
               $setting = '';
@@ -702,7 +702,7 @@ if (!class_exists('Blipper_Widget')) {
             throw new Blipper_Widget_ApiResponseException( $user_profile->error() );
           }
           $user = $user_profile->data()['user'];
-          if ( $user['username'] != $oauth_settings['username'] ) {
+          if ( $user['username'] !== $oauth_settings['username'] ) {
             throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
           } else {
             $client_ok = true;
@@ -1038,7 +1038,7 @@ if (!class_exists('Blipper_Widget')) {
             // Necessary for when Blipper Widget is added via the Customiser
             $settings['add-link-to-blip'] = $this->default_setting_values['common']['add-link-to-blip'];
           }
-          if ( $settings['add-link-to-blip'] == 'show' ) {
+          if ( $settings['add-link-to-blip'] === 'show' ) {
             $the_url = $this->bw_sanitise_url( 'https://www.blipfoto.com/entry/' . $blip['entry_id_str'] );
             $the_blip .= '<a href="' . $the_url . '" rel="nofollow">';
           }
@@ -1051,7 +1051,7 @@ if (!class_exists('Blipper_Widget')) {
             . $blip['title']
             . '">';
           // Close the link (anchor) tag.
-          if ( $settings['add-link-to-blip'] == 'show' ) {
+          if ( $settings['add-link-to-blip'] === 'show' ) {
             $the_blip .= '</a>';
           }
 
@@ -1064,10 +1064,10 @@ if (!class_exists('Blipper_Widget')) {
             // Necessary for when Blipper Widget is added via the Customiser
             $settings['display-date'] = $this->default_setting_values['common']['display-date'];
           }
-          if ( $settings['display-date'] == 'show' || ! empty( $blip['title'] ) ) {
+          if ( $settings['display-date'] === 'show' || ! empty( $blip['title'] ) ) {
             $the_blip .= "<header" . $this->bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
           }
-          if ( $settings['display-date'] == 'show' ) {
+          if ( $settings['display-date'] === 'show' ) {
               $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
             if ( !empty( $blip['title'] ) ) {
               $the_blip .= '<br>';
@@ -1103,9 +1103,9 @@ if (!class_exists('Blipper_Widget')) {
             $settings['display-powered-by'] = $this->default_setting_values['common']['display-powered-by'];
           }
 
-        if ( $settings['display-journal-title'] == 'show' || $settings['display-powered-by'] == 'show' ) {
+        if ( $settings['display-journal-title'] === 'show' || $settings['display-powered-by'] === 'show' ) {
             $the_blip .= "<footer" . $this->bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
-            if ( $settings['display-journal-title'] == 'show' ) {
+            if ( $settings['display-journal-title'] === 'show' ) {
                 $the_blip .= __( 'From', 'blipper-widget' )
                 . ' <a href="https://www.blipfoto.com/'
                 . $user_settings->data( 'username' )
@@ -1113,10 +1113,10 @@ if (!class_exists('Blipper_Widget')) {
                 . $user_settings->data( 'journal_title' )
                 . '</a>';
             }
-            if ( $settings['display-journal-title'] == 'show' && $settings['display-powered-by'] == 'show' ) {
+            if ( $settings['display-journal-title'] === 'show' && $settings['display-powered-by'] === 'show' ) {
               $the_blip .= ' | ';
             }
-            if ( $settings['display-powered-by'] == 'show' ) {
+            if ( $settings['display-powered-by'] === 'show' ) {
               $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . $this->bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
             }
             $the_blip .= '</footer>';
@@ -1439,7 +1439,7 @@ if (!class_exists('Blipper_Widget')) {
           jQuery(document).ready(function($) {
             the_value = $('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
             console.log( 'On load: ' + the_value );
-            if (the_value == 'widget-settings-only') {
+            if (the_value === 'widget-settings-only') {
               console.log( '  showing' );
               $('.blipper-widget-conditional').show();
             } else {
@@ -1449,7 +1449,7 @@ if (!class_exists('Blipper_Widget')) {
             $('#<?php echo $this->get_field_id( 'style-control' ); ?>').on('change', function() {
               the_value = $('#<?php echo $this->get_field_id( 'style-control' ); ?> option:selected').val();
               console.log('On change: ' + the_value);
-              if (the_value == 'widget-settings-only') {
+              if (the_value === 'widget-settings-only') {
                 console.log( '  showing' );
                 $('.blipper-widget-conditional').show();
               } else {

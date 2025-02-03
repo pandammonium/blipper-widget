@@ -209,7 +209,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'arguments', func_get_args() );
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
-      $value = false == $settings ? $this->bw_defaults[$args['setting']] : $settings[$args['setting']];
+      $value = false === $settings ? $this->bw_defaults[$args['setting']] : $settings[$args['setting']];
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
@@ -654,7 +654,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      return false != get_option( 'blipper-widget-settings-oauth' );
+      return false !== get_option( 'blipper-widget-settings-oauth' );
 
     }
 
