@@ -233,9 +233,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       <div class="wrap">
         <h2><?php
           printf(
-            // translators: 1 is the name of the plugin:
-            __('%1$s', 'blipper-widget'),
-            $plugin_data['Name']
+            // translators: 1 is the name of the plugin (do not translate):
+            __( '%1$s', 'blipper-widget'),
+                $plugin_data['Name']
           );
         ?> settings</h2>
         <script type="text/javascript">pause(\'inside the options page\')</script>
@@ -301,10 +301,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         ?>
         <p><?php
           printf(
-            // translators: 1: plugin name; 2: plugin version number
+            // translators: 1: plugin name (do not translate); 2: plugin version number
             __( '%1$s version %2$s', 'blipper-widget' ),
-            $plugin_data['Name'],
-            $plugin_data['Version']
+                $plugin_data['Name'],
+                $plugin_data['Version']
           ); ?>
         </p>
       </div>
