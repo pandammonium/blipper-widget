@@ -161,7 +161,6 @@ if (!class_exists('Blipper_Widget')) {
       add_shortcode('blipper_widget', array( $this, 'bw_shortcode_blip_display') );
 
       // bw_log( 'this', $this );
-
     }
 
     /**
@@ -185,7 +184,6 @@ if (!class_exists('Blipper_Widget')) {
       echo $this->render_the_blip( $args, $settings, $the_title, true );
 
       echo $args['after_widget'];
-
     }
 
     /**
@@ -204,7 +202,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $this->bw_display_form( $this->bw_get_display_values( $settings ) );
-
     }
 
     /**
@@ -259,7 +256,6 @@ if (!class_exists('Blipper_Widget')) {
       bw_log( 'settings updated', $settings['updated'] );
 
       return $settings;
-
     }
 
     /**
@@ -529,7 +525,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'new settings', $new_settings );
 
       return $new_settings;
-
     }
 
     /**
@@ -566,7 +561,6 @@ if (!class_exists('Blipper_Widget')) {
           $this->bw_display_error_msg( $e, 'Something has gone wrong getting the user settings' );
 
         }
-
     }
 
     /**
@@ -581,7 +575,6 @@ if (!class_exists('Blipper_Widget')) {
       require_once( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
 
       $this->load_blipfoto_dependencies();
-
     }
 
     /**
@@ -646,10 +639,13 @@ if (!class_exists('Blipper_Widget')) {
 
         if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
+
         } else if ( empty( $oauth_settings['username'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing username.' );
+
         } else if ( empty( $oauth_settings['access-token'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing access token.' );
+
         } else {
           $client_ok = true;
         }
@@ -737,7 +733,6 @@ if (!class_exists('Blipper_Widget')) {
         }
       }
       return $client_ok;
-
     }
 
     /**
@@ -1145,7 +1140,6 @@ if (!class_exists('Blipper_Widget')) {
       }
 
       return $the_blip;
-
     }
 
     /**
@@ -1221,7 +1215,6 @@ if (!class_exists('Blipper_Widget')) {
         default:
         return '';
       }
-
     }
 
     /**
@@ -1259,7 +1252,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'clean html', wp_kses( $html, $allowed_html ) );
 
       return wp_kses( $html, $allowed_html );
-
     }
 
     /**
@@ -1298,7 +1290,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       return $this->bw_get_blip( $settings, $is_widget, $content );
-
     }
 
     /**
@@ -1633,7 +1624,6 @@ if (!class_exists('Blipper_Widget')) {
         </div>
         <?php
       }
-
     }
 
     private function bw_get_default_setting_value( $setting_type, $setting, $is_color = false ) {
@@ -1674,7 +1664,6 @@ if (!class_exists('Blipper_Widget')) {
       } else {
         throw new Exception( 'Invalid setting type ' . $setting_type );
       }
-
     }
 
     private function bw_get_style( $settings, $style_element ) {
@@ -1716,7 +1705,6 @@ if (!class_exists('Blipper_Widget')) {
           // bw_log( 'style', $style );
         return $style;
       }
-
     }
 
     private function bw_log_display_values( $settings, $display_element, $function_name ) {
@@ -1752,7 +1740,6 @@ if (!class_exists('Blipper_Widget')) {
       } else {
         $this->bw_display_public_error_msg( $request_limit_reached );
       }
-
     }
 
     /**
@@ -1788,7 +1775,6 @@ if (!class_exists('Blipper_Widget')) {
           echo '<p class="' . $this->bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         }
       }
-
     }
 
     /**
@@ -1818,7 +1804,6 @@ if (!class_exists('Blipper_Widget')) {
         default:
           return 'Warning';
         }
-
     }
 
     /**
@@ -1991,7 +1976,6 @@ if (!class_exists('Blipper_Widget')) {
         throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( $this->cache_expiry ) . ' ' . $this->cache_expiry, E_USER_WARNING );
       }
       // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
-
     }
 
   }

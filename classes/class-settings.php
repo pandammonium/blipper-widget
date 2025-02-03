@@ -592,7 +592,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       $client = null;
       $user_profile = null;
       try {
-        $client = new Blipper_Widget_Client (
+        $client = new Blipper_Widget_Client(
          '',
          '',
          $oauth_settings['access-token']
