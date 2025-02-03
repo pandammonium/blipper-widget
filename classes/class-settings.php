@@ -374,6 +374,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'missing-oauth-access-token',
             __( 'Please enter a value for the access token.', 'blipper-widget' )
           );
+          $output['access-token'] = '';
         } else {
           add_settings_error(
             'wp-blipper-settings-group',
