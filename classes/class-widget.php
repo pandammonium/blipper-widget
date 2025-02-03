@@ -1838,13 +1838,24 @@ if (!class_exists('Blipper_Widget')) {
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException':
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
         case 'ErrorException':
-          return 'error';
+          return $this->bw_get_css_class( 'error' );
         case 'Exception':
-          return 'warning';
+          return $this->bw_get_css_class( 'warning' );
         default:
-          return 'notice';
+          return $this->bw_get_css_class( 'notice' );
         }
+    }
 
+    private function bw_get_css_class( string $type ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      switch ( $type ) {
+        case 'error':
+        case 'warning':
+        case 'notice':
+          return __( $type . ' ' . 'blipper-widget-' . $type , 'blipper-widget' );
+      }
     }
 
     // --- Action hooks ------------------------------------------------------- //
