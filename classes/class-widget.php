@@ -656,7 +656,9 @@ if (!class_exists('Blipper_Widget')) {
 
       } catch ( Blipper_Widget_OAuthException $e ) {
 
-        $this->bw_display_error_msg( $e, 'Please check your OAuth settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
+        bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
+
+        $this->bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials (your Blipfoto username and/or access token) are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
 
       } catch ( Exception $e ) {
 
@@ -731,7 +733,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } else {
         if ( BW_DEBUG ) {
-          error_log( 'CLIENT IS NOT OK' );
+          trigger_error( 'The Blipper Widget client is ' . var_export( $this->client, true ), E_USER_WARNING );
         }
       }
       return $client_ok;
@@ -1765,11 +1767,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      bw_log( 'Blipper Widget ERROR ' . $e->getCode() . ': ' . __( $e->getMessage(), 'blipper-widget' ), false );
-        error_log( 'In ' . $e->getFile() . ' on line ' . $e->getLine() );
-
-      echo '<p><span class=\'' . $this->bw_get_css_error_classes( $e ) . '\'>' . __( $this->bw_get_exception_class( $e ), 'blipper-widget' ) . '</span>: ERROR ' . $e->getCode() . ' ' . __( $e->getMessage(), 'blipper-widget' ) . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( '. Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
-
+      echo '<p>Blipper Widget <span class=\'' . $this->bw_get_css_error_classes( $e ) . '\'>' . __( $this->bw_get_exception_class( $e ), 'blipper-widget' ) . '</span> (' . $e->getCode() . '): ' . __( $e->getMessage(), 'blipper-widget' ) . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( '. Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
     }
 
     /**

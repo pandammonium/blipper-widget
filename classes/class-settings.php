@@ -353,13 +353,13 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           add_settings_error(
             'wp-blipper-settings-group',
             'missing-oauth-username',
-            __( 'Please enter a value for the username.', 'blipper-widget' )
+            __( 'Please enter your Blipfoto username.', 'blipper-widget' )
           );
         } else {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-access-token',
-            __( 'Please enter printable characters only for the username.', 'blipper-widget' )
+            __( 'Please enter printable characters only for your Blipfoto username.', 'blipper-widget' )
           );
           $output['username'] = '';
         }
@@ -372,14 +372,14 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           add_settings_error(
             'wp-blipper-settings-group',
             'missing-oauth-access-token',
-            __( 'Please enter a value for the access token.', 'blipper-widget' )
+            __( 'Please enter your Blipfoto access token.', 'blipper-widget' )
           );
           $output['access-token'] = '';
         } else {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-access-token',
-            __( 'Please enter alphanumeric characters only for the access token.', 'blipper-widget' )
+            __( 'Please enter alphanumeric characters only for your Blipfoto access token.', 'blipper-widget' )
           );
           $output['access-token'] = '';
         }
@@ -616,7 +616,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           $user = $user_profile->data()['user'];
 
           if ( $user['username'] != $oauth_settings['username'] ) {
-            throw new Blipper_Widget_OAuthException( 'Please check the username you entered is correct.' );
+            throw new Blipper_Widget_OAuthException( 'Could not connect to the Blipfoto account associated with the given access token.' );
           }
 
         } catch ( Blipper_Widget_OAuthException $e ) {
@@ -630,7 +630,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'wp-blipper-settings-group',
             'invalid-oauth-credentials',
             // translators: do not translate 'Blipfoto': it is the name of a service
-            __( 'Unable to connect to your Blipfoto user profile.<br>Please check you have correctly copied <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">your access token at Blipfoto</a> and pasted it into the settings below.<br>If you have refreshed your Blipfoto OAuth access token, you need to update it below.<br>If you have entered it correctly, try <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Blipfoto</a> and entering it below.', 'blipper-widget' )
+            // The inline styling is needed because the bullet points of the unordered list are not otherwise shown. The margin styling is taken from the ordered list styling:
+            __( 'Unable to connect to your Blipfoto account without a valid access token.<br/><ul style="list-style-type: disc; margin-left: 2em;">
+              <li>Please check you have correctly copied <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">your access token at Blipfoto</a> and pasted it into the access token field below.</li>
+              <li>If you have entered it correctly, try <a href="https://www.blipfoto.com/developer/apps" rel="nofollow">refreshing your access token at Blipfoto</a> and entering the resulting access token below.</li>
+              <li>If you have previously refreshed your Blipfoto OAuth access token, you need to update it below.</li>
+              </ul>', 'blipper-widget' )
           );
         }
       }
