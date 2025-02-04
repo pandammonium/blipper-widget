@@ -80,7 +80,7 @@ if (!class_exists('Blipper_Widget')) {
      * @author pandammonium
      * @since 1.2.3
      */
-    private string $cache_key;
+    private static string $cache_key = '';
     /**
      * @const The prefix used in the cache key to distinguish it from other
      * transient keys.
@@ -145,8 +145,7 @@ if (!class_exists('Blipper_Widget')) {
       self::load_dependencies();
 
       self::$settings = new blipper_widget_settings();
-      // self::$client = null;
-      $this->cache_key = '';
+      // self::$cache_key = '';
 
       // function to load Blipper Widget:
       // add_action( 'admin_notices', array( Blipper_Widget::class, 'bw_settings_check' ) );
@@ -329,13 +328,14 @@ if (!class_exists('Blipper_Widget')) {
      * @return string|bool The HTML that will render the blip or false on failure.
      */
     private function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
-      $this->cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
+      self::$cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . implode( ' ', $settings ) . $the_title );
+      bw_log( 'cache key', self::$cache_key );
 
       try {
-        $the_cache = $this->get_cache();
+        $the_cache = self::bw_get_cache();
         $updated = $settings['updated'];
 
         // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
@@ -369,7 +369,7 @@ if (!class_exists('Blipper_Widget')) {
         $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . $this->bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
 
         // Save the blip in the cache for next time:
-        $this->set_cache( $the_blip );
+        self::bw_set_cache( $the_blip );
         return $the_blip;
       } else {
         return false;
@@ -1940,11 +1940,11 @@ if (!class_exists('Blipper_Widget')) {
      * @param int $i The current line number of the readme file.
      * @return void
      */
-    private function set_cache( mixed $data_to_cache ): void {
+    private static function bw_set_cache( mixed $data_to_cache ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      // bw_log( 'cache key', $this->cache_key );
+      // bw_log( 'cache key', self::$cache_key );
       // bw_log( 'cache expiry', self::CACHE_EXPIRY );
 
       $result = false;
@@ -1953,9 +1953,9 @@ if (!class_exists('Blipper_Widget')) {
       try {
         if ( is_numeric( self::CACHE_EXPIRY ) ) {
 
-          $transient = get_transient( $this->cache_key );
+          $transient = get_transient( self::$cache_key );
           if ( false === $transient ) {
-            $result = set_transient( $this->cache_key, $data_to_cache, self::CACHE_EXPIRY );
+            $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
           } else {
             // Don't fail if the cache already exists:
             $result = true;
@@ -1966,24 +1966,24 @@ if (!class_exists('Blipper_Widget')) {
           }
         }
         if ( false === $result ) {
-          $deleted = delete_transient( $this->cache_key );
-          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( $this->cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
-          throw new Exception( 'Failed to set cache ' . $this->cache_key . '. ' . $deleted_msg, E_USER_WARNING );
+          $deleted = delete_transient( self::$cache_key );
+          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
+          throw new Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
         }
       } catch( Exception $e ) {
         throw( $e );
       }
     }
 
-    private function get_cache(): bool|array|string {
+    private static function bw_get_cache(): bool|array|string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      // bw_log( 'cache key', $this->cache_key );
+      // bw_log( 'cache key', self::$cache_key );
       // bw_log( 'cache expiry', self::CACHE_EXPIRY );
 
       if ( is_numeric( self::CACHE_EXPIRY ) ) {
-        $transient = get_transient( $this->cache_key );
+        $transient = get_transient( self::$cache_key );
         // bw_log( 'transient', $transient );
         return $transient;
       } else {
