@@ -71,7 +71,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      add_action( 'admin_menu', array( &$this, 'bw_admin_menu' ) );
+      add_action( 'admin_menu', array( Blipper_Widget_Settings::class, 'bw_admin_menu' ) );
       // Ensure the admin page is initialised only when needed:
       // Not calling this results in repeated error messages, if error messages
       // are displayed. Repeated error messages look pants.
@@ -81,7 +81,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         or 'options-general/php?page=blipper-widget'  === $GLOBALS['pagenow']
         )
       ) {
-        add_action( 'admin_init', array( &$this, 'bw_admin_init' ) );
+        add_action( 'admin_init', array( Blipper_Widget_Settings::class, 'bw_admin_init' ) );
       }
     }
 
@@ -92,7 +92,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_admin_menu() {
+    public static function bw_admin_menu() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -122,7 +122,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_admin_init() {
+    public static function bw_admin_init() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -132,7 +132,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // option name:
         'blipper-widget-settings-oauth',
         // callback function to validate input
-        array( &$this, 'bw_oauth_validate' )
+        array( Blipper_Widget_Settings::class, 'bw_oauth_validate' )
       );
 
       add_settings_section(
@@ -155,7 +155,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( &$this, 'wp_blipper_field_render'),
+        array( Blipper_Widget_Settings::class, 'wp_blipper_field_render'),
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -177,7 +177,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( &$this, 'wp_blipper_field_render'),
+        array( Blipper_Widget_Settings::class, 'wp_blipper_field_render'),
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -203,7 +203,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @param     array $args
     * @return    void
     */
-    public function wp_blipper_field_render( $args ) {
+    public static function wp_blipper_field_render( $args ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -661,7 +661,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    array     The settings in the database or false if not set.
     */
-    public function bw_get_settings() {
+    public static function bw_get_settings() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 

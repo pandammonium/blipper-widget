@@ -84,7 +84,8 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
       * @since    0.0.1
-      * @property blipper_widget_settings   $settings The Blipper Widget settings
+      * @property Blipper_Widget_Settings   $settings The Blipper Widget settings
+      * @deprecated 1.2.6
       */
       private $settings;
 
@@ -635,7 +636,7 @@ if (!class_exists('Blipper_Widget')) {
       try {
 
         // Get the settings from the database
-        $oauth_settings = $this->settings->bw_get_settings();
+        $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
         if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
@@ -1303,7 +1304,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $oauth_settings = $this->settings->bw_get_settings();
+      $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
       if ( empty( $oauth_settings['username'] ) ||
            empty( $oauth_settings['access-token'] )
