@@ -638,7 +638,7 @@ if (!class_exists('Blipper_Widget')) {
       } else if ( !empty( self::$client->accessToken() ) ) {
         $client_ok = true;
       }
-      error_log( 'client ok: ' . var_export( $client_ok, true ) );
+      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
 
       // Get the settings from the database
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
@@ -682,9 +682,9 @@ if (!class_exists('Blipper_Widget')) {
               '',
               $oauth_settings['access-token']
             );
-            error_log( 'created new client' );
+            // error_log( 'created new client' );
           }
-          error_log( 'client: ' . var_export( self::$client, true ) );
+          // error_log( 'client: ' . var_export( self::$client, true ) );
           if ( empty( self::$client ) || ! isset( self::$client ) ) {
             throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
           } else {
