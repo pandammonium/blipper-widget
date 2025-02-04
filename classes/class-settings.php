@@ -41,9 +41,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
     * @since    0.0.2
     * @author    pandammonium
-    * @property string[]    $bw_defaults   The widget's default settings
+    * @property string[]    BW_DEFAULTS   The widget's default settings
     */
-    private $bw_defaults = array(
+    private const BW_DEFAULTS = array(
       'username'              => '',
       'access-token'          => '',
     );
@@ -51,8 +51,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
    * @ignore
    */
-   // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
-   private static $nota_bene = 'Nota bene \'note well\'';
+   // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English. Do not translate the Latin abbreviation, but do translate the translation.
+   private const NOTA_BENE = 'Nota bene \'note well\'';
 
   ///**
   //  * @since    0.0.2
@@ -247,9 +247,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
               <strong>
                 <abbr title="<?php
                   printf(
-                    // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
+                    // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English.
                     __( '%s', 'blipper-widget'),
-                    self::$nota_bene
+                    self::NOTA_BENE
                   );?>">NB</abbr>
                   <?php
                     printf(
@@ -500,7 +500,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           printf(
             // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English
             __( '%s', 'blipper-widget'),
-            self::$nota_bene
+            self::NOTA_BENE
           );?>">NB</abbr>
         <?php
           printf(
