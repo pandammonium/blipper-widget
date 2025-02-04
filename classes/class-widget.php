@@ -33,19 +33,42 @@ if (!class_exists('Blipper_Widget')) {
       * @since    0.0.1
       * @property array     $default_setting_values   The widget's default settings
       */
-    private $default_setting_values = array ();
+    private const DEFAULT_SETTING_VALUES = array (
+        'widget'     => array (
+          'border-style'           => 'inherit',
+          'border-width'           => 'inherit',
+          'border-color'           => 'inherit',
+          'background-color'       => 'inherit',
+          'color'                  => 'inherit',
+          'link-color'             => 'inherit',
+          'padding'                => 'inherit',
+          'style-control'          => 'widget-settings-only',  // 'css'
+        ),
+        'shortcode'  => array (
+          'title-level'            => 'h2',                    // 'h1'–'h6','p'
+          'display-desc-text'      => 'hide',                  // 'show'
+        ),
+        'common'     => array (
+          'title'                  => 'My latest blip',
+          'display-date'           => 'show',                  // 'hide'
+          'display-journal-title'  => 'hide',                  // 'show'
+          'display-powered-by'     => 'hide',                  // 'show'
+          'add-link-to-blip'       => 'hide',                  // 'show'
+          'updated'                => false,                   // true
+        ),
+      );
 
     /**
      * @var string Defines the length of time the cache should be retained for in
      * minutes. Must have a numeric value (i.e. `true ===
-     * is_numeric($this->cache_expiry)`).
+     * is_numeric(self::CACHE_EXPIRY)`).
      * Default: `'60'`.
      * @access private
      *
      * @author pandammonium
      * @since 1.2.3
      */
-    private string $cache_expiry;
+    private const CACHE_EXPIRY = DAY_IN_SECONDS;
     /**
      * @var string The key used to identify each cache. Generated using the
      * MD5 algorithm, which isn't recommended for secure cryptographic
@@ -71,6 +94,7 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
       * @since    1.1.1
+      * @deprecated 1.2.6
       * @property array     $style_control_classes   The classes used for styling
       *                                              the widget.
       */
@@ -87,7 +111,7 @@ if (!class_exists('Blipper_Widget')) {
       * @property Blipper_Widget_Settings   $settings The Blipper Widget settings
       * @deprecated 1.2.6
       */
-      private $settings;
+      private static Blipper_Widget_Settings $settings;
 
       private const QUOTES = array(
        '“' => '',
@@ -120,34 +144,12 @@ if (!class_exists('Blipper_Widget')) {
       // on a sidebar when the OAuth access settings are set.
       $this->load_dependencies();
 
-      $this->default_setting_values = array (
-        'widget'     => array (
-          'border-style'           => 'inherit',
-          'border-width'           => 'inherit',
-          'border-color'           => 'inherit',
-          'background-color'       => 'inherit',
-          'color'                  => 'inherit',
-          'link-color'             => 'inherit',
-          'padding'                => 'inherit',
-          'style-control'          => 'widget-settings-only',  // 'css'
-        ),
-        'shortcode'  => array (
-          'title-level'            => 'h2',                    // 'h1'–'h6','p'
-          'display-desc-text'      => 'hide',                  // 'show'
-        ),
-        'common'     => array (
-          'title'                  => 'My latest blip',
-          'display-date'           => 'show',                  // 'hide'
-          'display-journal-title'  => 'hide',                  // 'show'
-          'display-powered-by'     => 'hide',                  // 'show'
-          'add-link-to-blip'       => 'hide',                  // 'show'
-          'updated'                => false,                   // true
-        ),
-      );
-      $this->settings = new blipper_widget_settings();
+      // $this->default_setting_values = array ();
+      // $this->settings = new blipper_widget_settings();
+      self::$settings = new blipper_widget_settings();
       $this->style_control_classes = array ();
       $this->client = null;
-      $this->cache_expiry = DAY_IN_SECONDS;
+      // self::CACHE_EXPIRY = DAY_IN_SECONDS;
       $this->cache_key = '';
 
 
@@ -331,7 +333,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $this->cache_key = self::CACHE_PREFIX . md5( $this->cache_expiry . implode( ' ', $args ) . $the_title );
+      $this->cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
 
       try {
         $the_cache = $this->get_cache();
