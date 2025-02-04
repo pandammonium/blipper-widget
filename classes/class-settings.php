@@ -143,7 +143,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
         // section callback function to render information and instructions about
         // this section:
-        array( &$this, 'bw_oauth_instructions'),
+        array( Blipper_Widget_Settings::class, 'bw_oauth_instructions'),
         // page id (i.e. menu slug):
         'blipper-widget'
       );
@@ -208,7 +208,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'arguments', func_get_args() );
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
-      $value = false === $settings ? $this->bw_defaults[$args['setting']] : $settings[$args['setting']];
+      $value = false === $settings ? self::BW_DEFAULTS[$args['setting']] : $settings[$args['setting']];
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
@@ -323,11 +323,11 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                                               that the user wants to set.
     * @return    string                           The validated setting.
     */
-    public function bw_oauth_validate( $input ) {
+    public static function bw_oauth_validate( $input ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $output = $this->bw_defaults;
+      $output = self::BW_DEFAULTS;
 
       if ( !is_array( $input ) ) {
 
@@ -382,7 +382,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         }
 
         if ( $is_valid ) {
-          $this->bw_test_connection( $output );
+          self::bw_test_connection( $output );
         }
       }
 
@@ -398,7 +398,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_oauth_instructions() {
+    public static function bw_oauth_instructions() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -582,7 +582,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @param     string[]     The OAuth settings provided by the user.
     * @return    void
     */
-    private function bw_test_connection( $oauth_settings ) {
+    private static function bw_test_connection( $oauth_settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -647,7 +647,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
-    public function bw_settings_have_been_set() {
+    public static function bw_settings_have_been_set() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -678,7 +678,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
-    public function bw_get_settings_db_name() {
+    public static function bw_get_settings_db_name() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
