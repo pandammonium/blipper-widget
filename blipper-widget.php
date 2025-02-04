@@ -106,7 +106,7 @@ if (!function_exists('bw_exception')) {
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
     if ( BW_DEBUG ) {
-      error_log( BW_PREFIX . wp_strip_all_tags( $e->getMessage() ) . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
+      error_log( BW_PREFIX . wp_strip_all_tags( $e->getMessage() ) . ' in `'. $function . '()` on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
