@@ -104,7 +104,7 @@ if (!class_exists('Blipper_Widget')) {
       * @since    0.0.1
       * @property Blipper_Widget_Client     $client   The Blipfoto client
       */
-      private $client;
+      private static $client = null;
 
     /**
       * @since    0.0.1
@@ -145,7 +145,7 @@ if (!class_exists('Blipper_Widget')) {
       self::load_dependencies();
 
       self::$settings = new blipper_widget_settings();
-      $this->client = null;
+      // self::$client = null;
       $this->cache_key = '';
 
       // function to load Blipper Widget:
@@ -627,23 +627,24 @@ if (!class_exists('Blipper_Widget')) {
       * @return   bool      $client_ok        True if the client was created
       *                                         successfully, else false
       */
-    private function bw_create_blipfoto_client( $args = null ) {
+    private static function bw_create_blipfoto_client( $args = null ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $client_ok = false;
-      // error_log( 'client: ' . var_export( $this->client, true ) );
-      // if ( empty( $this->client ) ) {
-      // } else {
-      //   $client_ok = true;
-      // }
-      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
-      // // Get the settings from the database
+      $create_new_client = false;
+      if ( empty( self::$client ) ) {
+        $create_new_client = true;
+      } else if ( !empty( self::$client->accessToken() ) ) {
+        $client_ok = true;
+      }
+      error_log( 'client ok: ' . var_export( $client_ok, true ) );
+
+      // Get the settings from the database
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
       if ( !$client_ok ) {
         try {
-
 
           if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
             throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
@@ -674,17 +675,21 @@ if (!class_exists('Blipper_Widget')) {
         try {
           $client_ok = false;
 
-          // Create a new client using the OAuth settings from the database
-          $this->client = new Blipper_Widget_Client (
-            '',
-            '',
-            $oauth_settings['access-token']
-          );
-          if ( empty( $this->client ) || ! isset( $this->client ) ) {
+          if ( $create_new_client ) {
+            // Create a new client using the OAuth settings from the database
+            self::$client = new Blipper_Widget_Client (
+              '',
+              '',
+              $oauth_settings['access-token']
+            );
+            error_log( 'created new client' );
+          }
+          error_log( 'client: ' . var_export( self::$client, true ) );
+          if ( empty( self::$client ) || ! isset( self::$client ) ) {
             throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
           } else {
             $client_ok = true;
-            // bw_log( 'client', $this->client );
+            // bw_log( 'client', self::$client );
 
           }
 
@@ -703,7 +708,7 @@ if (!class_exists('Blipper_Widget')) {
         $client_ok = false;
         try {
 
-          $user_profile = $this->client->get( 'user/profile' );
+          $user_profile = self::$client->get( 'user/profile' );
 
           if ( $user_profile->error() ) {
 
@@ -737,7 +742,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } else {
         if ( BW_DEBUG ) {
-          trigger_error( 'The Blipper Widget client is ' . var_export( $this->client, true ), E_USER_WARNING );
+          trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
         }
       }
       return $client_ok;
@@ -772,7 +777,7 @@ if (!class_exists('Blipper_Widget')) {
 
       try {
 
-        $user_profile = $this->client->get( 'user/profile' );
+        $user_profile = self::$client->get( 'user/profile' );
 
         if ( $user_profile->error() ) {
           throw new Blipper_Widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
@@ -795,7 +800,7 @@ if (!class_exists('Blipper_Widget')) {
 
         try {
 
-          $user_settings = $this->client->get( 'user/settings' );
+          $user_settings = self::$client->get( 'user/settings' );
 
           if ( $user_settings->error() ) {
             throw new Blipper_Widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
@@ -849,7 +854,7 @@ if (!class_exists('Blipper_Widget')) {
           // A page size of one means there will be only one blip on that page.
           // Together, these ensure that the most recent blip is obtained — which
           // is exactly what we want to display.
-          $journal = $this->client->get(
+          $journal = self::$client->get(
             'entries/journal',
             array(
               'page_index'  => 0,
@@ -935,7 +940,7 @@ if (!class_exists('Blipper_Widget')) {
         $blip = $blips[0];
         try {
 
-          $details = $this->client->get(
+          $details = self::$client->get(
             'entry',
             array(
               'entry_id'          => $blip['entry_id_str'],
