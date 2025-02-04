@@ -252,9 +252,9 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'new settings', $new_settings );
 
       $updated_settings_only = array_diff_assoc( $old_settings, $new_settings );
-      bw_log( 'Updated settings', $updated_settings_only );
+      // bw_log( 'Updated settings', $updated_settings_only );
       $settings['updated'] = empty( $updated_settings_only ) ? false : true;
-      bw_log( 'settings updated', $settings['updated'] );
+      // bw_log( 'settings updated', $settings['updated'] );
 
       return $settings;
     }
