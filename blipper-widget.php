@@ -130,8 +130,8 @@ if ( !function_exists( 'bw_log' ) ) {
    * * `false`: Send the data name and the data to the error log (default)
    */
   function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true ) {
-    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
-    // bw_log( 'arguments', func_get_args() );
+    // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
+    // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
     if ( BW_DEBUG ) {
       if ( $echo ) {
