@@ -550,10 +550,8 @@ if (!class_exists('Blipper_Widget')) {
           } else if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['common'] ) ) {
             return self::DEFAULT_SETTING_VALUES['common'][$setting];
           } else {
-            if ( BW_DEBUG ) {
-              error_log( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
-            }
-            throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>.' );
+            // bw_log( 'Invalid setting requested', $setting );
+            throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>' );
             return '';
           }
         }
@@ -1750,7 +1748,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      bw_log( self::bw_get_exception_class( $e ), null, false, false );
+      // bw_log( self::bw_get_exception_class( $e ), null, false, false );
 
       if ( current_user_can( 'manage_options' ) ) {
         self::bw_display_private_error_msg( $e, $additional_info, $request_limit_reached );
@@ -1771,7 +1769,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      echo '<p>Blipper Widget <span class=\'' . self::bw_get_css_error_classes( $e ) . '\'>' . __( self::bw_get_exception_class( $e ), 'blipper-widget' ) . '</span> (' . $e->getCode() . '): ' . __( $e->getMessage(), 'blipper-widget' ) . ' ' . __( $additional_info, 'blipper-widget' ) . ( $request_limit_reached ? __( 'Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
+      echo '<p>Blipper Widget <span class=\'' . self::bw_get_css_error_classes( $e ) . '\'>' . __( self::bw_get_exception_class( $e ), 'blipper-widget' ) . '</span> (' . $e->getCode() . '): ' . __( $e->getMessage(), 'blipper-widget' ) . (empty( $additional_info ) ? '' : (' ' . __( $additional_info, 'blipper-widget' ))) . ( $request_limit_reached ? __( 'Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
     }
 
     /**
@@ -1993,7 +1991,7 @@ if (!class_exists('Blipper_Widget')) {
       } else {
         throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
       }
-      bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
 
   }
