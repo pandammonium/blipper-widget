@@ -155,7 +155,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_action( 'admin_footer-widgets.php', array( Blipper_Widget::class, 'bw_print_scripts' ), 9999 );
 
-      add_shortcode('blipper_widget', array( &$this, 'bw_shortcode_blip_display') );
+      add_shortcode('blipper_widget', array( Blipper_Widget::class, 'bw_shortcode_blip_display') );
 
       // bw_log( 'this', $this );
       // bw_log( 'default setting values', self::DEFAULT_SETTING_VALUES );
@@ -182,7 +182,7 @@ if (!class_exists('Blipper_Widget')) {
         $the_title = $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
       }
 
-      echo $this->render_the_blip( $args, $settings, $the_title, true );
+      echo self::render_the_blip( $args, $settings, $the_title, true );
 
       echo $args['after_widget'];
     }
@@ -202,7 +202,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $this->bw_display_form( $this->bw_get_display_values( $settings ) );
+      $this->bw_display_form( self::bw_get_display_values( $settings ) );
     }
 
     /**
@@ -270,7 +270,7 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @since 1.1
      */
-    public function bw_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
+    public static function bw_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
         // bw_log( 'method', __METHOD__ . '()' );
         // bw_log( 'arguments', func_get_args() );
 
@@ -286,8 +286,13 @@ if (!class_exists('Blipper_Widget')) {
         $args = shortcode_atts( $defaults, $atts, $shortcode );
         extract( $args );
 
-        // Don't have any saved settings to compare the current ones with (unless we get the last-saved version of this location, if that's even possible or worthwhile), so have to set the updated flag to true regardless, otherwise the blip might not be rendered correctly:
-        $args['updated'] = true;
+        // Don't have any saved settings to compare the current ones with (unless we get the last-saved version of this location, if that's even possible or worthwhile), so have to set the updated flag to true regardless, otherwise the blip might not be rendered correctly. Unless the settings are the default ones, of course:
+        $updated_settings_only = array_diff_assoc( $defaults, $args );
+        // bw_log( 'Updated settings', $updated_settings_only );
+        $settings['updated'] = empty( $updated_settings_only ) ? false : true;
+        // bw_log( 'Settings updated', $settings['updated'] );
+
+        // $args['updated'] = true;
 
         $the_title = '';
         if ( ! empty( $args['title'] ) ) {
@@ -305,7 +310,7 @@ if (!class_exists('Blipper_Widget')) {
 
         // bw_log( 'shortcode atts', $args );
 
-        return $this->render_the_blip( $defaults, $args, $the_title, false, $content );
+        return self::render_the_blip( $defaults, $args, $the_title, false, $content );
       } catch( Exception $e ) {
         return bw_exception( $e );
       }
@@ -327,12 +332,12 @@ if (!class_exists('Blipper_Widget')) {
      * @param string The formatted title to be used for this blip.
      * @return string|bool The HTML that will render the blip or false on failure.
      */
-    private function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+    private static function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       self::$cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . implode( ' ', $settings ) . $the_title );
-      bw_log( 'cache key', self::$cache_key );
+      // bw_log( 'cache key', self::$cache_key );
 
       try {
         $the_cache = self::bw_get_cache();
@@ -345,7 +350,7 @@ if (!class_exists('Blipper_Widget')) {
           // error_log( 'rendering the blip from scratch' );
 
           // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
-          return $this->generate_blip( $args, $settings, $the_title, $is_widget, $content );
+          return self::generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
         } else {
           // error_log( 'rendering the blip from the cache' );
@@ -361,12 +366,12 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Generate the blip from scratch
      */
-     private function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
+     private static function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       if ( self::bw_create_blipfoto_client() ) {
-        $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . $this->bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
+        $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
 
         // Save the blip in the cache for next time:
         self::bw_set_cache( $the_blip );
@@ -499,20 +504,20 @@ if (!class_exists('Blipper_Widget')) {
       $new_settings = array();
 
       try {
-        $new_settings['title'] = $this->bw_get_display_value( 'title', $settings );
-        $new_settings['display-date'] = $this->bw_get_display_value( 'display-date', $settings );
-        $new_settings['display-journal-title'] = $this->bw_get_display_value( 'display-journal-title', $settings );
-        $new_settings['add-link-to-blip'] = $this->bw_get_display_value( 'add-link-to-blip', $settings );
-        $new_settings['display-powered-by'] = $this->bw_get_display_value( 'display-powered-by', $settings );
-        $new_settings['border-style'] = $this->bw_get_display_value( 'border-style', $settings );
-        $new_settings['border-width'] = $this->bw_get_display_value( 'border-width', $settings );
-        $new_settings['border-color'] = $this->bw_get_display_value( 'border-color', $settings );
-        $new_settings['background-color'] = $this->bw_get_display_value( 'background-color', $settings );
-        $new_settings['color'] = $this->bw_get_display_value( 'color', $settings );
-        $new_settings['link-color'] = $this->bw_get_display_value( 'link-color', $settings );
-        $new_settings['padding'] = $this->bw_get_display_value( 'padding', $settings );
-        $new_settings['style-control'] = $this->bw_get_display_value( 'style-control', $settings );
-        $new_settings['updated'] = $this->bw_get_display_value( 'updated', $settings );
+        $new_settings['title'] = self::bw_get_display_value( 'title', $settings );
+        $new_settings['display-date'] = self::bw_get_display_value( 'display-date', $settings );
+        $new_settings['display-journal-title'] = self::bw_get_display_value( 'display-journal-title', $settings );
+        $new_settings['add-link-to-blip'] = self::bw_get_display_value( 'add-link-to-blip', $settings );
+        $new_settings['display-powered-by'] = self::bw_get_display_value( 'display-powered-by', $settings );
+        $new_settings['border-style'] = self::bw_get_display_value( 'border-style', $settings );
+        $new_settings['border-width'] = self::bw_get_display_value( 'border-width', $settings );
+        $new_settings['border-color'] = self::bw_get_display_value( 'border-color', $settings );
+        $new_settings['background-color'] = self::bw_get_display_value( 'background-color', $settings );
+        $new_settings['color'] = self::bw_get_display_value( 'color', $settings );
+        $new_settings['link-color'] = self::bw_get_display_value( 'link-color', $settings );
+        $new_settings['padding'] = self::bw_get_display_value( 'padding', $settings );
+        $new_settings['style-control'] = self::bw_get_display_value( 'style-control', $settings );
+        $new_settings['updated'] = self::bw_get_display_value( 'updated', $settings );
 
       } catch ( ErrorException $e ) {
 
@@ -537,7 +542,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       try {
-
         if ( array_key_exists( $setting, $settings ) ) {
           return esc_attr( $settings[$setting] );
         } else {
@@ -661,7 +665,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } catch ( Blipper_Widget_OAuthException $e ) {
 
-          bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
+          // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
 
           self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials (your Blipfoto username and/or access token) are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
 
@@ -765,7 +769,7 @@ if (!class_exists('Blipper_Widget')) {
       *                                         when in a widgety area
       * @return   string                      The blip encoded in HTML
       */
-    private function bw_get_blip( $args, $settings, $is_widget, $content = null ) {
+    private static function bw_get_blip( $args, $settings, $is_widget, $content = null ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1041,12 +1045,12 @@ if (!class_exists('Blipper_Widget')) {
           $style_control = $is_widget ? ( isset( $settings['style-control'] ) ? ( $settings['style-control'] === self::DEFAULT_SETTING_VALUES['widget']['style-control'] ) : true ) : false;
           // bw_log( 'style control', $style_control );
 
-          $the_blip = "<div" . $this->bw_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
+          $the_blip = "<div" . self::bw_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
 
-          $the_blip .= "<figure" . $this->bw_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
+          $the_blip .= "<figure" . self::bw_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
 
           // Link back to the blip on the Blipfoto site.
-          $this->bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
+          self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
           if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
             // Necessary for when Blipper Widget is added via the Customiser
             $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
@@ -1059,7 +1063,7 @@ if (!class_exists('Blipper_Widget')) {
           $the_blip .= '<img src="'
             . self::bw_sanitise_url( $image_url )
             . '"'
-            . $this->bw_get_styling( 'img', $is_widget, $style_control, $settings )
+            . self::bw_get_styling( 'img', $is_widget, $style_control, $settings )
             . ' alt="'
             . $blip['title']
             . '">';
@@ -1069,16 +1073,16 @@ if (!class_exists('Blipper_Widget')) {
           }
 
           // Display any associated data.
-          $the_blip .= "<figcaption" . $this->bw_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
+          $the_blip .= "<figcaption" . self::bw_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
 
           // Date (optional), title and username
-          $this->bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
+          self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
           if ( ! array_key_exists( 'display-date' , $settings ) ) {
             // Necessary for when Blipper Widget is added via the Customiser
             $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
           }
           if ( $settings['display-date'] === 'show' || ! empty( $blip['title'] ) ) {
-            $the_blip .= "<header" . $this->bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
+            $the_blip .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
           }
           if ( $settings['display-date'] === 'show' ) {
               $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
@@ -1099,14 +1103,14 @@ if (!class_exists('Blipper_Widget')) {
 
           // Display any content provided by the user in a shortcode.
           if ( ! empty( $content ) ) {
-            $the_blip .= '<div' . $this->bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
+            $the_blip .= '<div' . self::bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
               . $content
               . '</div>';
           }
 
           // Journal title and/or display-powered-by link.
-          $this->bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
-          $this->bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
+          self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
+          self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
           if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
             // Necessary for when Blipper Widget is added via the Customiser.
             $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
@@ -1117,12 +1121,12 @@ if (!class_exists('Blipper_Widget')) {
           }
 
         if ( $settings['display-journal-title'] === 'show' || $settings['display-powered-by'] === 'show' ) {
-            $the_blip .= "<footer" . $this->bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
+            $the_blip .= "<footer" . self::bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
             if ( $settings['display-journal-title'] === 'show' ) {
                 $the_blip .= __( 'From', 'blipper-widget' )
                 . ' <a href="https://www.blipfoto.com/'
                 . $user_settings->data( 'username' )
-                . '" rel="nofollow"' . $this->bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
+                . '" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
                 . $user_settings->data( 'journal_title' )
                 . '</a>';
             }
@@ -1130,13 +1134,13 @@ if (!class_exists('Blipper_Widget')) {
               $the_blip .= ' | ';
             }
             if ( $settings['display-powered-by'] === 'show' ) {
-              $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . $this->bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
+              $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
             }
             $the_blip .= '</footer>';
           }
           $the_blip .= '</figcaption></figure>';
 
-          $the_blip .= empty( $descriptive_text ) ? "" : "<div" . $this->bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
+          $the_blip .= empty( $descriptive_text ) ? "" : "<div" . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
             . self::bw_sanitise_html( $descriptive_text )
             . '</div>';
 
@@ -1172,7 +1176,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param    array      $settings        The user-defined settings containing
      *                                         the style data
      */
-    private function bw_get_styling( $element, $is_widget, $style_control, $settings ) {
+    private static function bw_get_styling( $element, $is_widget, $style_control, $settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1184,15 +1188,15 @@ if (!class_exists('Blipper_Widget')) {
         case 'div|blip':
         return $use_class ?
           ( ' class=\'bw-blip\'' ) :
-          ( ' style=\'' .  $this->bw_get_style( $settings, 'border-style')
-            . $this->bw_get_style( $settings, 'border-width')
-            . $this->bw_get_style( $settings, 'border-color')
+          ( ' style=\'' .  self::bw_get_style( $settings, 'border-style')
+            . self::bw_get_style( $settings, 'border-width')
+            . self::bw_get_style( $settings, 'border-color')
             . '\'' );
         case 'figure':
         return $use_class ?
           ( ' class=\'bw-figure\'' ) :
-          ( ' style=\'' . $this->bw_get_style( $settings, 'background-color' )
-            . $this->bw_get_style( $settings, 'padding' ) . '\'' );
+          ( ' style=\'' . self::bw_get_style( $settings, 'background-color' )
+            . self::bw_get_style( $settings, 'padding' ) . '\'' );
         case 'img':
         return $use_class ?
           ( ' class=\'bw-image\'' ) :
@@ -1201,7 +1205,7 @@ if (!class_exists('Blipper_Widget')) {
         return $use_class ?
           ( ' class=\'bw-caption\'' ) :
           ( ' style=\'padding-top:7px;line-height:2;'
-            . $this->bw_get_style( $settings, 'color' )
+            . self::bw_get_style( $settings, 'color' )
             . '\'' );
         case 'header':
         return $use_class ?
@@ -1219,7 +1223,7 @@ if (!class_exists('Blipper_Widget')) {
         return $use_class ?
           ( ' class=\'bw-caption-link\'' ) :
           ( ' style=\''
-            . $this->bw_get_style( $settings, 'link-color' )
+            . self::bw_get_style( $settings, 'link-color' )
             . 'text-decoration:none;\'' );
         case 'div|desc-text':
         return $use_class ?
@@ -1302,7 +1306,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      return $this->bw_get_blip( $settings, $is_widget, $content );
+      return self::bw_get_blip( $settings, $is_widget, $content );
     }
 
     /**
@@ -1312,7 +1316,7 @@ if (!class_exists('Blipper_Widget')) {
       * @access    private
       * @param     array         $settings       The settings saved in the database
       */
-    private static function bw_display_form( $settings ) {
+    private function bw_display_form( $settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1679,11 +1683,11 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
-    private function bw_get_style( $settings, $style_element ) {
+    private static function bw_get_style( $settings, $style_element ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $this->bw_log_display_values( $settings, $style_element, 'blipper_widget_get_style' );
+      self::bw_log_display_values( $settings, $style_element, 'blipper_widget_get_style' );
 
       $element = $style_element;
 
