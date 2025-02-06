@@ -48,7 +48,13 @@ require_once('classes/class-widget.php');
 /**
  * @ignore
  */
-define( 'BW_DEBUG', false );
+define( 'BW_DEBUG',
+  defined( 'WP_DEBUG' ) &&
+  ( true === WP_DEBUG ) &&
+  defined( 'WP_DEBUG_LOG' ) &&
+  ( true === WP_DEBUG_LOG ) &&
+  true
+);
 /**
  * @ignore
  */
