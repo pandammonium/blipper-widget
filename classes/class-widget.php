@@ -641,42 +641,19 @@ if (!class_exists('Blipper_Widget')) {
       } else if ( !empty( self::$client->accessToken() ) ) {
         $client_ok = true;
       }
-      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
+      error_log( 'client ok: ' . var_export( $client_ok, true ) );
+      error_log( 'create new client: ' . var_export( $create_new_client, true ) );
 
       // Get the settings from the database
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
-      if ( !$client_ok ) {
-        try {
-
-          if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
-            throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
-
-          } else if ( empty( $oauth_settings['username'] ) ) {
-            throw new Blipper_Widget_OAuthException( 'Missing username.' );
-
-          } else if ( empty( $oauth_settings['access-token'] ) ) {
-            throw new Blipper_Widget_OAuthException( 'Missing access token.' );
-
-          } else {
-            $client_ok = true;
-          }
-
-        } catch ( Blipper_Widget_OAuthException $e ) {
-
-          // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
-
-          self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials (your Blipfoto username and/or access token) are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting the user' );
-
-        }
+      if ( $create_new_client || !$client_ok ) {
+        $client_ok = self::bw_check_oauth_credentials( $oauth_settings );
       }
+
       if ( $client_ok ) {
+        $client_ok = false;
         try {
-          $client_ok = false;
 
           if ( $create_new_client ) {
             // Create a new client using the OAuth settings from the database
@@ -708,7 +685,7 @@ if (!class_exists('Blipper_Widget')) {
       }
 
       if ( $client_ok ) {
-        $client_ok = self::bw_create_blipfoto_client_get_user_profile();
+        $client_ok = self::bw_create_blipfoto_client_get_user_profile( $oauth_settings );
       } else {
         if ( BW_DEBUG ) {
           trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
@@ -717,7 +694,36 @@ if (!class_exists('Blipper_Widget')) {
       return $client_ok;
     }
 
-    private static function bw_create_blipfoto_client_get_user_profile(): bool {
+    private static function bw_check_oauth_credentials( array $oauth_settings ): bool {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
+
+      try {
+        if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
+          throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
+        } else if ( empty( $oauth_settings['username'] ) ) {
+          throw new Blipper_Widget_OAuthException( 'Missing username.' );
+        } else if ( empty( $oauth_settings['access-token'] ) ) {
+          throw new Blipper_Widget_OAuthException( 'Missing access token.' );
+        } else {
+          return true;
+        }
+      } catch ( Blipper_Widget_OAuthException $e ) {
+        // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
+        self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting the Blipfoto account' );
+      }
+      return false;
+    }
+
+    private static function bw_create_blipfoto_client_create_new_client(): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+    }
+
+    private static function bw_create_blipfoto_client_get_user_profile( array $oauth_settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -731,7 +737,7 @@ if (!class_exists('Blipper_Widget')) {
         if ( $user['username'] !== $oauth_settings['username'] ) {
           throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
         } else {
-          $client_ok = true;
+          return true;
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
         self::bw_display_error_msg( $e );
@@ -744,6 +750,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
       }
+      return false;
     }
 
     /**
