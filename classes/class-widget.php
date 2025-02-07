@@ -1854,12 +1854,16 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Display an error message after an exception was thrown.
      *
-     * @param    $e                  The exception object containing information
+     * @param    \Exception $e                  The exception object
+     * containing information
      *                                 about the error
-     * @param    $additional_info    Extra information to help the user.
+     * @param    string $additional_info    Extra information to help the
+     * user.
+     * @param    bool $request_limit_reached True if the Blipfoto request
+     * limit has been reached; otherwise false.
      * @since    1.1.1
     */
-    private static function bw_display_error_msg( $e, $additional_info = '', $request_limit_reached = false ) {
+    private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1875,12 +1879,16 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Display an error message for a user that can manage options.
      *
-     * @param    $e                  The exception object containing information
+     * @param    \Exception $e                  The exception object
+     * containing information
      *                                 about the error
-     * @param    $additional_info    Extra information to help the user.
+     * @param    string $additional_info    Extra information to help the
+     * user.
+     * @param    bool $request_limit_reached True if the Blipfoto request
+     * limit has been reached; otherwise false.
      * @since    1.1.1
       */
-    private static function bw_display_private_error_msg( $e, $additional_info = '', bool $request_limit_reached = false ) {
+    private static function bw_display_private_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1891,8 +1899,11 @@ if (!class_exists('Blipper_Widget')) {
      * Display an error message for a user that cannot manage options.
      *
      * @since    1.1.1
+     *
+     * @param    bool $request_limit_reached True if the Blipfoto request
+     *  limit has been reached; otherwise false.
      */
-    private static function bw_display_public_error_msg( $request_limit_reached = false ) {
+    private static function bw_display_public_error_msg( bool $request_limit_reached = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
