@@ -145,7 +145,6 @@ if (!class_exists('Blipper_Widget')) {
       self::load_dependencies();
 
       self::$settings = new blipper_widget_settings();
-      // self::$cache_key = '';
 
       // function to load Blipper Widget:
       // add_action( 'admin_notices', array( Blipper_Widget::class, 'bw_settings_check' ) );
@@ -337,12 +336,12 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      self::$cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . implode( ' ', $settings ) . $the_title );
+      self::$cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
       // bw_log( 'cache key', self::$cache_key );
 
       try {
         $the_cache = self::bw_get_cache();
-        $updated = $settings['updated'];
+        $updated = false;//$settings['updated'];
 
         // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
         // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
@@ -355,6 +354,7 @@ if (!class_exists('Blipper_Widget')) {
 
         } else {
           // error_log( 'rendering the blip from the cache' );
+          // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
           // The blip has been cached recently and its settings have not changed, so return the cached blip:
           return $the_cache;
@@ -376,11 +376,11 @@ if (!class_exists('Blipper_Widget')) {
 
         // Save the blip in the cache for next time:
         self::bw_set_cache( $the_blip );
+        // error_log( 'the blip: ' . var_export( $the_blip, true ) );
         return $the_blip;
       } else {
         return false;
       }
-
      }
 
     /**
