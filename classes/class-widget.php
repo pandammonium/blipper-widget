@@ -579,7 +579,7 @@ if (!class_exists('Blipper_Widget')) {
 
       require_once( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
 
-      self::load_blipfoto_dependencies();
+      self::bw_load_blipfoto_dependencies();
     }
 
     /**
@@ -587,7 +587,7 @@ if (!class_exists('Blipper_Widget')) {
       *
       * @since    0.0.1
       */
-    private static function load_blipfoto_dependencies() {
+    private static function bw_load_blipfoto_dependencies() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
