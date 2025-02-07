@@ -142,7 +142,7 @@ if (!class_exists('Blipper_Widget')) {
       // Not using is_active_widget here because that function is only supposed to
       // return true if the widget is on a sidebar.  The widget isn't necessarily
       // on a sidebar when the OAuth access settings are set.
-      self::load_dependencies();
+      self::bw_load_dependencies();
 
       self::$settings = new blipper_widget_settings();
 
@@ -573,7 +573,7 @@ if (!class_exists('Blipper_Widget')) {
       *
       * @since    0.0.1
       */
-    private static function load_dependencies() {
+    private static function bw_load_dependencies() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
