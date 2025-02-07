@@ -772,390 +772,479 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $user_profile = null;
-      $user_settings = null;
-      $descriptive_text = null;
-      $continue = false;
+      $data = [
+        'blip' => null,
+        'blips' => null,
+        'descriptive_text' => null,
+        'details' => null,
+        'image_url' => '',
+        'journal' => null,
+        'user' => null,
+        'user_profile' => null,
+        'user_settings' => null,
+      ];
+      // error_log( 'data: ' . var_export( $data, true ) );
       $the_blip = '';
 
-      try {
+      $continue = self::bw_get_blip_get_user_profile( $data );
 
-        $user_profile = self::$client->get( 'user/profile' );
-
-        if ( $user_profile->error() ) {
-          throw new Blipper_Widget_ApiResponseException( $user_profile->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
-        } else {
-          $continue = true;
-        }
-
-      } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-        self::bw_display_error_msg( $e );
-
-      } catch ( Exception $e ) {
-
-        self::bw_display_error_msg( $e, 'Something has gone wrong getting your user profile' );
-
+      if ( $continue ) {
+        $continue = self::bw_get_blip_get_user_settings( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        try {
-
-          $user_settings = self::$client->get( 'user/settings' );
-
-          if ( $user_settings->error() ) {
-            throw new Blipper_Widget_ApiResponseException( $user_settings->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
-          } else {
-            $continue = true;
-          }
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting your user settings' );
-
-        }
-
+        $continue = self::bw_get_blip_get_user( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        try {
-
-          $user = $user_profile->data('user');
-
-          if ( empty( $user ) ) {
-            throw new Blipper_Widget_ApiResponseException( 'Can\'t access your Blipfoto account data.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
-          } else {
-            $continue = true;
-          }
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account' );
-
-        }
-
+        $continue = self::bw_get_blip_get_journal( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        try {
-
-          // A page index of zero gives the most recent page of blips.
-          // A page size of one means there will be only one blip on that page.
-          // Together, these ensure that the most recent blip is obtained — which
-          // is exactly what we want to display.
-          $journal = self::$client->get(
-            'entries/journal',
-            array(
-              'page_index'  => 0,
-              'page_size'   => 1
-            )
-          );
-
-          if ( $journal->error() ) {
-            throw new Blipper_Widget_ApiResponseException( $journal->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
-          } else {
-            $continue = true;
-          }
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal' );
-
-        }
-
+        $continue = self::bw_get_blip_get_blips( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        try {
-
-          $blips = $journal->data( 'entries' );
-
-          if ( empty( $blips ) ) {
-            throw new ErrorException( 'Can\'t access your Blipfoto journal entries (blips).  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
-          } else {
-            $continue = true;
-          }
-
-        } catch ( ErrorException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips)' );
-
-        }
-
-      }
-
-      // Assuming any blips have been retrieved, there should only be one.
-      if ( $continue ) {
-        $continue = false;
-
-        try {
-
-          switch ( count( $blips ) ) {
-            case 0:
-              throw new Exception( 'No Blipfoto entries (blips) found.  <a href="https://www.blipfoto.com/' . $user['username'] . '" rel="nofollow">Your Blipfoto journal</a> must have at least one entry (blip) before Blipper Widget can display anything.');
-            break;
-            case 1:
-              $continue = true;
-            break;
-            default:
-              throw new Blipper_Widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' . count( $blips ) . '. Something has gone wrong.  Please try again' );
-          }
-
-        } catch ( Blipper_Widget_BaseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        }
-
+        $continue = self::bw_get_blip_count_blips( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        $blip = $blips[0];
-        try {
-
-          $details = self::$client->get(
-            'entry',
-            array(
-              'entry_id'          => $blip['entry_id_str'],
-              'return_details'    => 1,
-              'return_image_urls' => 1
-            )
-          );
-
-          if ( $details->error() ) {
-            throw new Blipper_Widget_ApiResponseException( $details->error() . '  Can\'t get the entry (blip) details.' );
-          } else {
-           $continue = true;
-          }
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details' );
-
-        }
-
+        $data['blip'] = $data['blips'][0];
+        $continue = self::bw_get_blip_get_details( $data );
       }
 
       if ( isset( $settings['display-desc-text'] ) && 'show' === $settings['display-desc-text'] && $continue ) {
-        $continue = false;
-
-        try {
-
-          // Use the HTML variation because it's easier to deal with than the
-          // version potentially containing markup.
-          $descriptive_text = $details->data( 'details.description_html' );
-
-          if ( isset( $descriptive_text ) ) {
-            $continue = true;
-          } else {
-            throw new Blipper_Widget_ApiResponseException('Did not get the descriptive text.');
-          }
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text' );
-
-        }
+        $continue = self::bw_get_blip_get_descriptive_text( $data );
       }
 
       if ( $continue ) {
-        $continue = false;
-
-        // Blipfoto has different quality images, each with its own URL.
-        // Access is currently limited by Blipfoto to standard resolution, but
-        // the plugin nevertheless looks for the highest quality image available.
-        $image_url = null;
-
-        try {
-
-          if ( $details->data( 'image_urls.original' ) ) {
-            $image_url = $details->data( 'image_urls.original' );
-          } else if ( $details->data( 'image_urls.hires' ) ) {
-            $image_url = $details->data( 'image_urls.hires' );
-          } else if ( $details->data( 'image_urls.stdres' ) ) {
-            $image_url = $details->data( 'image_urls.stdres' );
-          } else if ( $details->data( 'image_urls.lores' ) ) {
-            $image_url = $details->data( 'image_urls.lores' );
-          } else {
-            throw new ErrorException('Unable to get URL of image.');
-          }
-
-        } catch ( ErrorException $e ) {
-
-          self::bw_display_error_msg( $e );
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
-
-        }
-
-        $continue = ! empty ( $image_url );
+        $continue = self::bw_get_blip_get_image_url( $data );
       }
 
       if ( $continue ) {
+        $continue = self::bw_get_blip_display_blip( $the_blip, $args, $settings, $is_widget, $content, $data );
+      }
 
-        // Display the blip.
-        try {
+      if ( $continue ) {
+        return $the_blip;
+      } else {
+        return '';
+      }
+    }
 
-          // Given that all the data used to determine $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
+    /**
+     * Gets the user profile from the client.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the user profile is saved.
+     * @return bool True if the user profile is obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_user_profile( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
-          // Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
+      try {
+        $data['user_profile'] = self::$client->get( 'user/profile' );
+        // error_log( 'data: ' . var_export( $data, true ) );
+        if ( $data['user_profile']->error() ) {
+          throw new Blipper_Widget_ApiResponseException( $data['user_profile']->error() . '  Can\'t access your Blipfoto account.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+        } else {
+          return true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting your user profile' );
+      }
+      return false;
+    }
 
-          // Need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used:
-          // bw_log( 'is widget', $is_widget );
-          // bw_log( 'style control is set', isset( $settings['style-control'] ) );
-          $style_control = $is_widget ? ( isset( $settings['style-control'] ) ? ( $settings['style-control'] === self::DEFAULT_SETTING_VALUES['widget']['style-control'] ) : true ) : false;
-          // bw_log( 'style control', $style_control );
+    /**
+     * Gets the user settings from the client.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the user settings are saved.
+     * @return bool True if the user settings are obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_user_settings( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
-          $the_blip = "<div" . self::bw_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
+      try {
+        $data['user_settings'] = self::$client->get( 'user/settings' );
+        if ( $data['user_settings']->error() ) {
+          throw new Blipper_Widget_ApiResponseException( $data['user_settings']->error() . '  Can\'t access your Blipfoto account details.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.' );
+        } else {
+          return true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting your user settings' );
+      }
+      return false;
+    }
 
-          $the_blip .= "<figure" . self::bw_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
+    /**
+     * Gets the user from the user profile.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the user is saved.
+     * @return bool True if the user is obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_user( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
-          // Link back to the blip on the Blipfoto site.
-          self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
-          if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
-            // Necessary for when Blipper Widget is added via the Customiser
-            $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
+      try {
+        $data['user'] = $data['user_profile']->data('user');
+        if ( empty( $data['user'] ) ) {
+          throw new Blipper_Widget_ApiResponseException( 'Can\'t access your Blipfoto account data.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.');
+        } else {
+          return true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account' );
+      }
+      return false;
+    }
+
+    /**
+     * Gets the journal from the client.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the journal is saved.
+     * @return bool True if the journal is obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_journal( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        // A page index of zero gives the most recent page of blips.
+        // A page size of one means there will be only one blip on that page.
+        // Together, these ensure that the most recent blip is obtained — which
+        // is exactly what we want to display.
+        $data['journal'] = self::$client->get(
+          'entries/journal',
+          array(
+            'page_index'  => 0,
+            'page_size'   => 1
+          )
+        );
+        if ( $data['journal']->error() ) {
+          throw new Blipper_Widget_ApiResponseException( $data['journal']->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+        } else {
+          return true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal' );
+      }
+      return false;
+    }
+
+    /**
+     * Gets the blips (journal entries) from the journal.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the blips are saved.
+     * @return bool True if the blips are obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_blips( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        $data['blips'] = $data['journal']->data( 'entries' );
+        if ( empty( $data['blips'] ) ) {
+          throw new ErrorException( 'Can\'t access your Blipfoto journal entries (blips).  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+        } else {
+          return true;
+        }
+      } catch ( ErrorException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips)' );
+      }
+      return false;
+    }
+
+    /**
+     * Checks only one blip (entry) has been obtained from the journal.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the blips are saved.
+     * @return bool True if there is only one blip; otherwise false.
+     */
+    private static function bw_get_blip_count_blips( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        // Assuming any blips have been retrieved, there should only be one.
+        switch ( count( $data['blips'] ) ) {
+          case 0:
+            throw new Exception( 'No Blipfoto entries (blips) found.  <a href="https://www.blipfoto.com/' . $data['user']['username'] . '" rel="nofollow">Your Blipfoto journal</a> must have at least one entry (blip) before Blipper Widget can display anything.');
+          break;
+          case 1:
+            return true;
+          break;
+          default:
+            throw new Blipper_Widget_BaseException( 'Blipper Widget was looking for one entry (blip) only, but found ' . count( $data['blips'] ) . '. Something has gone wrong.  Please try again' );
+        }
+      } catch ( Blipper_Widget_BaseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e );
+      }
+      return false;
+    }
+
+    /**
+     * Gets the details from the client.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the details are saved.
+     * @return bool True if the details are obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_details( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        $data['details'] = self::$client->get(
+          'entry',
+          array(
+            'entry_id'          => $data['blip']['entry_id_str'],
+            'return_details'    => 1,
+            'return_image_urls' => 1
+          )
+        );
+        if ( $data['details']->error() ) {
+          throw new Blipper_Widget_ApiResponseException( $data['details']->error() . '  Can\'t get the entry (blip) details.' );
+        } else {
+         return true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details' );
+      }
+      return false;
+    }
+
+    /**
+     * Gets the descriptive text from the details.
+     *
+     * The descriptive text is the text component of the blip. There might
+     * not be any.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the descriptive text is
+     * saved.
+     * @return bool True if the descriptive text is obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_descriptive_text( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        // Use the HTML variation because it's easier to deal with than the
+        // version potentially containing markup.
+        $data['descriptive_text'] = $data['details']->data( 'details.description_html' );
+        if ( isset( $data['descriptive_text'] ) ) {
+          return true;
+        } else {
+          throw new Blipper_Widget_ApiResponseException('Did not get the descriptive text.');
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text' );
+      }
+      return false;
+    }
+
+    /**
+     * Gets the URL of the image from the details.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> &$data Where the image URL saved.
+     * @return bool True if the image URL is obtained; otherwise false.
+     */
+    private static function bw_get_blip_get_image_url( array &$data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // Blipfoto has different quality images, each with its own URL.
+      // Access is currently limited by Blipfoto to standard resolution, but
+      // the plugin nevertheless looks for the highest quality image available.
+      // $data['image_url'] = null;
+      try {
+        if ( $data['details']->data( 'image_urls.original' ) ) {
+          $data['image_url'] = $data['details']->data( 'image_urls.original' );
+        } else if ( $data['details']->data( 'image_urls.hires' ) ) {
+          $data['image_url'] = $data['details']->data( 'image_urls.hires' );
+        } else if ( $data['details']->data( 'image_urls.stdres' ) ) {
+          $data['image_url'] = $data['details']->data( 'image_urls.stdres' );
+        } else if ( $data['details']->data( 'image_urls.lores' ) ) {
+          $data['image_url'] = $data['details']->data( 'image_urls.lores' );
+        } else {
+          throw new ErrorException('Unable to get URL of image.');
+        }
+      } catch ( ErrorException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
+      }
+      return !empty( $data['image_url'] );
+    }
+
+    private static function bw_get_blip_display_blip( string &$the_blip, array $args, array $settings, bool $is_widget, $content, $data ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // Display the blip.
+      try {
+        // Given that all the data used to determine $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
+
+        // Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
+
+        // Need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used:
+        // bw_log( 'is widget', $is_widget );
+        // bw_log( 'style control is set', isset( $settings['style-control'] ) );
+        $style_control = $is_widget ? ( isset( $settings['style-control'] ) ? ( $settings['style-control'] === self::DEFAULT_SETTING_VALUES['widget']['style-control'] ) : true ) : false;
+        // bw_log( 'style control', $style_control );
+
+        $the_blip = "<div" . self::bw_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
+
+        $the_blip .= "<figure" . self::bw_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
+
+        // Link back to the blip on the Blipfoto site.
+        self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
+        if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser
+          $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
+        }
+        if ( $settings['add-link-to-blip'] === 'show' ) {
+          $the_url = self::bw_sanitise_url( 'https://www.blipfoto.com/entry/' . $data['blip']['entry_id_str'] );
+          $the_blip .= '<a href="' . $the_url . '" rel="nofollow">';
+        }
+        // Add the image.
+        $the_blip .= '<img src="'
+          . self::bw_sanitise_url( $data['image_url'] )
+          . '"'
+          . self::bw_get_styling( 'img', $is_widget, $style_control, $settings )
+          . ' alt="'
+          . $data['blip']['title']
+          . '">';
+        // Close the link (anchor) tag.
+        if ( $settings['add-link-to-blip'] === 'show' ) {
+          $the_blip .= '</a>';
+        }
+
+        // Display any associated data.
+        $the_blip .= "<figcaption" . self::bw_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
+
+        // Date (optional), title and username
+        self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
+        if ( ! array_key_exists( 'display-date' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser
+          $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
+        }
+        if ( $settings['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
+          $the_blip .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
+        }
+        if ( $settings['display-date'] === 'show' ) {
+            $the_blip .= date( get_option( 'date_format' ), $data['blip']['date_stamp'] );
+          if ( !empty( $data['blip']['title'] ) ) {
+            $the_blip .= '<br>';
           }
-          if ( $settings['add-link-to-blip'] === 'show' ) {
-            $the_url = self::bw_sanitise_url( 'https://www.blipfoto.com/entry/' . $blip['entry_id_str'] );
-            $the_blip .= '<a href="' . $the_url . '" rel="nofollow">';
-          }
-          // Add the image.
-          $the_blip .= '<img src="'
-            . self::bw_sanitise_url( $image_url )
-            . '"'
-            . self::bw_get_styling( 'img', $is_widget, $style_control, $settings )
-            . ' alt="'
-            . $blip['title']
-            . '">';
-          // Close the link (anchor) tag.
-          if ( $settings['add-link-to-blip'] === 'show' ) {
-            $the_blip .= '</a>';
-          }
+        }
+        if ( ! empty( $data['blip']['title'] ) ) {
+          $the_blip .= '<i>'
+            . $data['blip']['title']
+            . '</i>';
+        }
+        $the_blip .= ' '
+          . __( 'by', 'blipper-widget' )
+          . ' '
+          . $data['user']['username']
+          . '</header>';
 
-          // Display any associated data.
-          $the_blip .= "<figcaption" . self::bw_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
+        // Display any content provided by the user in a shortcode.
+        if ( ! empty( $content ) ) {
+          $the_blip .= '<div' . self::bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
+            . $content
+            . '</div>';
+        }
 
-          // Date (optional), title and username
-          self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
-          if ( ! array_key_exists( 'display-date' , $settings ) ) {
-            // Necessary for when Blipper Widget is added via the Customiser
-            $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
-          }
-          if ( $settings['display-date'] === 'show' || ! empty( $blip['title'] ) ) {
-            $the_blip .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
-          }
-          if ( $settings['display-date'] === 'show' ) {
-              $the_blip .= date( get_option( 'date_format' ), $blip['date_stamp'] );
-            if ( !empty( $blip['title'] ) ) {
-              $the_blip .= '<br>';
-            }
-          }
-          if ( ! empty( $blip['title'] ) ) {
-            $the_blip .= '<i>'
-              . $blip['title']
-              . '</i>';
-          }
-          $the_blip .= ' '
-            . __( 'by', 'blipper-widget' )
-            . ' '
-            . $user['username']
-            . '</header>';
-
-          // Display any content provided by the user in a shortcode.
-          if ( ! empty( $content ) ) {
-            $the_blip .= '<div' . self::bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
-              . $content
-              . '</div>';
-          }
-
-          // Journal title and/or display-powered-by link.
-          self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
-          self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
-          if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
-            // Necessary for when Blipper Widget is added via the Customiser.
-            $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
-          }
-          if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
-            // Necessary for when Blipper Widget is added via the Customiser.
-            $settings['display-powered-by'] = self::DEFAULT_SETTING_VALUES['common']['display-powered-by'];
-          }
+        // Journal title and/or display-powered-by link.
+        self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
+        self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
+        if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser.
+          $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
+        }
+        if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
+          // Necessary for when Blipper Widget is added via the Customiser.
+          $settings['display-powered-by'] = self::DEFAULT_SETTING_VALUES['common']['display-powered-by'];
+        }
 
         if ( $settings['display-journal-title'] === 'show' || $settings['display-powered-by'] === 'show' ) {
-            $the_blip .= "<footer" . self::bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
-            if ( $settings['display-journal-title'] === 'show' ) {
-                $the_blip .= __( 'From', 'blipper-widget' )
-                . ' <a href="https://www.blipfoto.com/'
-                . $user_settings->data( 'username' )
-                . '" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
-                . $user_settings->data( 'journal_title' )
-                . '</a>';
-            }
-            if ( $settings['display-journal-title'] === 'show' && $settings['display-powered-by'] === 'show' ) {
-              $the_blip .= ' | ';
-            }
-            if ( $settings['display-powered-by'] === 'show' ) {
-              $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
-            }
-            $the_blip .= '</footer>';
+          $the_blip .= "<footer" . self::bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
+          if ( $settings['display-journal-title'] === 'show' ) {
+              $the_blip .= __( 'From', 'blipper-widget' )
+              . ' <a href="https://www.blipfoto.com/'
+              . $data['user_settings']->data( 'username' )
+              . '" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
+              . $data['user_settings']->data( 'journal_title' )
+              . '</a>';
           }
-          $the_blip .= '</figcaption></figure>';
-
-          $the_blip .= empty( $descriptive_text ) ? "" : "<div" . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
-            . self::bw_sanitise_html( $descriptive_text )
-            . '</div>';
-
-          $the_blip .= "</div>"; // .bw-blip
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
-
-        // } finally {
-        //   bw_log( 'The completed blip', $the_blip );
+          if ( $settings['display-journal-title'] === 'show' && $settings['display-powered-by'] === 'show' ) {
+            $the_blip .= ' | ';
+          }
+          if ( $settings['display-powered-by'] === 'show' ) {
+            $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
+          }
+          $the_blip .= '</footer>';
         }
+        $the_blip .= '</figcaption></figure>';
 
+        $the_blip .= empty( $data['descriptive_text'] ) ? '' : '<div' . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
+          . self::bw_sanitise_html( $data['descriptive_text'] )
+          . '</div>';
+
+        $the_blip .= "</div>"; // .bw-blip
+        return true;
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
+      // } finally {
+      //   bw_log( 'The completed blip', $the_blip );
       }
-
-      return $the_blip;
+      return false;
     }
 
     /**
@@ -1301,11 +1390,15 @@ if (!class_exists('Blipper_Widget')) {
       *                                         accessible from the widget settings
       *                                         when in a widgety area
       */
-    private function bw_display_blip( $settings, $is_widget, $content=null ) {
+    private function bw_display_blip( $settings, $is_widget, $content = null ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      return self::bw_get_blip( $settings, $is_widget, $content );
+      $the_blip = self::bw_get_blip( $settings, $is_widget, $content );
+      error_log( 'the blip: ' . var_export( $the_blip, true ) );
+      return $the_blip;
+
+      // return self::bw_get_blip( $settings, $is_widget, $content );
     }
 
     /**
