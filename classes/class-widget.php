@@ -708,47 +708,42 @@ if (!class_exists('Blipper_Widget')) {
       }
 
       if ( $client_ok ) {
-        $client_ok = false;
-        try {
-
-          $user_profile = self::$client->get( 'user/profile' );
-
-          if ( $user_profile->error() ) {
-
-            throw new Blipper_Widget_ApiResponseException( $user_profile->error() );
-          }
-          $user = $user_profile->data()['user'];
-          if ( $user['username'] !== $oauth_settings['username'] ) {
-            throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
-          } else {
-            $client_ok = true;
-          }
-        } catch ( Blipper_Widget_OAuthException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e, '', true );
-
-        } catch ( Blipper_Widget_BaseException $e ) {
-
-          self::bw_display_error_msg( $e );
-
-        } catch ( ErrorException $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
-        }
+        $client_ok = self::bw_create_blipfoto_client_get_user_profile();
       } else {
         if ( BW_DEBUG ) {
           trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
         }
       }
       return $client_ok;
+    }
+
+    private static function bw_create_blipfoto_client_get_user_profile(): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      try {
+        $user_profile = self::$client->get( 'user/profile' );
+        if ( $user_profile->error() ) {
+
+          throw new Blipper_Widget_ApiResponseException( $user_profile->error() );
+        }
+        $user = $user_profile->data()['user'];
+        if ( $user['username'] !== $oauth_settings['username'] ) {
+          throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
+        } else {
+          $client_ok = true;
+        }
+      } catch ( Blipper_Widget_OAuthException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e, '', true );
+      } catch ( Blipper_Widget_BaseException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( ErrorException $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
+      } catch ( Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
+      }
     }
 
     /**
