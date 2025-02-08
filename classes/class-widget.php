@@ -113,16 +113,16 @@ if (!class_exists('Blipper_Widget')) {
       */
       private static Blipper_Widget_Settings $settings;
 
-      private const QUOTES = array(
-       '“' => '',
-       '”' => '',
-       '‘' => '',
-       '’' => '',
-       '&#8217;' => '',
-       '&#8217;' => '',
-       '&#8220;' => '',
-       '&#8221;' => ''
-      );
+      private const QUOTES = [
+        '“' => '',
+        '”' => '',
+        '‘' => '',
+        '’' => '',
+        '&#8217;' => '',
+        '&#8217;' => '',
+        '&#8220;' => '',
+        '&#8221;' => ''
+      ];
 
     /**
       * Construct an instance of the widget.
@@ -133,10 +133,10 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $params = array(
+      $params = [
         'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
         'name'        => __( 'Blipper Widget', 'blipper-widget' ),
-      );
+      ];
       parent::__construct( 'blipper_widget', 'Blipper Widget', $params );
 
       // Not using is_active_widget here because that function is only supposed to
@@ -147,14 +147,14 @@ if (!class_exists('Blipper_Widget')) {
       self::$settings = new blipper_widget_settings();
 
       // function to load Blipper Widget:
-      // add_action( 'admin_notices', array( Blipper_Widget::class, 'bw_settings_check' ) );
-      // add_action( 'load-widgets.php', array( Blipper_Widget::class, 'bw_load_colour_picker') );
+      // add_action( 'admin_notices', [ Blipper_Widget::class, 'bw_settings_check' ] );
+      // add_action( 'load-widgets.php', [ Blipper_Widget::class, 'bw_load_colour_picker' ] );
 
-      add_action( 'admin_enqueue_scripts', array( Blipper_Widget::class, 'bw_enqueue_scripts' ) );
+      add_action( 'admin_enqueue_scripts', [ Blipper_Widget::class, 'bw_enqueue_scripts' ] );
 
-      add_action( 'admin_footer-widgets.php', array( Blipper_Widget::class, 'bw_print_scripts' ), 9999 );
+      add_action( 'admin_footer-widgets.php', [ Blipper_Widget::class, 'bw_print_scripts' ], 9999 );
 
-      add_shortcode('blipper_widget', array( Blipper_Widget::class, 'bw_shortcode_blip_display') );
+      add_shortcode('blipper_widget', [ Blipper_Widget::class, 'bw_shortcode_blip_display' ] );
 
       // bw_log( 'this', $this );
       // bw_log( 'default setting values', self::DEFAULT_SETTING_VALUES );
@@ -218,7 +218,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $settings = array();
+      $settings = [];
       $title                  = $this->bw_validate( $new_settings, $old_settings, 'title' );
       $display_date           = $this->bw_validate( $new_settings, $old_settings, 'display-date' );
       $display_journal_title  = $this->bw_validate( $new_settings, $old_settings, 'display-journal-title' );
@@ -501,7 +501,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $new_settings = array();
+      $new_settings = [];
 
       try {
         $new_settings['title'] = self::bw_get_display_value( 'title', $settings );
@@ -590,26 +590,26 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $folders = array(
-        'Traits' => array(
+      $folders = [
+        'Traits' => [
           'Helper'
-          ),
-        'Exceptions' => array(
+        ],
+        'Exceptions' => [
           'BaseException',
           'ApiResponseException',
           'InvalidResponseException',
           'NetworkException',
           'OAuthException',
           'FileException'
-          ),
-        'Api' => array(
-          'Client',
-          'OAuth',
-          'Request',
-          'Response',
-          'File'
-          )
-        );
+        ],
+        'Api' => [
+            'Client',
+            'OAuth',
+            'Request',
+            'Response',
+            'File'
+          ],
+        ];
 
       $path = plugin_dir_path( __FILE__ ) . '../includes/Blipfoto/';
 
@@ -974,10 +974,10 @@ if (!class_exists('Blipper_Widget')) {
         // is exactly what we want to display.
         $data['journal'] = self::$client->get(
           'entries/journal',
-          array(
+          [
             'page_index'  => 0,
             'page_size'   => 1
-          )
+          ]
         );
         if ( $data['journal']->error() ) {
           throw new Blipper_Widget_ApiResponseException( $data['journal']->error() . '  Can\'t access your Blipfoto journal.  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
@@ -1069,11 +1069,11 @@ if (!class_exists('Blipper_Widget')) {
       try {
         $data['details'] = self::$client->get(
           'entry',
-          array(
+          [
             'entry_id'          => $data['blip']['entry_id_str'],
             'return_details'    => 1,
             'return_image_urls' => 1
-          )
+          ]
         );
         if ( $data['details']->error() ) {
           throw new Blipper_Widget_ApiResponseException( $data['details']->error() . '  Can\'t get the entry (blip) details.' );
@@ -1595,24 +1595,24 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $allowed_html = array(
-        'p' => array(),
-        'h1' => array(),
-        'h2' => array(),
-        'h3' => array(),
-        'h4' => array(),
-        'h5' => array(),
-        'h6' => array(),
-        'i' => array(),
-        'b' => array(),
-        'em' => array(),
-        'div' => array(),
-        'br' => array(),
-        'a' => array(
-          'href' => array(),
-          'title' => array(),
-        ),
-      );
+      $allowed_html = [
+        'p' => [],
+        'h1' => [],
+        'h2' => [],
+        'h3' => [],
+        'h4' => [],
+        'h5' => [],
+        'h6' => [],
+        'i' => [],
+        'b' => [],
+        'em' => [],
+        'div' => [],
+        'br' => [],
+        'a' => [
+          'href' => [],
+          'title' => [],
+        ],
+      ];
       // bw_log( 'dirty html', $html );
       // bw_log( 'clean html', wp_kses( $html, $allowed_html ) );
 
@@ -2363,7 +2363,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'cache expiry', self::CACHE_EXPIRY );
 
       $result = false;
-      $cached_info = array();
+      $cached_info = [];
 
       try {
         if ( is_numeric( self::CACHE_EXPIRY ) ) {
