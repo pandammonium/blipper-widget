@@ -1159,129 +1159,352 @@ if (!class_exists('Blipper_Widget')) {
       return !empty( $data['image_url'] );
     }
 
-    private static function bw_get_blip_display_blip( string &$the_blip, array $args, array $settings, bool $is_widget, $content, $data ): bool {
+    /**
+     * @param string|null $content The text from between the bracketed terms of the
+     * shortcode.
+     */
+    private static function bw_get_blip_display_blip( string &$the_blip, array $args, array $settings, bool $is_widget, string|null $content, array $data ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      $blip_ok = false;
       // Display the blip.
       try {
         // Given that all the data used to determine $style_control is passed to blipper_widget_get_styling, it might seem pointless to calculate here once and pass to that function; but this way, it's only calculated once.  I don't really know how much this affects performance.
 
         // Set $style_control to true if the widget settings form (default for widgets) should be used, otherwise set to false.
 
-        // Need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used:
+        // For the widget, as opposed to the shortcode, need to check whether the style control has been set or not because of, I think, the Customiser.  If it hasn't, then set $style_control to true, indicating that CSS should be used:
         // bw_log( 'is widget', $is_widget );
         // bw_log( 'style control is set', isset( $settings['style-control'] ) );
         $style_control = $is_widget ? ( isset( $settings['style-control'] ) ? ( $settings['style-control'] === self::DEFAULT_SETTING_VALUES['widget']['style-control'] ) : true ) : false;
-        // bw_log( 'style control', $style_control );
 
         $the_blip = "<div" . self::bw_get_styling( 'div|blip', $is_widget, $style_control, $settings ) . ">";
 
         $the_blip .= "<figure" . self::bw_get_styling( 'figure', $is_widget, $style_control, $settings ) . ">";
 
-        // Link back to the blip on the Blipfoto site.
-        self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
-        if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
-          // Necessary for when Blipper Widget is added via the Customiser
-          $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
-        }
-        if ( $settings['add-link-to-blip'] === 'show' ) {
-          $the_url = self::bw_sanitise_url( 'https://www.blipfoto.com/entry/' . $data['blip']['entry_id_str'] );
-          $the_blip .= '<a href="' . $the_url . '" rel="nofollow">';
-        }
-        // Add the image.
-        $the_blip .= '<img src="'
-          . self::bw_sanitise_url( $data['image_url'] )
-          . '"'
-          . self::bw_get_styling( 'img', $is_widget, $style_control, $settings )
-          . ' alt="'
-          . $data['blip']['title']
-          . '">';
-        // Close the link (anchor) tag.
-        if ( $settings['add-link-to-blip'] === 'show' ) {
-          $the_blip .= '</a>';
-        }
+        $the_blip .= self::bw_get_blip_display_blip_add_link_and_image( $settings, $is_widget, $style_control, $data );
 
         // Display any associated data.
         $the_blip .= "<figcaption" . self::bw_get_styling( 'figcaption', $is_widget, $style_control, $settings ) . ">";
 
-        // Date (optional), title and username
-        self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
-        if ( ! array_key_exists( 'display-date' , $settings ) ) {
-          // Necessary for when Blipper Widget is added via the Customiser
-          $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
-        }
-        if ( $settings['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
-          $the_blip .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
-        }
-        if ( $settings['display-date'] === 'show' ) {
-            $the_blip .= date( get_option( 'date_format' ), $data['blip']['date_stamp'] );
-          if ( !empty( $data['blip']['title'] ) ) {
-            $the_blip .= '<br>';
-          }
-        }
-        if ( ! empty( $data['blip']['title'] ) ) {
-          $the_blip .= '<i>'
-            . $data['blip']['title']
-            . '</i>';
-        }
-        $the_blip .= ' '
-          . __( 'by', 'blipper-widget' )
-          . ' '
-          . $data['user']['username']
-          . '</header>';
+        $the_blip .= self::bw_get_blip_display_blip_add_date( $settings, $is_widget, $style_control, $data );
 
-        // Display any content provided by the user in a shortcode.
-        if ( ! empty( $content ) ) {
-          $the_blip .= '<div' . self::bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
-            . $content
-            . '</div>';
-        }
+        $the_blip .= self::bw_get_blip_display_blip_add_title( $data );
 
-        // Journal title and/or display-powered-by link.
-        self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
-        self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
-        if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
-          // Necessary for when Blipper Widget is added via the Customiser.
-          $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
-        }
-        if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
-          // Necessary for when Blipper Widget is added via the Customiser.
-          $settings['display-powered-by'] = self::DEFAULT_SETTING_VALUES['common']['display-powered-by'];
-        }
+        $the_blip .= self::bw_get_blip_display_blip_add_byline( $data );
 
-        if ( $settings['display-journal-title'] === 'show' || $settings['display-powered-by'] === 'show' ) {
-          $the_blip .= "<footer" . self::bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
-          if ( $settings['display-journal-title'] === 'show' ) {
-              $the_blip .= __( 'From', 'blipper-widget' )
+        $the_blip .= self::bw_get_blip_display_blip_add_shortcode_text( $settings, $is_widget, $style_control, $content );
+
+        $the_blip .= self::bw_get_blip_display_blip_add_source( $settings, $is_widget, $style_control, $data );
+
+        $the_blip .= '</figcaption></figure>';
+
+        $the_blip .= self::bw_get_blip_display_blip_add_descriptive_text( $settings, $is_widget, $style_control, $data );
+
+        $the_blip .= "</div>"; // .bw-blip
+        $blip_ok = true;
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
+      // } finally {
+      //   bw_log( 'The completed blip', $the_blip );
+      }
+      return $blip_ok;
+    }
+
+    /**
+     * Gets the HTML for the link, if it's to be added, and for the image.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_link_and_image( array $settings, bool $is_widget, bool $style_control, array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = '';
+      // Link back to the blip on the Blipfoto site.
+      self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
+      if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
+        // Necessary for when Blipper Widget is added via the Customiser
+        $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
+      }
+      if ( $settings['add-link-to-blip'] === 'show' ) {
+        $the_url = self::bw_sanitise_url( 'https://www.blipfoto.com/entry/' . $data['blip']['entry_id_str'] );
+        $html .= '<a href="' . $the_url . '" rel="nofollow">';
+      }
+      $html .= self::bw_get_blip_display_blip_add_image( $settings, $is_widget, $style_control, $data );
+      // Close the link (anchor) tag.
+      if ( $settings['add-link-to-blip'] === 'show' ) {
+        $html .= '</a>';
+      }
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the image.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_image( array $settings, bool $is_widget, bool $style_control, array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = '';
+      // Add the image.
+      $html .= '<img src="'
+        . self::bw_sanitise_url( $data['image_url'] )
+        . '"'
+        . self::bw_get_styling( 'img', $is_widget, $style_control, $settings )
+        . ' alt="'
+        . $data['blip']['title']
+        . '">';
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the date.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_date( array $settings, bool $is_widget, bool $style_control, array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = '';
+      // Date (optional), title and username
+      self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
+      if ( ! array_key_exists( 'display-date' , $settings ) ) {
+        // Necessary for when Blipper Widget is added via the Customiser
+        $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
+      }
+      if ( $settings['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
+        $html .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $settings ) . ">";
+      }
+      if ( $settings['display-date'] === 'show' ) {
+          $html .= date( get_option( 'date_format' ), $data['blip']['date_stamp'] );
+        if ( !empty( $data['blip']['title'] ) ) {
+          $html .= '<br>';
+        }
+      }
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the blip title.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_title( array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = '';
+      if ( ! empty( $data['blip']['title'] ) ) {
+        $html .= '<i>'
+          . $data['blip']['title']
+          . '</i>';
+      }
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the blip byline.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_byline( array $data ): string {
+      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = ' '
+        . __( 'by', 'blipper-widget' )
+        . ' '
+        . $data['user']['username']
+        . '</header>';
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the shortcode's text.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param string|null $content The text from between the shortcode's
+     * bracketed components.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_shortcode_text( array $settings, bool $is_widget, bool $style_control, string|null $content ): string {
+      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      error_log( 'content type: ' . var_export( gettype( $content ), true ) );
+
+      $html = '';
+      // Display any content provided by the user in a shortcode.
+      if ( !$is_widget && !empty( $content ) ) {
+        $html = '<div' . self::bw_get_styling( 'div|content', $is_widget, $style_control, $settings ) . '>'
+          . $content
+          . '</div>';
+      }
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the source.
+     *
+     * The source is the journal title and 'Blipfoto'.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_source( array $settings, bool $is_widget, bool $style_control, array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // Journal title and/or display-powered-by link.
+      self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
+      self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
+      if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
+        // Necessary for when Blipper Widget is added via the Customiser.
+        $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
+      }
+      if ( ! array_key_exists( 'display-powered-by' , $settings ) ) {
+        // Necessary for when Blipper Widget is added via the Customiser.
+        $settings['display-powered-by'] = self::DEFAULT_SETTING_VALUES['common']['display-powered-by'];
+      }
+
+      $html = '';
+      if ( $settings['display-journal-title'] === 'show' || $settings['display-powered-by'] === 'show' ) {
+        $html .= "<footer" . self::bw_get_styling( 'footer', $is_widget, $style_control, $settings ) . ">";
+        if ( $settings['display-journal-title'] === 'show' ) {
+            $html .= __( 'From', 'blipper-widget' )
               . ' <a href="https://www.blipfoto.com/'
               . $data['user_settings']->data( 'username' )
               . '" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>'
               . $data['user_settings']->data( 'journal_title' )
               . '</a>';
-          }
-          if ( $settings['display-journal-title'] === 'show' && $settings['display-powered-by'] === 'show' ) {
-            $the_blip .= ' | ';
-          }
-          if ( $settings['display-powered-by'] === 'show' ) {
-            $the_blip .= 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
-          }
-          $the_blip .= '</footer>';
         }
-        $the_blip .= '</figcaption></figure>';
-
-        $the_blip .= empty( $data['descriptive_text'] ) ? '' : '<div' . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
-          . self::bw_sanitise_html( $data['descriptive_text'] )
-          . '</div>';
-
-        $the_blip .= "</div>"; // .bw-blip
-        return true;
-      } catch ( Exception $e ) {
-        self::bw_display_error_msg( $e, 'Something has gone wrong constructing your entry (blip)' );
-      // } finally {
-      //   bw_log( 'The completed blip', $the_blip );
+        if ( $settings['display-journal-title'] === 'show' && $settings['display-powered-by'] === 'show' ) {
+          $html .= ' | ';
+        }
+        $html .= self::bw_get_blip_display_blip_add_powered_by( $settings, $is_widget, $style_control );
+        $html .= '</footer>';
       }
-      return false;
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the powered-by link to Blipfoto.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_powered_by( array $settings, bool $is_widget, $style_control ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = '';
+      if ( $settings['display-powered-by'] === 'show' ) {
+        $html = 'Powered by <a href="https://www.blipfoto.com/" rel="nofollow"' . self::bw_get_styling( 'link', $is_widget, $style_control, $settings ) . '>Blipfoto</a>';
+      }
+      return $html;
+    }
+
+    /**
+     * Gets the HTML for the descriptive text that the blipper may have added
+     * to the blip.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $settings The user-set display settings for the blip.
+     * @param bool $is_widget True if the HTML is required for the widget;
+     * false if it is required for the shortcode.
+     * @param bool style_control True of CSS should be used to style the
+     * widget version of the blip; false if the widget style settings should
+     * be used.
+     * @param array<string, mixed> $data The data that represents the blip.
+     * @return string The HTML needed to display the image along with the
+     * link, if specified in the settings.
+     */
+    private static function bw_get_blip_display_blip_add_descriptive_text( array $settings, bool $is_widget, bool $style_control, array $data ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $html = empty( $data['descriptive_text'] ) ? '' : '<div' . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $settings ) . ">"
+        . self::bw_sanitise_html( $data['descriptive_text'] )
+        . '</div>';
+      return $html;
     }
 
     /**
@@ -1301,7 +1524,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param    array      $settings        The user-defined settings containing
      *                                         the style data
      */
-    private static function bw_get_styling( $element, $is_widget, $style_control, $settings ) {
+    private static function bw_get_styling( $element, $is_widget, bool $style_control, $settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
