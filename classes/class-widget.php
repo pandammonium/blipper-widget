@@ -160,7 +160,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'default setting values', self::DEFAULT_SETTING_VALUES );
       // bw_log( 'cache prefix', self::CACHE_PREFIX );
       // bw_log( 'quotes', self::QUOTES );
-
     }
 
     /**
@@ -367,7 +366,7 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Generate the blip from scratch
      */
-     private static function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
+    private static function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -381,7 +380,7 @@ if (!class_exists('Blipper_Widget')) {
       } else {
         return false;
       }
-     }
+    }
 
     /**
      * Normalise the arguments from the shortcode
@@ -641,63 +640,47 @@ if (!class_exists('Blipper_Widget')) {
       } else if ( !empty( self::$client->accessToken() ) ) {
         $client_ok = true;
       }
-      error_log( 'client ok: ' . var_export( $client_ok, true ) );
-      error_log( 'create new client: ' . var_export( $create_new_client, true ) );
+      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
+      // error_log( 'create new client: ' . var_export( $create_new_client, true ) );
 
-      // Get the settings from the database
+      // Get the settings from the back-end form:
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
-      if ( $create_new_client || !$client_ok ) {
-        $client_ok = self::bw_check_oauth_credentials( $oauth_settings );
+      if ( !$client_ok || $create_new_client ) {
+        $client_ok = self::bw_check_oauth_credentials_exist( $oauth_settings );
       }
 
-      if ( $client_ok ) {
-        $client_ok = false;
-        try {
-
-          if ( $create_new_client ) {
-            // Create a new client using the OAuth settings from the database
-            self::$client = new Blipper_Widget_Client (
-              '',
-              '',
-              $oauth_settings['access-token']
-            );
-            // error_log( 'created new client' );
-          }
-          // error_log( 'client: ' . var_export( self::$client, true ) );
-          if ( empty( self::$client ) || ! isset( self::$client ) ) {
-            throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
-          } else {
-            $client_ok = true;
-            // bw_log( 'client', self::$client );
-
-          }
-
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
-
-          self::bw_display_error_msg( $e, 'Please try again later' );
-
-        } catch ( Exception $e ) {
-
-          self::bw_display_error_msg( $e, 'Something has gone wrong creating the client' );
-
-        }
+      if ( $client_ok && $create_new_client ) {
+        $client_ok = self::bw_create_blipfoto_client_create_new_client( $oauth_settings );
       }
 
       if ( $client_ok ) {
         $client_ok = self::bw_create_blipfoto_client_get_user_profile( $oauth_settings );
-      } else {
-        if ( BW_DEBUG ) {
-          trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
-        }
+      }
+
+      if ( !$client_ok && BW_DEBUG ) {
+        trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
       }
       return $client_ok;
     }
 
-    private static function bw_check_oauth_credentials( array $oauth_settings ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+    /**
+     * Checks that the user has supplied OAuth credentials.
+     *
+     * Does not check that they are actually correct.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, string> $oauth_settings The Blipfoto username and
+     * access token as supplied by the user in the back-end settings form.
+     * @return bool True if all fields have been filled in; otherwise false.
+     */
+    private static function bw_check_oauth_credentials_exist( array $oauth_settings ): bool {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
+      $credentials_exist = false;
       try {
         if ( empty( $oauth_settings['username'] ) && empty( $oauth_settings['access-token'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing username and access token.');
@@ -706,7 +689,7 @@ if (!class_exists('Blipper_Widget')) {
         } else if ( empty( $oauth_settings['access-token'] ) ) {
           throw new Blipper_Widget_OAuthException( 'Missing access token.' );
         } else {
-          return true;
+          $credentials_exist = true;
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
         // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
@@ -714,35 +697,87 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the Blipfoto account' );
       }
-      return false;
+      return $credentials_exist;
     }
 
-    private static function bw_create_blipfoto_client_create_new_client(): bool {
+    /**
+     * Creates a new Blipfoto client using the OAuth settings that the user
+     * provided.
+     *
+     * Only the access token is required. The username is supplied only to
+     * check that the user knows the username of the account for a vague
+     * security check. The client id and the client secret are not necessary,
+     * even though they're the only non-optional arguments to the Blipfoto
+     * API function.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, string> $oauth_settings The Blipfoto username and
+     * access token as supplied by the user in the back-end settings form.
+     * @return bool True if a new client was created; otherwise false.
+     */
+    private static function bw_create_blipfoto_client_create_new_client( array $oauth_settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      $client_ok = false;
+      try {
+        // Create a new client using the OAuth settings from the database
+        self::$client = new Blipper_Widget_Client (
+          '', // client id
+          '', // client secret
+          $oauth_settings['access-token'],
+        );
+        // error_log( 'client: ' . var_export( self::$client, true ) );
+        if ( empty( self::$client ) || !isset( self::$client ) ) {
+          unset( self::$client );
+          throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
+        } else {
+          // bw_log( 'Created new client', self::$client );
+          $client_ok = true;
+        }
+      } catch ( Blipper_Widget_ApiResponseException $e ) {
+        self::bw_display_error_msg( $e, 'Please try again later' );
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e, 'Something has gone wrong creating the client' );
+      }
+      return $client_ok;
     }
 
+    /**
+     * Gets the user profile from the client.
+     *
+     * The username that the user provides is checked against the username of the account retrieved by the client. If there is a mismatch, the
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, string> $oauth_settings The Blipfoto username and
+     * access token as supplied by the user in the back-end settings form.
+     * @return bool True if a new client was created; otherwise false.
+     */
     private static function bw_create_blipfoto_client_get_user_profile( array $oauth_settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      $user_profile_ok = false;
       try {
         $user_profile = self::$client->get( 'user/profile' );
-        if ( $user_profile->error() ) {
-
+        if ( !empty( $user_profile ) && $user_profile->error() ) {
           throw new Blipper_Widget_ApiResponseException( $user_profile->error() );
         }
         $user = $user_profile->data()['user'];
         if ( $user['username'] !== $oauth_settings['username'] ) {
-          throw new Blipper_Widget_OAuthException( 'Unable to verify user.  Please check the username you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
+          throw new Blipper_Widget_OAuthException( 'Unable to verify username.  Please check the username ' . var_export( $oauth_settings['username'], true ) . ' you entered on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> is correct.' );
+          unset( self::$client );
         } else {
-          return true;
+          $user_profile_ok = true;
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
         self::bw_display_error_msg( $e );
       } catch ( Blipper_Widget_ApiResponseException $e ) {
-        self::bw_display_error_msg( $e, '', true );
+        self::bw_display_error_msg( $e, 'There is a problem with the OAuth credentials' );
       } catch ( Blipper_Widget_BaseException $e ) {
         self::bw_display_error_msg( $e );
       } catch ( ErrorException $e ) {
@@ -750,7 +785,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
       }
-      return false;
+      return $user_profile_ok;
     }
 
     /**
@@ -807,7 +842,7 @@ if (!class_exists('Blipper_Widget')) {
       }
 
       if ( $continue ) {
-        $continue = self::bw_get_blip_count_blips( $data );
+        $continue = self::bw_get_blip_check_number_of_blips( $data );
       }
 
       if ( $continue ) {
@@ -994,7 +1029,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param array<string, mixed> &$data Where the blips are saved.
      * @return bool True if there is only one blip; otherwise false.
      */
-    private static function bw_get_blip_count_blips( array &$data ): bool {
+    private static function bw_get_blip_check_number_of_blips( array &$data ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -1961,7 +1996,9 @@ if (!class_exists('Blipper_Widget')) {
     private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-
+      if ( $request_limit_reached  ) {
+        bw_log( 'Blipfoto request limit reached', $request_limit_reached );
+      }
       // bw_log( self::bw_get_exception_class( $e ), null, false, false );
 
       if ( current_user_can( 'manage_options' ) ) {
@@ -1987,7 +2024,15 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      echo '<p>Blipper Widget <span class=\'' . self::bw_get_css_error_classes( $e ) . '\'>' . __( self::bw_get_exception_class( $e ), 'blipper-widget' ) . '</span> (' . $e->getCode() . '): ' . __( $e->getMessage(), 'blipper-widget' ) . (empty( $additional_info ) ? '' : (' ' . __( $additional_info, 'blipper-widget' ))) . ( $request_limit_reached ? __( 'Please try again in 15 minutes', 'blipper-widget' ) : '' ) . '.</p>';
+      $exception_class = __( self::bw_get_exception_class( $e ), 'blipper-widget' );
+      $code = ' (' . $e->getCode() . ')';
+      $start = '<p>Blipper Widget <span class=\'' . self::bw_get_css_error_classes( $e ) . '\'>' . $exception_class . $code . '</span>: ';
+      $message = __( $e->getMessage(), 'blipper-widget' );
+      $additional_info = empty( $additional_info ) ? '' : (' ' . __( $additional_info . '.', 'blipper-widget' ));
+      $request_limit_info = ( $request_limit_reached ? __( ' Please try again in 15 minutes.', 'blipper-widget' ) : '' );
+      $end = '</p>';
+
+      echo $start . $message . $additional_info . $request_limit_info . $end;
     }
 
     /**
@@ -2007,9 +2052,9 @@ if (!class_exists('Blipper_Widget')) {
         echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' .  __( 'The Blipfoto request limit has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
       } else {
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
-        } else {
           echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
+        } else {
+          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
         }
       }
     }
@@ -2100,6 +2145,8 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
      * Add the WP colour picker.
+     *
+     * @deprecated
      */
     public static function bw_load_colour_picker() {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2214,6 +2261,5 @@ if (!class_exists('Blipper_Widget')) {
       }
       // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
-
   }
 }
