@@ -310,7 +310,7 @@ if (!class_exists('Blipper_Widget')) {
         // bw_log( 'shortcode atts', $args );
 
         return self::render_the_blip( $defaults, $args, $the_title, false, $content );
-      } catch( Exception $e ) {
+      } catch( \Exception $e ) {
         return bw_exception( $e );
       }
     }
@@ -358,7 +358,7 @@ if (!class_exists('Blipper_Widget')) {
           // The blip has been cached recently and its settings have not changed, so return the cached blip:
           return $the_cache;
         }
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         return bw_exception( $e );
       }
     }
@@ -413,7 +413,7 @@ if (!class_exists('Blipper_Widget')) {
             $atts = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts);
           break;
           default:
-            throw new Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $atts, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
+            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $atts, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
         }
       }
       // bw_log( 'normalised attributes', $atts );
@@ -523,7 +523,7 @@ if (!class_exists('Blipper_Widget')) {
 
         self::bw_display_error_msg( $e, __( 'Please check your settings are valid and try again', 'blipper-widget' ) );
 
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
 
         self::bw_display_error_msg( $e, __( 'Something has gone wrong getting the user settings', 'blipper-widget' ) );
 
@@ -560,7 +560,7 @@ if (!class_exists('Blipper_Widget')) {
 
         self::bw_display_error_msg( $e );
 
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
 
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the user settings' );
 
@@ -694,7 +694,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Blipper_Widget_OAuthException $e ) {
         // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
         self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the Blipfoto account' );
       }
       return $credentials_exist;
@@ -782,7 +782,7 @@ if (!class_exists('Blipper_Widget')) {
         self::bw_display_error_msg( $e );
       } catch ( ErrorException $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
       }
       return $user_profile_ok;
@@ -892,7 +892,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your user profile' );
       }
       return false;
@@ -920,7 +920,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your user settings' );
       }
       return false;
@@ -948,7 +948,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto account' );
       }
       return false;
@@ -986,7 +986,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong accessing your Blipfoto journal' );
       }
       return false;
@@ -1014,7 +1014,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( ErrorException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips)' );
       }
       return false;
@@ -1037,7 +1037,7 @@ if (!class_exists('Blipper_Widget')) {
         // Assuming any blips have been retrieved, there should only be one.
         switch ( count( $data['blips'] ) ) {
           case 0:
-            throw new Exception( 'No Blipfoto entries (blips) found.  <a href="https://www.blipfoto.com/' . $data['user']['username'] . '" rel="nofollow">Your Blipfoto journal</a> must have at least one entry (blip) before Blipper Widget can display anything.');
+            throw new \Exception( 'No Blipfoto entries (blips) found.  <a href="https://www.blipfoto.com/' . $data['user']['username'] . '" rel="nofollow">Your Blipfoto journal</a> must have at least one entry (blip) before Blipper Widget can display anything.');
           break;
           case 1:
             return true;
@@ -1047,7 +1047,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_BaseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
       }
       return false;
@@ -1082,7 +1082,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry (blip) details' );
       }
       return false;
@@ -1116,7 +1116,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the entry\'s (blip\'s) descriptive text' );
       }
       return false;
@@ -1153,7 +1153,7 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch ( ErrorException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( Exception $e ) {
+      } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
       }
       return !empty( $data['image_url'] );
@@ -1918,11 +1918,11 @@ if (!class_exists('Blipper_Widget')) {
           return $default_setting;
 
         } else {
-          throw new Exception( 'Invalid setting ' . $setting );
+          throw new \Exception( 'Invalid setting ' . $setting );
         }
 
       } else {
-        throw new Exception( 'Invalid setting type ' . $setting_type );
+        throw new \Exception( 'Invalid setting type ' . $setting_type );
       }
     }
 
@@ -2232,15 +2232,15 @@ if (!class_exists('Blipper_Widget')) {
           }
         } else {
           if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
-            throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
           }
         }
         if ( false === $result ) {
           $deleted = delete_transient( self::$cache_key );
           $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
-          throw new Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
+          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
         }
-      } catch( Exception $e ) {
+      } catch( \Exception $e ) {
         throw( $e );
       }
     }
@@ -2257,7 +2257,7 @@ if (!class_exists('Blipper_Widget')) {
         // bw_log( 'transient', $transient );
         return $transient;
       } else {
-        throw new Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
       }
       // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
