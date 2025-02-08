@@ -43,10 +43,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @property string[]    $blipper_widget_defaults   The widget's default settings
     */
-    private $blipper_widget_defaults = array(
+    private const BW_DEFAULTS = [
       'username'              => '',
       'access-token'          => '',
-    );
+    ];
 
   /**
    * @ignore
@@ -69,7 +69,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
     public function __construct() {
 
-      add_action( 'admin_menu', array( &$this, 'bw_admin_menu' ) );
+      add_action( 'admin_menu', [ Blipper_Widget_Settings::class, 'bw_admin_menu' ] );
       // Ensure the admin page is initialised only when needed:
       // Not calling this results in repeated error messages, if error messages
       // are displayed. Repeated error messages look pants.
@@ -79,7 +79,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         or 'options-general/php?page=blipper-widget'  === $GLOBALS['pagenow']
         )
       ) {
-        add_action( 'admin_init', array( &$this, 'bw_admin_init' ) );
+        add_action( 'admin_init', [ Blipper_Widget_Settings::class, 'bw_admin_init' ] );
       }
     }
 
@@ -90,9 +90,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_admin_menu() {
+    public static function bw_admin_menu() {
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
 
       add_options_page(
         // translators: $plugin_data['Name']: the plugin name; do not translate
@@ -105,7 +105,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // slug name to refer to this menu by:
         'blipper-widget',
         // function to be called to output the content for this page:
-        array( &$this, 'bw_options_page' ),
+        [ Blipper_Widget_Settings::class, 'bw_options_page' ],
         // position in the menu order this item should appear:
         8
       );
@@ -118,7 +118,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_admin_init() {
+    public static function bw_admin_init() {
 
       register_setting(
         // option group:
@@ -126,7 +126,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // option name:
         'blipper-widget-settings-oauth',
         // callback function to validate input
-        array( &$this, 'blipper_widget_oauth_validate' )
+        [ Blipper_Widget_Settings::class, 'bw_oauth_validate' ]
       );
 
       add_settings_section(
@@ -137,7 +137,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
         // section callback function to render information and instructions about
         // this section:
-        array( &$this, 'bw_oauth_instructions'),
+        [ Blipper_Widget_Settings::class, 'bw_oauth_instructions' ],
         // page id (i.e. menu slug):
         'blipper-widget'
       );
@@ -149,20 +149,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( &$this, 'wp_blipper_field_render'),
+        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
         'blipper-widget-oauth',
         // arguments for the callback function:
-        array(
+        [
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[username]',
           // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto username here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-username',
           'setting'     => 'username',
-        )
+        ]
       );
       add_settings_field(
         // field id:
@@ -171,20 +171,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( &$this, 'wp_blipper_field_render'),
+        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
         'blipper-widget-oauth',
         // arguments for the callback function:
-        array(
+        [
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[access-token]',
           // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto access token here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-access-token',
           'setting'     => 'access-token',
-        )
+        ]
       );
 
     }
@@ -198,10 +198,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @param     array $args
     * @return    void
     */
-    public function wp_blipper_field_render( $args ) {
+    public static function wp_blipper_field_render( $args ) {
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
-      $value = false == $settings ? $this->bw_defaults[$args['setting']] : $settings[$args['setting']];
+      $value = false == $settings ? self::BW_DEFAULTS[$args['setting']] : $settings[$args['setting']];
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
@@ -216,9 +216,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_options_page() {
+    public static function bw_options_page() {
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
       ?>
       <div class="wrap">
         <h2><?php
@@ -231,7 +231,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         <script type="text/javascript">pause(\'inside the options page\')</script>
           <?php
         if ( !current_user_can( 'manage_options' ) ) {
-          $this->bw_no_access_to_options( $plugin_data );
+          self::bw_no_access_to_options( $plugin_data );
         } else {
           ?>
             <div class="notice">
@@ -316,9 +316,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                                               that the user wants to set.
     * @return    string                           The validated setting.
     */
-    public function bw_oauth_validate( $input ) {
+    public static function bw_oauth_validate( $input ) {
 
-      $output = $this->bw_defaults;
+      $output = self::BW_DEFAULTS;
 
       if ( !is_array( $input ) ) {
 
@@ -334,7 +334,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
         $input['username'] = trim( esc_attr( $input['username'] ) );
         if ( true === ctype_print( $input['username'] ) ) {
-          $output['username'] = $input['username'];
+          // $output['username'] = $input['username'];
+          $is_valid = true;
         } else if ( empty( $input['username'] ) ) {
           add_settings_error(
             'wp-blipper-settings-group',
@@ -347,28 +348,32 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'invalid-oauth-access-token',
             __( 'Please enter printable characters only for the username.', 'blipper-widget' )
           );
-          $output['username'] = '';
+          // $output['username'] = '';
         }
+        $output['username'] = $input['username'];
 
         $input['access-token'] = trim( esc_attr( $input['access-token'] ) );
         if ( true === ctype_alnum( $input['access-token'] ) ) {
-          $output['access-token'] = $input['access-token'];
+          // $output['access-token'] = $input['access-token'];
+          $is_valid = true;
         } else if ( empty( $input['access-token'] ) ) {
           add_settings_error(
             'wp-blipper-settings-group',
             'missing-oauth-access-token',
             __( 'Please enter a value for the access token.', 'blipper-widget' )
           );
+          // $output['access-token'] = '';
         } else {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-access-token',
             __( 'Please enter alphanumeric characters only for the access token.', 'blipper-widget' )
           );
-          $output['access-token'] = '';
+          // $output['access-token'] = '';
         }
+        $output['access-token'] = $input['access-token'];
 
-        $this->bw_test_connection( $output );
+        self::bw_test_connection( $output );
 
       }
 
@@ -384,9 +389,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public function bw_oauth_instructions() {
+    public static function bw_oauth_instructions() {
 
-      $plugin_data = $this->bw_get_plugin_data();
+      $plugin_data = self::bw_get_plugin_data();
       ?>
       <p><?php
         printf(
@@ -566,15 +571,27 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @param     string[]     The OAuth settings provided by the user.
     * @return    void
     */
-    private function bw_test_connection( $oauth_settings ) {
+    private static function bw_test_connection( $oauth_settings ) {
 
+      $client_ok = false;
       $client = null;
       $user_profile = null;
       try {
-        $client = new Blipper_Widget_Client (
-         '',
-         '',
-         $oauth_settings['access-token']
+        if ( array_key_exists( 'access-token', $oauth_settings ) && !empty( $oauth_settings['access-token'] ) ) {
+          $client = new Blipper_Widget_Client(
+           '',
+           '',
+           $oauth_settings['access-token']
+          );
+        } else {
+          throw new Blipper_Widget_OAuthException( 'The access token is missing.' );
+        }
+      } catch ( Blipper_Widget_OAuthException $e ) {
+        add_settings_error(
+          'wp-blipper-settings-group',
+          'invalid-oauth-credentials',
+          // translators: do not translate 'Blipfoto': it is the name of a service
+          __( 'Unable to connect to Blipfoto. ' . $e->getMessage(), 'blipper-widget' )
         );
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         add_settings_error(
@@ -594,8 +611,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
           $user = $user_profile->data()['user'];
 
-          if ( $user['username'] != $oauth_settings['username'] ) {
-            throw new Blipper_Widget_OAuthException( 'Please check the username you entered is correct.' );
+          if ( array_key_exists( 'username', $user ) && array_key_exists( 'username', $oauth_settings ) )
+          if ( $user['username'] !== $oauth_settings['username'] ) {
+            // unset( $client );
+            throw new Blipper_Widget_OAuthException( 'The username provided does not match the username of the Blipfoto account given by the access token.' );
+          } else {
+            $client_ok = true;
           }
 
         } catch ( Blipper_Widget_OAuthException $e ) {
@@ -613,7 +634,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           );
         }
       }
-      return $client && $user_profile;
+      return $client_ok;
     }
 
   /**
@@ -624,7 +645,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
-    public function bw_settings_have_been_set() {
+    public static function bw_settings_have_been_set() {
 
       return false != get_option( 'blipper-widget-settings-oauth' );
 
@@ -637,7 +658,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    array     The settings in the database or false if not set.
     */
-    public function bw_get_settings() {
+    public static function bw_get_settings() {
 
       return get_option( 'blipper-widget-settings-oauth' );
 
@@ -652,7 +673,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @return    string    The string used as the key in the database, which
     *                        stores the widget's OAuth settings.
     */
-    public function bw_get_settings_db_name() {
+    public static function bw_get_settings_db_name() {
 
       return 'blipper-widget-settings-oauth';
 
@@ -665,7 +686,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @author pandammonium
    * @return void
    */
-    private function bw_no_access_to_options( $plugin_data ) {
+    private static function bw_no_access_to_options( $plugin_data ) {
 
       ?>
       <div class="error">
@@ -688,7 +709,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    * @author pandammonium
    * @return array
    */
-    private function bw_get_plugin_data() {
+    private static function bw_get_plugin_data() {
 
       $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
       $plugin_data = get_plugin_data($plugin_base, false, true);
