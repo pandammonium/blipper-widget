@@ -2346,10 +2346,74 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
+    /**
+     * Caches the given data.
+     *
+     * @author dartiss, pandammonium
+     * @since 2.0.0
+     *
+     * @param int $i The current line number of the readme file.
+     * @return void
+     */
+    private static function bw_set_cache( mixed $data_to_cache ): void {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // bw_log( 'cache key', self::$cache_key );
+      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
+
+      $result = false;
+      $cached_info = array();
+
+      try {
+        if ( is_numeric( self::CACHE_EXPIRY ) ) {
+
+          $transient = get_transient( self::$cache_key );
+          if ( false === $transient ) {
+            $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
+          } else {
+            // Don't fail if the cache already exists:
+            $result = true;
+          }
+        } else {
+          if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
+            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+          }
+        }
+        if ( false === $result ) {
+          $deleted = delete_transient( self::$cache_key );
+          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
+          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
+        }
+      } catch( \Exception $e ) {
+        throw( $e );
+      }
+    }
+
+    private static function bw_get_cache(): bool|array|string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // bw_log( 'cache key', self::$cache_key );
+      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
+
+      if ( is_numeric( self::CACHE_EXPIRY ) ) {
+        $transient = get_transient( self::$cache_key );
+        // bw_log( 'transient', $transient );
+        return $transient;
+      } else {
+        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+      }
+      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+    }
+
     // --- Action hooks ------------------------------------------------------- //
 
     /**
-     * Check the Blipfoto OAuth settings have been set, otherwise display a message to the user.
+     * Check the Blipfoto OAuth settings have been set, otherwise display a
+     * message to the user.
+     *
+     * @deprecated
      */
     public static function bw_settings_check() {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2420,69 +2484,6 @@ if (!class_exists('Blipper_Widget')) {
         }( jQuery ) );
         </script>
       <?php
-    }
-
-    /**
-     * Caches the given data.
-     *
-     *
-     *
-     * @author dartiss, pandammonium
-     * @since 2.0.0
-     *
-     * @param int $i The current line number of the readme file.
-     * @return void
-     */
-    private static function bw_set_cache( mixed $data_to_cache ): void {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
-
-      // bw_log( 'cache key', self::$cache_key );
-      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
-
-      $result = false;
-      $cached_info = array();
-
-      try {
-        if ( is_numeric( self::CACHE_EXPIRY ) ) {
-
-          $transient = get_transient( self::$cache_key );
-          if ( false === $transient ) {
-            $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
-          } else {
-            // Don't fail if the cache already exists:
-            $result = true;
-          }
-        } else {
-          if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
-            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
-          }
-        }
-        if ( false === $result ) {
-          $deleted = delete_transient( self::$cache_key );
-          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
-          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
-        }
-      } catch( \Exception $e ) {
-        throw( $e );
-      }
-    }
-
-    private static function bw_get_cache(): bool|array|string {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
-
-      // bw_log( 'cache key', self::$cache_key );
-      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
-
-      if ( is_numeric( self::CACHE_EXPIRY ) ) {
-        $transient = get_transient( self::$cache_key );
-        // bw_log( 'transient', $transient );
-        return $transient;
-      } else {
-        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
-      }
-      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
   }
 }
