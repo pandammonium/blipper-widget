@@ -1233,7 +1233,7 @@ if (!class_exists('Blipper_Widget')) {
 
       $html = '';
       // Link back to the blip on the Blipfoto site.
-      self::bw_log_display_values( $settings, 'add-link-to-blip', 'blipper_widget_get_blip' );
+      self::bw_log_display_values( $settings, 'add-link-to-blip', 'bw_get_blip' );
       if ( ! array_key_exists( 'add-link-to-blip' , $settings ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $settings['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
@@ -1304,7 +1304,7 @@ if (!class_exists('Blipper_Widget')) {
 
       $html = '';
       // Date (optional), title and username
-      self::bw_log_display_values( $settings, 'display-date', 'blipper_widget_get_blip' );
+      self::bw_log_display_values( $settings, 'display-date', 'bw_get_blip' );
       if ( ! array_key_exists( 'display-date' , $settings ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $settings['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
@@ -1420,8 +1420,8 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       // Journal title and/or display-powered-by link.
-      self::bw_log_display_values( $settings, 'display-journal-title', 'blipper_widget_get_blip' );
-      self::bw_log_display_values( $settings, 'display-powered-by', 'blipper_widget_get_blip' );
+      self::bw_log_display_values( $settings, 'display-journal-title', 'bw_get_blip' );
+      self::bw_log_display_values( $settings, 'display-powered-by', 'bw_get_blip' );
       if ( ! array_key_exists( 'display-journal-title' , $settings ) ) {
         // Necessary for when Blipper Widget is added via the Customiser.
         $settings['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
