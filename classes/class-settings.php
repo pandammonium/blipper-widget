@@ -38,8 +38,15 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
   class Blipper_Widget_Settings {
 
-    private const BW_NAME = 'Blipper Widget';
-    private const BW_VERSION = '1.2.6-alpha';
+    /**
+     * @author pandammonium
+     * @since 1.2.6
+     * @var array BW_PLUGIN_DATA Basic plugin data.
+     */
+    private const BW_PLUGIN_DATA = [
+      'Name' => 'Blipper Widget',
+      'Version' => '1.2.6-alpha',
+    ];
 
   /**
     * @since    0.0.2
@@ -745,10 +752,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         $plugin_data = get_plugin_data($plugin_base, false, true);
         return $plugin_data;
       } else {
-        return [
-          'Version' => self::BW_VERSION,
-          'Name' => self::BW_NAME,
-        ];
+        return self::BW_PLUGIN_DATA;
       }
     }
   }
