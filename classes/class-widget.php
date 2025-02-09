@@ -517,7 +517,7 @@ if (!class_exists('Blipper_Widget')) {
         $new_settings['style-control'] = self::bw_get_display_value( 'style-control', $settings );
         $new_settings['updated'] = self::bw_get_display_value( 'updated', $settings );
 
-      } catch ( ErrorException $e ) {
+      } catch ( \ErrorException $e ) {
 
         self::bw_display_error_msg( $e, __( 'Please check your settings are valid and try again', 'blipper-widget' ) );
 
@@ -540,6 +540,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       try {
+
         if ( array_key_exists( $setting, $settings ) ) {
           return esc_attr( $settings[$setting] );
         } else {
@@ -549,12 +550,12 @@ if (!class_exists('Blipper_Widget')) {
             return self::DEFAULT_SETTING_VALUES['common'][$setting];
           } else {
             // bw_log( 'Invalid setting requested', $setting );
-            throw new ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>' );
+            throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>' );
             return '';
           }
         }
 
-      } catch ( ErrorException $e ) {
+      } catch ( \ErrorException $e ) {
 
         self::bw_display_error_msg( $e );
 
@@ -778,7 +779,7 @@ if (!class_exists('Blipper_Widget')) {
         self::bw_display_error_msg( $e, 'There is a problem with the OAuth credentials' );
       } catch ( Blipper_Widget_BaseException $e ) {
         self::bw_display_error_msg( $e );
-      } catch ( ErrorException $e ) {
+      } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
@@ -1006,11 +1007,11 @@ if (!class_exists('Blipper_Widget')) {
       try {
         $data['blips'] = $data['journal']->data( 'entries' );
         if ( empty( $data['blips'] ) ) {
-          throw new ErrorException( 'Can\'t access your Blipfoto journal entries (blips).  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
+          throw new \ErrorException( 'Can\'t access your Blipfoto journal entries (blips).  Please check your settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue or try again later.');
         } else {
           return true;
         }
-      } catch ( ErrorException $e ) {
+      } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong accessing your entries (blips)' );
@@ -1147,9 +1148,9 @@ if (!class_exists('Blipper_Widget')) {
         } else if ( $data['details']->data( 'image_urls.lores' ) ) {
           $data['image_url'] = $data['details']->data( 'image_urls.lores' );
         } else {
-          throw new ErrorException('Unable to get URL of image.');
+          throw new \ErrorException('Unable to get URL of image.');
         }
-      } catch ( ErrorException $e ) {
+      } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the image URL' );
@@ -2299,7 +2300,7 @@ if (!class_exists('Blipper_Widget')) {
           return 'Network error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
           return 'OAuth error';
-        case 'ErrorException':
+        case '\ErrorException':
         case 'Error':
           return 'Error';
         case 'Exception':
@@ -2327,6 +2328,7 @@ if (!class_exists('Blipper_Widget')) {
         case 'Exception':
           return self::bw_get_css_class( 'warning' );
         default:
+          // error_log( 'exception class: ' . var_export( get_class( $e ), true ) );
           return self::bw_get_css_class( 'notice' );
         }
     }

@@ -12,6 +12,6 @@ defined( 'WPINC' ) or die();
 
 use \ErrorException;
 
-class Blipper_Widget_BaseException extends ErrorException {
+class Blipper_Widget_BaseException extends \ErrorException {
 	
 }
