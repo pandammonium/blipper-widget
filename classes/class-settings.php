@@ -54,12 +54,6 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
    // translators: %s: NB stands for Latin 'nota bene', which translates to 'note well' in English. Do not translate the Latin abbreviation, but do translate the translation.
    private const NOTA_BENE = 'Nota bene \'note well\'';
 
-  ///**
-  //  * @since    0.0.2
-  //  * @property array    $blipper_widget_settings   The widget's user-defined settings
-  //  */
-    // private $blipper_widget_settings;
-
   /**
     * Constructs an instance of this class.
     *
