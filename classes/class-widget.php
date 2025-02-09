@@ -18,7 +18,7 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseExceptio
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException;
-use blipper_widget\settings\blipper_widget_settings;
+use Blipper_Widget\Settings\Blipper_Widget_Settings;
 
 if (!class_exists('Blipper_Widget')) {
   /**
@@ -144,7 +144,7 @@ if (!class_exists('Blipper_Widget')) {
       // on a sidebar when the OAuth access settings are set.
       self::bw_load_dependencies();
 
-      self::$settings = new blipper_widget_settings();
+      self::$settings = new Blipper_Widget_Settings();
 
       // function to load Blipper Widget:
       // add_action( 'admin_notices', [ Blipper_Widget::class, 'bw_settings_check' ] );

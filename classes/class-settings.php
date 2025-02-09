@@ -15,7 +15,7 @@
   *
   */
 
-namespace blipper_widget\settings;
+namespace Blipper_Widget\Settings;
 
 // If this file is called directly, abort:
 defined( 'ABSPATH' ) or die();
