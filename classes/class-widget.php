@@ -125,7 +125,7 @@ if (!class_exists('Blipper_Widget')) {
       ];
 
     /**
-      * Construct an instance of the widget.
+      * Constructs an instance of the widget.
       *
       * @since    0.0.1
       */
@@ -388,8 +388,6 @@ if (!class_exists('Blipper_Widget')) {
     private static function normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-
-      // bw_log( 'type of attributes', gettype( $atts ) );
 
       if ( null === $atts ) {
         return null;
@@ -820,7 +818,7 @@ if (!class_exists('Blipper_Widget')) {
         'user_profile' => null,
         'user_settings' => null,
       ];
-      // error_log( 'data: ' . var_export( $data, true ) );
+
       $the_blip = '';
 
       $continue = self::bw_get_blip_get_user_profile( $data );
@@ -1356,7 +1354,7 @@ if (!class_exists('Blipper_Widget')) {
      * link, if specified in the settings.
      */
     private static function bw_get_blip_display_blip_add_byline( array $data ): string {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $html = ' '
@@ -1385,9 +1383,8 @@ if (!class_exists('Blipper_Widget')) {
      * link, if specified in the settings.
      */
     private static function bw_get_blip_display_blip_add_shortcode_text( array $settings, bool $is_widget, bool $style_control, string|null $content ): string {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      error_log( 'content type: ' . var_export( gettype( $content ), true ) );
 
       $html = '';
       // Display any content provided by the user in a shortcode.
@@ -1654,11 +1651,11 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $the_blip = self::bw_get_blip( $settings, $is_widget, $content );
-      error_log( 'the blip: ' . var_export( $the_blip, true ) );
-      return $the_blip;
+      // $the_blip = self::bw_get_blip( $settings, $is_widget, $content );
+      // error_log( 'the blip: ' . var_export( $the_blip, true ) );
+      // return $the_blip;
 
-      // return self::bw_get_blip( $settings, $is_widget, $content );
+      return self::bw_get_blip( $settings, $is_widget, $content );
     }
 
     /**

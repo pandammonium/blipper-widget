@@ -43,10 +43,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @property string[]    BW_DEFAULTS   The widget's default settings
     */
-    private const BW_DEFAULTS = array(
+    private const BW_DEFAULTS = [
       'username'              => '',
       'access-token'          => '',
-    );
+    ];
 
   /**
    * @ignore
@@ -71,7 +71,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      add_action( 'admin_menu', array( Blipper_Widget_Settings::class, 'bw_admin_menu' ) );
+      add_action( 'admin_menu', [ Blipper_Widget_Settings::class, 'bw_admin_menu' ] );
       // Ensure the admin page is initialised only when needed:
       // Not calling this results in repeated error messages, if error messages
       // are displayed. Repeated error messages look pants.
@@ -81,7 +81,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         or 'options-general/php?page=blipper-widget'  === $GLOBALS['pagenow']
         )
       ) {
-        add_action( 'admin_init', array( Blipper_Widget_Settings::class, 'bw_admin_init' ) );
+        add_action( 'admin_init', [ Blipper_Widget_Settings::class, 'bw_admin_init' ] );
       }
     }
 
@@ -109,7 +109,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // slug name to refer to this menu by:
         'blipper-widget',
         // function to be called to output the content for this page:
-        array( Blipper_Widget_Settings::class, 'bw_options_page' ),
+        [ Blipper_Widget_Settings::class, 'bw_options_page' ],
         // position in the menu order this item should appear:
         8
       );
@@ -132,7 +132,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // option name:
         'blipper-widget-settings-oauth',
         // callback function to validate input
-        array( Blipper_Widget_Settings::class, 'bw_oauth_validate' )
+        [ Blipper_Widget_Settings::class, 'bw_oauth_validate' ]
       );
 
       add_settings_section(
@@ -143,7 +143,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
         // section callback function to render information and instructions about
         // this section:
-        array( Blipper_Widget_Settings::class, 'bw_oauth_instructions'),
+        [ Blipper_Widget_Settings::class, 'bw_oauth_instructions' ],
         // page id (i.e. menu slug):
         'blipper-widget'
       );
@@ -155,20 +155,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( Blipper_Widget_Settings::class, 'wp_blipper_field_render'),
+        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
         'blipper-widget-oauth',
         // arguments for the callback function:
-        array(
+        [
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[username]',
           // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto username here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-username',
           'setting'     => 'username',
-        )
+        ]
       );
       add_settings_field(
         // field id:
@@ -177,20 +177,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
-        array( Blipper_Widget_Settings::class, 'wp_blipper_field_render'),
+        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
         'blipper-widget-oauth',
         // arguments for the callback function:
-        array(
+        [
           'type'        => 'text',
           'name'        => 'blipper-widget-settings-oauth[access-token]',
           // translators: do not translate 'Blipfoto': it is the name of a service
           'placeholder' => __( 'Enter your Blipfoto access token here', 'blipper-widget' ),
           'id'          => 'blipper-widget-input-access-token',
           'setting'     => 'access-token',
-        )
+        ]
       );
     }
 
@@ -344,7 +344,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
         $input['username'] = trim( esc_attr( $input['username'] ) );
         if ( true === ctype_print( $input['username'] ) ) {
-          $output['username'] = $input['username'];
+          // $output['username'] = $input['username'];
           $is_valid = true;
         } else if ( empty( $input['username'] ) ) {
           add_settings_error(
@@ -358,12 +358,13 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'invalid-oauth-access-token',
             __( 'Please enter printable characters only for your Blipfoto username.', 'blipper-widget' )
           );
-          $output['username'] = '';
+          // $output['username'] = '';
         }
+        $output['username'] = $input['username'];
 
         $input['access-token'] = trim( esc_attr( $input['access-token'] ) );
         if ( true === ctype_alnum( $input['access-token'] ) ) {
-          $output['access-token'] = $input['access-token'];
+          // $output['access-token'] = $input['access-token'];
           $is_valid = true;
         } else if ( empty( $input['access-token'] ) ) {
           add_settings_error(
@@ -371,15 +372,16 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'missing-oauth-access-token',
             __( 'Please enter your Blipfoto access token.', 'blipper-widget' )
           );
-          $output['access-token'] = '';
+          // $output['access-token'] = '';
         } else {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-access-token',
             __( 'Please enter alphanumeric characters only for your Blipfoto access token.', 'blipper-widget' )
           );
-          $output['access-token'] = '';
+          // $output['access-token'] = '';
         }
+        $output['access-token'] = $input['access-token'];
 
         if ( $is_valid ) {
           self::bw_test_connection( $output );
@@ -586,13 +588,25 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      $client_ok = false;
       $client = null;
       $user_profile = null;
       try {
-        $client = new Blipper_Widget_Client(
-         '',
-         '',
-         $oauth_settings['access-token']
+        if ( array_key_exists( 'access-token', $oauth_settings ) && !empty( $oauth_settings['access-token'] ) ) {
+          $client = new Blipper_Widget_Client(
+           '',
+           '',
+           $oauth_settings['access-token']
+          );
+        } else {
+          throw new Blipper_Widget_OAuthException( 'The access token is missing.' );
+        }
+      } catch ( Blipper_Widget_OAuthException $e ) {
+        add_settings_error(
+          'wp-blipper-settings-group',
+          'invalid-oauth-credentials',
+          // translators: do not translate 'Blipfoto': it is the name of a service
+          __( 'Unable to connect to Blipfoto. ' . $e->getMessage(), 'blipper-widget' )
         );
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         add_settings_error(
@@ -612,8 +626,13 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
           $user = $user_profile->data()['user'];
 
-          if ( $user['username'] != $oauth_settings['username'] ) {
-            throw new Blipper_Widget_OAuthException( 'Could not connect to the Blipfoto account associated with the given access token.' );
+          if ( array_key_exists( 'username', $user ) && array_key_exists( 'username', $oauth_settings ) ) {
+            if ( $user['username'] !== $oauth_settings['username'] ) {
+              // unset( $client );
+              throw new Blipper_Widget_OAuthException( 'The username provided does not match the username of the Blipfoto account given by the access token.' );
+            } else {
+              $client_ok = true;
+            }
           }
 
         } catch ( Blipper_Widget_OAuthException $e ) {
@@ -636,7 +655,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           );
         }
       }
-      return $client && $user_profile;
+      return $client_ok;
     }
 
   /**
