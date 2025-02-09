@@ -38,6 +38,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     */
   class Blipper_Widget_Settings {
 
+    private const BW_NAME = 'Blipper Widget';
+    private const BW_VERSION = '1.2.6-alpha';
+
   /**
     * @since    0.0.2
     * @author    pandammonium
@@ -725,19 +728,28 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
    * Gets the header information from the main plugin file.
    *
+   * If the main plugin file hasn't been loaded yet, get the information from
+   * the hardcoded constants instead.
+   *
    * @since 1.2.1
    * @author pandammonium
-   * @return array
+   * @return array<string, mixed> The plugin data insofar as it's available at
+   * the point of execution.
    */
-    private static function bw_get_plugin_data() {
+    public static function bw_get_plugin_data() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
-      $plugin_data = get_plugin_data($plugin_base, false, true);
-      return $plugin_data;
+      if ( function_exists( 'get_plugin_data' ) ) {
+        $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
+        $plugin_data = get_plugin_data($plugin_base, false, true);
+        return $plugin_data;
+      } else {
+        return [
+          'Version' => self::BW_VERSION,
+          'Name' => self::BW_NAME,
+        ];
+      }
     }
-
   }
-
 }

@@ -371,7 +371,9 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       if ( self::bw_create_blipfoto_client() ) {
-        $the_blip = '<!-- Start of Blipper Widget ' . BW_VERSION . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of Blipper Widget ' . BW_VERSION . ' -->';
+        $plugin_data = Blipper_Widget_Settings::bw_get_plugin_data();
+        error_log( 'plugin data: ' . var_export( $plugin_data, true ) );
+        $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
 
         // Save the blip in the cache for next time:
         self::bw_set_cache( $the_blip );

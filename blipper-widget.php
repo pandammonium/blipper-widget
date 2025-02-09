@@ -5,7 +5,7 @@
  * Plugin Name:        Blipper Widget
  * Plugin URI:         https://wordpress.org/plugins/blipper-widget/
  * Description:        Display your latest blip in a widget.  Requires a Blipfoto account (available free of charge).
- * Version:            1.2.5
+ * Version:            1.2.6-alpha
  * Requires at least:  4.3
  * Tested up to:       6.7
  * Requires PHP:       8.0
@@ -54,7 +54,6 @@ define( 'BW_DEBUG', false );
  */
 define( 'BW_PREFIX', 'BW | ' );
 
-define( 'BW_VERSION', '1.2.5' );
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('bw_register_widget')) {
