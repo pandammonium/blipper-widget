@@ -44,7 +44,8 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
       foreach ( $sidebar_widgets as $key => $value ) {
         if ( is_array( $value ) ) {
           foreach ( $value as $inner_key => $inner_value ) {
-            if ( false !== strpos( $inner_value, 'blipper_widget' ) ) {
+            if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
+                 false !== strpos( $inner_value, 'bw_' ) ) {
               // Don't want to mess with any widget that isn't the Blipper Widget.
               unset( $sidebar_widgets[$key][$value] );
             }
@@ -73,6 +74,7 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
 
   }
 }
+
 blipper_widget_uninstall();
 
 /** Sorry to see you go.  Bye bye! */
