@@ -117,7 +117,7 @@ if (!class_exists('Blipper_Widget')) {
       * @property Blipper_Widget_Settings   $settings The Blipper Widget settings
       * @deprecated 1.2.6
       */
-      private static Blipper_Widget_Settings $settings;
+      private static ?Blipper_Widget_Settings $settings = null;
 
       private const QUOTES = [
         '“' => '',
@@ -379,8 +379,10 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       if ( self::bw_create_blipfoto_client() ) {
-        $plugin_data = Blipper_Widget_Settings::bw_get_plugin_data();
-        $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
+        // $plugin_data = self::$settings::bw_get_plugin_data();
+
+        // $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' by ' . $plugin_data['Author'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
+        $the_blip = '<div class="blipper-widget">' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '</div>';
 
         // Save the blip in the cache for next time:
         self::bw_set_cache( $the_blip );

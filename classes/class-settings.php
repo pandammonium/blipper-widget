@@ -46,10 +46,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
      * @since 1.2.6
      * @var array BW_PLUGIN_DATA Basic plugin data.
      */
-    private const BW_PLUGIN_DATA = [
-      'Name' => 'Blipper Widget',
-      'Version' => '1.2.6-alpha',
-    ];
+    private static ?array $plugin_data = null;
 
   /**
     * @since    0.0.2
@@ -761,13 +758,16 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      if ( function_exists( 'get_plugin_data' ) ) {
+      // Only call for the plugin data if it hasn't already been obtained and the function exists. The default values don't include 'Title', which is automatically added by WordPress:
+      if ( !array_key_exists( 'Title', self::$plugin_data ) && function_exists( 'get_plugin_data' ) ) {
+        // error_log( 'getting plugin data' );
         $plugin_base = plugin_dir_path(__FILE__) . '../blipper-widget.php';
-        $plugin_data = get_plugin_data($plugin_base, false, true);
-        return $plugin_data;
+        self::$plugin_data = get_plugin_data($plugin_base, false, true);
       } else {
-        return self::BW_PLUGIN_DATA;
+        // error_log( 'using saved plugin data' );
       }
+      // error_log( 'plugin data: ' . var_export( self::$plugin_data, true ) );
+      return self::$plugin_data;
     }
   }
 }
