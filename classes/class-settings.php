@@ -293,7 +293,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             <?php
               // Render a few hidden fields that tell WP which settings are going to be updated on this page:
               settings_fields( 'blipper-widget-settings' );
-              // Output all the sections and fields that have been added to the options page (with slug options-wp-blipper):
+              // Output all the sections and fields that have been added to the options page (with slug blipper-widget):
               do_settings_sections( 'blipper-widget' );
               submit_button();
             ?>
