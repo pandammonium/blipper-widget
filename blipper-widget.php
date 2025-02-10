@@ -94,7 +94,7 @@ if (!function_exists('bw_add_settings_link')) {
 
     if ( strpos( $file, 'blipper-widget.php' ) !== false ) {
 
-      $links = array_merge( $links, array( '<a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">' . __('Settings', 'blipper-widget') . '</a>' ) );
+      $links = array_merge( $links, [ '<a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">' . __('Settings', 'blipper-widget') . '</a>' ] );
 
     }
     return $links;
