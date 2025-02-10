@@ -25,13 +25,16 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
+use function Blipper_Widget\bw_log;
+
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
 
 if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * The Blipper Widget settings (back end).
-    * The widget settings in the back end; currently comprises authentication by OAuth2.
+    * The widget settings in the back end; currently comprises authentication
+    * by OAuth2.
     *
     * @since 0.0.2
     * @author    pandammonium
@@ -54,8 +57,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @property string[]    BW_DEFAULTS   The widget's default settings
     */
     private const BW_DEFAULTS = [
-      'username'              => '',
-      'access-token'          => '',
+      'username'     => '',
+      'access-token' => '',
     ];
 
   /**
@@ -75,17 +78,31 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      add_action( 'admin_menu', [ Blipper_Widget_Settings::class, 'bw_admin_menu' ] );
+      self::$plugin_data = [
+        'Author' => 'pandammonium',
+        'Name' => 'Blipper Widget',
+        'Version' => '1.2.6-alpha',
+      ];
+      // error_log( 'plugin data: ' . var_export( self::$plugin_data, true ) );
+
+      add_action(
+        hook_name: 'admin_menu',
+        callback: [ Blipper_Widget_Settings::class, 'bw_admin_menu' ]
+      );
+
       // Ensure the admin page is initialised only when needed:
       // Not calling this results in repeated error messages, if error messages
       // are displayed. Repeated error messages look pants.
-      if ( ! empty ( $GLOBALS['pagenow'] )
+      if ( !empty ( $GLOBALS['pagenow'] )
         and ( 'options-general.php' === $GLOBALS['pagenow']
         or 'options.php' === $GLOBALS['pagenow']
-        or 'options-general/php?page=blipper-widget'  === $GLOBALS['pagenow']
+        or 'options-general/php?page=blipper-widget' === $GLOBALS['pagenow']
         )
       ) {
-        add_action( 'admin_init', [ Blipper_Widget_Settings::class, 'bw_admin_init' ] );
+        add_action(
+          hook_name: 'admin_init',
+          callback: [ Blipper_Widget_Settings::class, 'bw_admin_init' ]
+        );
       }
     }
 
@@ -96,26 +113,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @author    pandammonium
     * @return    void
     */
-    public static function bw_admin_menu() {
+    public static function bw_admin_menu( $arg ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $plugin_data = self::bw_get_plugin_data();
 
+      // translators: self::$plugin_data['Name']: the plugin name; do not translate
       add_options_page(
-        // translators: $plugin_data['Name']: the plugin name; do not translate
-        // text to be displayed in the title tags of the page when the menu is selected (not to be confused with page header):
-        __( $plugin_data['Name'] . '  settings', 'blipper-widget' ),
-        // text to be used for the menu:
-        __( $plugin_data['Name'], 'blipper-widget' ),
-        // capability required for this menu to be displayed to the user:
-        'manage_options',
-        // slug name to refer to this menu by:
-        'blipper-widget',
-        // function to be called to output the content for this page:
-        [ Blipper_Widget_Settings::class, 'bw_options_page' ],
-        // position in the menu order this item should appear:
-        8
+        page_title: __( self::$plugin_data['Name'] . '  settings', 'blipper-widget' ),
+        menu_title: __( $plugin_data['Name'], 'blipper-widget' ),
+        capability: 'manage_options',
+        menu_slug: 'blipper-widget',
+        callback: [ Blipper_Widget_Settings::class, 'bw_options_page' ],
+        position: 8
       );
     }
 
@@ -303,10 +314,11 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         ?>
         <p><?php
           printf(
-            // translators: 1: plugin name (do not translate); 2: plugin version number
-            __( '%1$s version %2$s', 'blipper-widget' ),
+            // translators: 1: plugin name (do not translate); 2: plugin version number; 3: name of plugin author (do not translate)
+            __( '%1$s version %2$s by %3$s.', 'blipper-widget' ),
                 $plugin_data['Name'],
-                $plugin_data['Version']
+                $plugin_data['Version'],
+                $plugin_data['Author']
           ); ?>
         </p>
       </div>
@@ -733,10 +745,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     }
 
   /**
-   * Gets the header information from the main plugin file.
+   * Gets the information supplied in the header of the main plugin file, plus
+   * a few extra bits.
    *
-   * If the main plugin file hasn't been loaded yet, get the information from
-   * the hardcoded constants instead.
+   * In some instances, WordPress's plugin file hasn't been loaded when the
+   * plugin data is required. That information is therefore hardcoded so it is
+   * available for use in that situation.
    *
    * @since 1.2.1
    * @author pandammonium

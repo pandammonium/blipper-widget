@@ -9,6 +9,8 @@
   *
   */
 
+namespace Blipper_Widget\Widget;
+
 // If this file is called directly, abort:
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
@@ -18,7 +20,11 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseExceptio
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException;
+
+use \WP_Widget;
 use Blipper_Widget\Settings\Blipper_Widget_Settings;
+
+use function Blipper_Widget\bw_log;
 
 if (!class_exists('Blipper_Widget')) {
   /**
@@ -26,7 +32,7 @@ if (!class_exists('Blipper_Widget')) {
    *
    * @since 0.0.2
    */
-  class Blipper_Widget extends WP_Widget {
+  class Blipper_Widget extends \WP_Widget {
 
     /**
       * The default widget settings.
@@ -139,9 +145,6 @@ if (!class_exists('Blipper_Widget')) {
       ];
       parent::__construct( 'blipper_widget', 'Blipper Widget', $params );
 
-      // Not using is_active_widget here because that function is only supposed to
-      // return true if the widget is on a sidebar.  The widget isn't necessarily
-      // on a sidebar when the OAuth access settings are set.
       self::bw_load_dependencies();
 
       self::$settings = new Blipper_Widget_Settings();
@@ -150,16 +153,21 @@ if (!class_exists('Blipper_Widget')) {
       // add_action( 'admin_notices', [ Blipper_Widget::class, 'bw_settings_check' ] );
       // add_action( 'load-widgets.php', [ Blipper_Widget::class, 'bw_load_colour_picker' ] );
 
-      add_action( 'admin_enqueue_scripts', [ Blipper_Widget::class, 'bw_enqueue_scripts' ] );
+      add_action(
+        hook_name: 'admin_enqueue_scripts',
+        callback: [ Blipper_Widget::class, 'bw_enqueue_scripts' ]
+      );
 
-      add_action( 'admin_footer-widgets.php', [ Blipper_Widget::class, 'bw_print_scripts' ], 9999 );
+      add_action(
+        hook_name: 'admin_footer-widgets.php',
+        callback: [ Blipper_Widget::class, 'bw_print_scripts' ],
+        priority: 9999
+      );
 
-      add_shortcode('blipper_widget', [ Blipper_Widget::class, 'bw_shortcode_blip_display' ] );
-
-      // bw_log( 'this', $this );
-      // bw_log( 'default setting values', self::DEFAULT_SETTING_VALUES );
-      // bw_log( 'cache prefix', self::CACHE_PREFIX );
-      // bw_log( 'quotes', self::QUOTES );
+      add_shortcode(
+        tag: 'blipper_widget',
+        callback: [ Blipper_Widget::class, 'bw_shortcode_blip_display' ]
+      );
     }
 
     /**
@@ -615,7 +623,7 @@ if (!class_exists('Blipper_Widget')) {
 
       foreach ( $folders as $folder => $files ) {
         foreach ( $files as $file ) {
-          require( $path . $folder . '/' . $file . '.php' );
+          require_once( $path . $folder . '/' . $file . '.php' );
         }
       }
     }

@@ -38,11 +38,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+namespace Blipper_Widget;
+
 // If this file is called directly, abort:
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-require_once('classes/class-widget.php');
+require_once( plugin_dir_path(__FILE__ ) . 'classes/class-settings.php' );
+require_once( plugin_dir_path(__FILE__ ) . 'classes/class-widget.php' );
+
+use Blipper_Widget\Settings\Blipper_Widget_Settings;
+use Blipper_Widget\Widget\Blipper_Widget;
+
 // -------------------------------------------------------------------------- //
 
 /**
@@ -66,9 +73,12 @@ if (!function_exists('bw_register_widget')) {
     // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // bw_log( 'arguments', func_get_args() );
 
-    register_widget( 'Blipper_Widget' );
+    register_widget( 'Blipper_Widget\Widget\Blipper_Widget' );
   }
-  add_action( 'widgets_init', 'bw_register_widget' );
+  add_action(
+    hook_name:'widgets_init',
+    callback: 'Blipper_Widget\bw_register_widget'
+  );
 }
 
 if (!function_exists('bw_add_settings_link')) {
@@ -89,7 +99,12 @@ if (!function_exists('bw_add_settings_link')) {
     }
     return $links;
   }
-  add_filter( 'plugin_action_links', 'bw_add_settings_link', 10, 2 );
+  add_filter(
+    hook_name: 'plugin_action_links',
+    callback: 'Blipper_Widget\bw_add_settings_link',
+    priority: 10,
+    accepted_args: 2
+  );
 }
 
 if (!function_exists('bw_exception')) {
@@ -109,7 +124,7 @@ if (!function_exists('bw_exception')) {
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
-  set_exception_handler('bw_exception');
+  set_exception_handler( 'Blipper_Widget\bw_exception' );
 }
 
 if ( !function_exists( 'bw_log' ) ) {
