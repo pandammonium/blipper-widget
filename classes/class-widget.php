@@ -49,6 +49,7 @@ if (!class_exists('Blipper_Widget')) {
           'link-color'             => 'inherit',
           'padding'                => 'inherit',
           'style-control'          => 'widget-settings-only',  // 'css'
+          'updated'                => false,                   // true
         ),
         'shortcode'  => array (
           'title-level'            => 'h2',                    // 'h1'–'h6','p'
@@ -60,7 +61,6 @@ if (!class_exists('Blipper_Widget')) {
           'display-journal-title'  => 'hide',                  // 'show'
           'display-powered-by'     => 'hide',                  // 'show'
           'add-link-to-blip'       => 'hide',                  // 'show'
-          'updated'                => false,                   // true
         ),
       );
 
@@ -348,7 +348,7 @@ if (!class_exists('Blipper_Widget')) {
 
       try {
         $the_cache = self::bw_get_cache();
-        $updated = false;//$settings['updated'];
+        $updated = $is_widget ? $settings['updated'] : false;
 
         // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
         // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
