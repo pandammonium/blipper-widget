@@ -371,6 +371,45 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
+    private static function bw_get_cache(): bool|array|string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // bw_log( 'cache key', self::$cache_key );
+      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
+
+      if ( is_numeric( self::CACHE_EXPIRY ) ) {
+        $transient = get_transient( self::$cache_key );
+        // bw_log( 'transient', $transient );
+        return $transient;
+      } else {
+        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+      }
+      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+    }
+
+    /**
+     * Generate the blip from scratch
+     */
+    private static function bw_generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      if ( self::bw_create_blipfoto_client() ) {
+        // $plugin_data = self::$settings::bw_get_plugin_data();
+
+        // $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' by ' . $plugin_data['Author'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
+        $the_blip = '<div class="blipper-widget">' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '</div>';
+
+        // Save the blip in the cache for next time:
+        self::bw_set_cache( $the_blip );
+        // error_log( 'the blip: ' . var_export( $the_blip, true ) );
+        return $the_blip;
+      } else {
+        return false;
+      }
+    }
+
     /**
      * Caches the given data.
      *
@@ -412,45 +451,6 @@ if (!class_exists('Blipper_Widget')) {
         }
       } catch( \Exception $e ) {
         throw( $e );
-      }
-    }
-
-    private static function bw_get_cache(): bool|array|string {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
-
-      // bw_log( 'cache key', self::$cache_key );
-      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
-
-      if ( is_numeric( self::CACHE_EXPIRY ) ) {
-        $transient = get_transient( self::$cache_key );
-        // bw_log( 'transient', $transient );
-        return $transient;
-      } else {
-        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
-      }
-      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
-    }
-
-    /**
-     * Generate the blip from scratch
-     */
-    private static function bw_generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
-
-      if ( self::bw_create_blipfoto_client() ) {
-        // $plugin_data = self::$settings::bw_get_plugin_data();
-
-        // $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' by ' . $plugin_data['Author'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
-        $the_blip = '<div class="blipper-widget">' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '</div>';
-
-        // Save the blip in the cache for next time:
-        self::bw_set_cache( $the_blip );
-        // error_log( 'the blip: ' . var_export( $the_blip, true ) );
-        return $the_blip;
-      } else {
-        return false;
       }
     }
 
