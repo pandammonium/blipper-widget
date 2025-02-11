@@ -51,9 +51,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
     * @since    0.0.2
     * @author    pandammonium
-    * @property string[]    BW_DEFAULTS   The widget's default settings
+    * @property string[]    DEFAULT_OAUTH_SETTINGS   The widget's default settings
     */
-    private const BW_DEFAULTS = [
+    private const DEFAULT_OAUTH_SETTINGS = [
       'username'     => '',
       'access-token' => '',
     ];
@@ -167,7 +167,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
-        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
+        [ Blipper_Widget_Settings::class, 'bw_render_input_field' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -189,7 +189,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
-        [ Blipper_Widget_Settings::class, 'wp_blipper_field_render' ],
+        [ Blipper_Widget_Settings::class, 'bw_render_input_field' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -208,19 +208,20 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * Output the value, if there is one, in an input field.
-    * Callback function.
+    *
+    * Callback function, therefore must be public.
     *
     * @since     0.0.2
     * @author    pandammonium
     * @param     array $args
     * @return    void
     */
-    public static function wp_blipper_field_render( $args ) {
+    public static function bw_render_input_field( $args ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $settings = get_option( 'blipper-widget-settings-oauth' );
-      $value = false === $settings ? self::BW_DEFAULTS[$args['setting']] : $settings[$args['setting']];
+      $value = false === $settings ? self::DEFAULT_OAUTH_SETTINGS[$args['setting']] : $settings[$args['setting']];
       ?>
         <input type="<?php echo $args['type']; ?>" id="<?php echo $args['id']; ?>" name="<?php echo $args['name']; ?>" placeholder="<?php echo $args['placeholder']; ?>" value="<?php echo $value; ?>" size="50">
       <?php
@@ -228,7 +229,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * Render the options page.
-    * Callback function.
+    *
+    * Callback function, therefore must be public.
     *
     * @since     0.0.2
     * @author    pandammonium
@@ -324,9 +326,10 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
   /**
     * Validate the OAuth input.
+    *
     * Make sure the input comprises only printable/alphanumeric (depending on the
     * field) characters; otherwise, return an empty string/the default value.
-    * Callback function.
+    * Callback function, thereofre must be public.
     *
     * (This might become a loop at some point.)
     *
@@ -340,7 +343,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $output = self::BW_DEFAULTS;
+      $output = self::DEFAULT_OAUTH_SETTINGS;
 
       if ( !is_array( $input ) ) {
 

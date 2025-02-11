@@ -188,7 +188,7 @@ if (!class_exists('Blipper_Widget')) {
         $the_title = $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
       }
 
-      echo self::render_the_blip( $args, $settings, $the_title, true );
+      echo self::bw_render_the_blip( $args, $settings, $the_title, true );
 
       echo $args['after_widget'];
     }
@@ -282,7 +282,7 @@ if (!class_exists('Blipper_Widget')) {
         // bw_log( 'arguments', func_get_args() );
 
       try {
-        $atts = self::normalise_attributes( $atts, $shortcode );
+        $atts = self::bw_normalise_attributes( $atts, $shortcode );
         // error_log( 'normalised atts: ' . var_export( $atts, true ) );
 
         $defaults = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], self::DEFAULT_SETTING_VALUES['common'] );
@@ -317,7 +317,7 @@ if (!class_exists('Blipper_Widget')) {
 
         // bw_log( 'shortcode atts', $args );
 
-        return self::render_the_blip( $defaults, $args, $the_title, false, $content );
+        return self::bw_render_the_blip( $defaults, $args, $the_title, false, $content );
       } catch( \Exception $e ) {
         return bw_exception( $e );
       }
@@ -339,7 +339,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param string The formatted title to be used for this blip.
      * @return string|bool The HTML that will render the blip or false on failure.
      */
-    private static function render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
+    private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -357,7 +357,7 @@ if (!class_exists('Blipper_Widget')) {
           // error_log( 'rendering the blip from scratch' );
 
           // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
-          return self::generate_blip( $args, $settings, $the_title, $is_widget, $content );
+          return self::bw_generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
         } else {
           // error_log( 'rendering the blip from the cache' );
@@ -374,7 +374,7 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Generate the blip from scratch
      */
-    private static function generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
+    private static function bw_generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -396,7 +396,7 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Normalise the arguments from the shortcode
      */
-    private static function normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
+    private static function bw_normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
