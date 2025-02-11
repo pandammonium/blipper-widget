@@ -721,7 +721,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     }
 
   /**
-   * What to do if the user doesn't have permission to acess the options.
+   * What to do if the user doesn't have permission to access the options.
    *
    * @since 1.2.1
    * @author pandammonium
