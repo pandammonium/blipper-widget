@@ -55,7 +55,12 @@ use Blipper_Widget\Widget\Blipper_Widget;
 /**
  * @ignore
  */
-define( 'BW_DEBUG', false );
+$status = ( defined( WP_DEBUG ) && true === WP_DEBUG ) && ( defined( WP_DEBUG_LOG ) && true === WP_DEBUG_LOG );
+define( 'BW_DEBUG', false && $status );
+// error_log( 'wp debug: ' . var_export( WP_DEBUG, true ) );
+// error_log( 'wp debug log: ' . var_export( WP_DEBUG_LOG, true ) );
+// error_log( 'status: ' . var_export( $status, true ) );
+// error_log( 'bw debug: ' . var_export( BW_DEBUG, true ) );
 /**
  * @ignore
  */
