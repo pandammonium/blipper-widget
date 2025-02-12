@@ -188,7 +188,15 @@ if (!class_exists('Blipper_Widget')) {
         $the_title = $args['before_title'] . apply_filters( 'widget_title', $settings['title'] ) . $args['after_title'];
       }
 
-      echo self::bw_render_the_blip( $args, $settings, $the_title, true );
+      // Reset the updated-settings flag:
+      $settings['updated'] = false;
+
+      echo self::bw_render_the_blip(
+        args: $args,
+        settings: $settings,
+        the_title: $the_title,
+        is_widget: true
+      );
 
       echo $args['after_widget'];
     }
@@ -226,80 +234,37 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $settings = [];
-      $title                  = $this->bw_validate( $new_settings, $old_settings, 'title' );
-      $display_date           = $this->bw_validate( $new_settings, $old_settings, 'display-date' );
-      $display_journal_title  = $this->bw_validate( $new_settings, $old_settings, 'display-journal-title' );
-      $add_link_to_blip       = $this->bw_validate( $new_settings, $old_settings, 'add-link-to-blip' );
-      $powered_by             = $this->bw_validate( $new_settings, $old_settings, 'display-powered-by' );
-      $border_style           = $this->bw_validate( $new_settings, $old_settings, 'border-style' );
-      $border_width           = $this->bw_validate( $new_settings, $old_settings, 'border-width' );
-      $border_colour          = $this->bw_validate( $new_settings, $old_settings, 'border-color' );
-      $background_colour      = $this->bw_validate( $new_settings, $old_settings, 'background-color' );
-      $colour                 = $this->bw_validate( $new_settings, $old_settings, 'color' );
-      $link_colour            = $this->bw_validate( $new_settings, $old_settings, 'link-color' );
-      $padding                = $this->bw_validate( $new_settings, $old_settings, 'padding' );
-      $style_control          = $this->bw_validate( $new_settings, $old_settings, 'style-control');
+      return self::bw_validate_settings( $new_settings, $old_settings );
 
-      $settings['title']                  = $title;
-      $settings['display-date']           = $display_date;
-      $settings['display-journal-title']  = $display_journal_title;
-      $settings['add-link-to-blip']       = $add_link_to_blip;
-      $settings['display-powered-by']     = $powered_by;
-      $settings['border-style']           = $border_style;
-      $settings['border-width']           = $border_width;
-      $settings['border-color']           = $border_colour;
-      $settings['background-color']       = $background_colour;
-      $settings['color']                  = $colour;
-      $settings['link-color']             = $link_colour;
-      $settings['padding']                = $padding;
-      $settings['style-control']          = $style_control;
-
-      // bw_log( 'old settings', $old_settings );
-      // bw_log( 'new settings', $new_settings );
-
-      $updated_settings_only = array_diff_assoc( $old_settings, $new_settings );
-      // bw_log( 'Updated settings', $updated_settings_only );
-      $settings['updated'] = empty( $updated_settings_only ) ? false : true;
-      // bw_log( 'settings updated', $settings['updated'] );
-
-      return $settings;
     }
 
     /**
      * Add a shortcode so the widget can be placed in a post or on a page.
      *
-     * @param array    $atts        The settings (attributes) included in the
-     *                                shortcode.  Not all the default settings are
+     * @param array    $shortcode_attributes        The settings (attributes) included in the
+     *                                shortcode.  Not all the available settings are
      *                                necessarily supported.
      * @param string   $content     The content, if any, from between the shortcode
      *                                tags.
      *
      * @since 1.1
      */
-    public static function bw_shortcode_blip_display( $atts, $content = null, $shortcode = '', $print = false ) {
+    public static function bw_shortcode_blip_display( $shortcode_attributes, $content = null, $shortcode = '', $print = false ) {
         // bw_log( 'method', __METHOD__ . '()' );
         // bw_log( 'arguments', func_get_args() );
 
       try {
-        $atts = self::bw_normalise_attributes( $atts, $shortcode );
-        // error_log( 'normalised atts: ' . var_export( $atts, true ) );
+        $shortcode_attributes = self::bw_normalise_attributes( $shortcode_attributes, $shortcode );
+        // error_log( 'normalised atts: ' . var_export( $shortcode_attributes, true ) );
 
         $defaults = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], self::DEFAULT_SETTING_VALUES['common'] );
 
         // bw_log( 'default settings', $defaults );
-        // bw_log( 'user settings', $atts );
+        // bw_log( 'user settings', $shortcode_attributes );
 
-        $args = shortcode_atts( $defaults, $atts, $shortcode );
+        $args = shortcode_atts( $defaults, $shortcode_attributes, $shortcode );
         extract( $args );
-
-        // Don't have any saved settings to compare the current ones with (unless we get the last-saved version of this location, if that's even possible or worthwhile), so have to set the updated flag to true regardless, otherwise the blip might not be rendered correctly. Unless the settings are the default ones, of course:
-        $updated_settings_only = array_diff_assoc( $defaults, $args );
-        // bw_log( 'Updated settings', $updated_settings_only );
-        $settings['updated'] = empty( $updated_settings_only ) ? false : true;
-        // bw_log( 'Settings updated', $settings['updated'] );
-
-        // $args['updated'] = true;
+        // error_log( 'args: ' . var_export( $args, true ) );
 
         $the_title = '';
         if ( ! empty( $args['title'] ) ) {
@@ -315,12 +280,34 @@ if (!class_exists('Blipper_Widget')) {
           $the_title = '<' . $args['title-level'] . '>' . apply_filters( 'widget_title', $args['title'] ) . '</' . $args['title-level'] . '>';
         }
 
-        // bw_log( 'shortcode atts', $args );
+        // Use the cache key to determine whether or not the settings have changed: the settings and the title are used to generate the cache key, after all. First, need to remove the dead wood from the arguments:
+        $settings = array_filter( $args, function( $setting ) {
+          return $setting !== 'hide' && $setting !== null;
+        });
+        // error_log( 'filtered settings: ' . var_export( $settings, true ) );
+        // Generate a cache key based on the filtered settings and augmented title:
+        $cache_key = self::bw_get_a_cache_key( $settings, $the_title );
 
-        return self::bw_render_the_blip( $defaults, $args, $the_title, false, $content );
+        return self::bw_render_the_blip(
+          args: $defaults,
+          settings: $settings,
+          the_title: $the_title,
+          is_widget: false,
+          content: $content,
+          cache_key: $cache_key
+        );
       } catch( \Exception $e ) {
         return bw_exception( $e );
       }
+    }
+
+    private static function bw_get_a_cache_key( array $args, string $the_title ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
+      // bw_log( 'cache key', $cache_key );
+      return $cache_key;
     }
 
     /**
@@ -333,34 +320,47 @@ if (!class_exists('Blipper_Widget')) {
      * @author pandammonium
      * @since 1.2.3
      *
-     * @param string[] $args The array of WP widget settings.
+     * @param string[] $args The array of WP widget settings or default
+     * settings.
      * @param string[] $settings The array of BW settings from either the
      * widget or the shortcode (set by the user).
      * @param string The formatted title to be used for this blip.
-     * @return string|bool The HTML that will render the blip or false on failure.
+     * @param bool $cache_key If the shortcode has been cached, the cache key
+     * that was generated will not match that of the shortcode with the
+     * current settings. This is really only needed when coming from the
+     * shortcode, at least for now. Perhaps the shortcode code won't need to
+     * check this, but done here later.
+     * @return string|bool The HTML that will render the blip or false on
+     * failure.
      */
-    private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null ) {
+    private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null, string $cache_key = '' ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      self::$cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
-      // bw_log( 'cache key', self::$cache_key );
+      self::$cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+      // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
 
       try {
         $the_cache = self::bw_get_cache();
-        $updated = $is_widget ? $settings['updated'] : false;
+        // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
+        // error_log( 'is widget: ' . var_export( $is_widget, true ) );
+        // error_log( 'widget settings updated: ' . var_export( isset( $settings['updated'] ) ? $settings['updated'] : 'not set', true ) );
+        // error_log( 'shortcode cache key: ' . var_export( $cache_key, true ) );
+        // error_log( 'cache keys match: ' . var_export( self::$cache_key === $cache_key, true ) );
+        $updated = $is_widget ? $settings['updated'] : self::$cache_key !== $cache_key;
+        // error_log( 'updated: ' . var_export( $updated, true ) );
 
         // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
         // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
 
         if ( empty( $the_cache ) || $updated ) {
-          // error_log( 'rendering the blip from scratch' );
+          error_log( 'rendering the blip from scratch' );
 
           // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
           return self::bw_generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
         } else {
-          // error_log( 'rendering the blip from the cache' );
+          error_log( 'rendering the blip from the cache' );
           // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
           // The blip has been cached recently and its settings have not changed, so return the cached blip:
@@ -371,7 +371,7 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
-    private static function bw_get_cache(): bool|array|string {
+    private static function bw_get_cache( string $cache_key = null ): bool|array|string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -379,7 +379,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'cache expiry', self::CACHE_EXPIRY );
 
       if ( is_numeric( self::CACHE_EXPIRY ) ) {
-        $transient = get_transient( self::$cache_key );
+        $transient = get_transient( $cache_key ?? self::$cache_key );
         // bw_log( 'transient', $transient );
         return $transient;
       } else {
@@ -457,37 +457,84 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Normalise the arguments from the shortcode
      */
-    private static function bw_normalise_attributes( string|array|null $atts, $shortcode = '' ): string|array|null {
+    private static function bw_normalise_attributes( string|array|null $shortcode_attributes, $shortcode = '' ): string|array|null {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      if ( null === $atts ) {
+      if ( null === $shortcode_attributes ) {
         return null;
       } else {
-        switch( gettype( $atts ) ) {
+        switch( gettype( $shortcode_attributes ) ) {
           case 'array':
-            if ( isset( $atts[ 'title' ] ) ) {
-              $atts[ 'title' ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts[ 'title' ]);
+            if ( isset( $shortcode_attributes[ 'title' ] ) ) {
+              $shortcode_attributes[ 'title' ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $shortcode_attributes[ 'title' ]);
               $i = 0;
-              foreach ( $atts as $key => $value ) {
-                if ( ( $i === $key ) && isset( $atts[ $key ] ) ) {
-                  $atts[ $key ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts[ $key ]);
-                  $atts[ 'title' ] .= ' ' . $atts[ $key ];
-                  unset( $atts[ $i ] );
+              foreach ( $shortcode_attributes as $key => $value ) {
+                if ( ( $i === $key ) && isset( $shortcode_attributes[ $key ] ) ) {
+                  $shortcode_attributes[ $key ] = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $shortcode_attributes[ $key ]);
+                  $shortcode_attributes[ 'title' ] .= ' ' . $shortcode_attributes[ $key ];
+                  unset( $shortcode_attributes[ $i ] );
                   ++$i;
                 }
               }
             }
           break;
           case 'string':
-            $atts = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $atts);
+            $shortcode_attributes = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $shortcode_attributes);
           break;
           default:
-            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $atts, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
+            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $shortcode_attributes, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
         }
       }
-      // bw_log( 'normalised attributes', $atts );
-      return $atts;
+      // bw_log( 'normalised attributes', $shortcode_attributes );
+      return $shortcode_attributes;
+    }
+
+    private static function bw_validate_settings( $new_settings, $old_settings ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // bw_log( 'new settings', $new_settings );
+
+      $settings = [];
+      $settings['title']                   = self::bw_validate_setting( $new_settings, $old_settings, 'title' );
+      $settings['display-date']            = self::bw_validate_setting( $new_settings, $old_settings, 'display-date' );
+      $settings['display-journal-title']   = self::bw_validate_setting( $new_settings, $old_settings, 'display-journal-title' );
+      $settings['add-link-to-blip']        = self::bw_validate_setting( $new_settings, $old_settings, 'add-link-to-blip' );
+      $settings['display-powered-by']      = self::bw_validate_setting( $new_settings, $old_settings, 'display-powered-by' );
+      $settings['border-style']            = self::bw_validate_setting( $new_settings, $old_settings, 'border-style' );
+      $settings['border-width']            = self::bw_validate_setting( $new_settings, $old_settings, 'border-width' );
+      $settings['border-color']            = self::bw_validate_setting( $new_settings, $old_settings, 'border-color' );
+      $settings['background-color']        = self::bw_validate_setting( $new_settings, $old_settings, 'background-color' );
+      $settings['color']                   = self::bw_validate_setting( $new_settings, $old_settings, 'color' );
+      $settings['link-color']              = self::bw_validate_setting( $new_settings, $old_settings, 'link-color' );
+      $settings['padding']                 = self::bw_validate_setting( $new_settings, $old_settings, 'padding' );
+      $settings['style-control']           = self::bw_validate_setting( $new_settings, $old_settings, 'style-control');
+
+      // Manipulate the settings to make them comparable to those retrieved from the Customiser:
+      foreach ( $settings as $setting => $value ) {
+        if ( 'show' === $value || '1' === $value ) {
+          $new_settings[$setting] = 'show';
+        }
+      }
+      unset( $old_settings['updated'] );
+      unset( $new_settings['updated'] );
+      $old_settings = array_filter( $old_settings, function( $setting ) {
+          return $setting !== 'hide' && !empty( $setting );
+      });
+      $new_settings = array_filter( $new_settings, function( $setting ) {
+          return $setting !== 'hide' && !empty( $setting );
+      });
+      // bw_log( 'old settings', $old_settings );
+      // bw_log( 'new settings', $new_settings );
+
+      // Need to perform array_diff_assoc() both ways round because it's not known whether there'll be settings missing from the new one or the old one or whatever.
+      $updated_settings_only = array_merge( array_diff_assoc( $new_settings, $old_settings ), array_diff_assoc( $old_settings, $new_settings ) );
+      // bw_log( 'Updated widget settings', $updated_settings_only );
+      $settings['updated'] = empty( $updated_settings_only ) ? false : true;
+      // bw_log( 'Widget settings updated', $settings['updated'] );
+
+      return $settings;
     }
 
     /**
@@ -502,7 +549,7 @@ if (!class_exists('Blipper_Widget')) {
       * @param    string    $setting_field    The setting to validate.
       * @return   string    $setting          The validated setting.
       */
-    private static function bw_validate( $new_settings, $old_settings, $setting_field ) {
+    private static function bw_validate_setting( $new_settings, $old_settings, $setting_field ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -587,7 +634,7 @@ if (!class_exists('Blipper_Widget')) {
         $new_settings['link-color'] = self::bw_get_display_value( 'link-color', $settings );
         $new_settings['padding'] = self::bw_get_display_value( 'padding', $settings );
         $new_settings['style-control'] = self::bw_get_display_value( 'style-control', $settings );
-        $new_settings['updated'] = self::bw_get_display_value( 'updated', $settings );
+        // $new_settings['updated'] = self::bw_get_display_value( 'updated', $settings );
 
       } catch ( \ErrorException $e ) {
 
