@@ -20,6 +20,8 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
   exit();
 }
 
+use function Blipper_Widget\bw_delete_all_cached_blips;
+
 if (!function_exists( 'blipper_widget_uninstall' )) {
 /**
  * Uninstalls Blipper Widget.
@@ -69,9 +71,12 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
           // For options in multi-site:
           delete_site_option( $key );
         }
+
+        // Delete all Blipper Widget transients
+        bw_delete_all_cached_blips( 'bw_' );
+
       }
     }
-
   }
 }
 

@@ -8,7 +8,7 @@
  * Version:            1.2.6-alpha
  * Requires at least:  4.3
  * Tested up to:       6.7
- * Requires PHP:       8.0
+ * Requires PHP:       8.4
  * Author:             Caity Ross
  * Author URI:         http://pandammonium.org/
  * License:            GPL-2.0 or later
@@ -53,10 +53,16 @@ use Blipper_Widget\Widget\Blipper_Widget;
 // -------------------------------------------------------------------------- //
 
 /**
- * @ignore
+ * @ignore This variable is used to determine the debug status of WordPress
+ * and should not be accessed elsewhere.
+ * @var bool $status True if WordPress is set to log debug information.
+ * @since
  */
 $status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG_LOG' ) && true === WP_DEBUG_LOG );
-define( 'BW_DEBUG', false && $status );
+/**
+ * @ignore
+ */
+define( 'BW_DEBUG', true && $status );
 /**
  * @ignore
  */
@@ -126,6 +132,37 @@ if (!function_exists('bw_exception')) {
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
   set_exception_handler( 'Blipper_Widget\bw_exception' );
+}
+
+if ( !function_exists( 'bw_delete_all_cached_blips')) {
+  function bw_delete_all_cached_blips( string $prefix ): bool {
+    bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+
+    global $wpdb;
+    $deleted = [];
+
+    // Get all the Blipper Widget transients:
+    $transients = $wpdb->get_col( $wpdb->prepare(
+        "SELECT option_name FROM $wpdb->options WHERE option_name LIKE %s",
+        $wpdb->esc_like('_transient_' . $prefix ) . '%'
+    ));
+    error_log( 'transients: ' . var_export( $transients, true ) );
+
+    // Loop through and delete each transient
+    foreach ( $transients as $transient ) {
+      $transient_name = str_replace( '_transient_', '', $transient );
+      error_log( 'transient: ' . var_export( $transient_name, true ) );
+      $result = delete_transient( $transient_name );
+      error_log( 'deleted transient: ' . var_export( $result, true ) );
+      $deleted[] = $result;
+    }
+    // Delete all the Blipper Widget transients:
+    return array_all( $deleted, function( string $value ) {
+      error_log( 'deleted ' . var_export( $value, true ) . ': ' . var_export( true === $value , true) );
+      return true === $value;
+    });
+  }
 }
 
 if ( !function_exists( 'bw_log' ) ) {

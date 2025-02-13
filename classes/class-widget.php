@@ -24,18 +24,22 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidRespo
 use \WP_Widget;
 use Blipper_Widget\Settings\Blipper_Widget_Settings;
 
+use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
 
 if (!class_exists('Blipper_Widget')) {
   /**
    * The Blipper Widget class.
    *
+   * @author pandammonium
    * @since 0.0.2
    */
   class Blipper_Widget extends \WP_Widget {
 
     /**
       * The default widget settings.
+      *
+      * @access private
       * @since    0.0.1
       * @property array     $default_setting_values   The widget's default settings
       */
@@ -87,6 +91,7 @@ if (!class_exists('Blipper_Widget')) {
      * @since 1.2.3
      */
     private static string $cache_key = '';
+
     /**
      * @const The prefix used in the cache key to distinguish it from other
      * transient keys.
@@ -110,7 +115,7 @@ if (!class_exists('Blipper_Widget')) {
       * @since    0.0.1
       * @property Blipper_Widget_Client     $client   The Blipfoto client
       */
-      private static $client = null;
+      private static ?Blipper_Widget_Client $client = null;
 
     /**
       * @since    0.0.1
@@ -297,7 +302,7 @@ if (!class_exists('Blipper_Widget')) {
           cache_key: $cache_key
         );
       } catch( \Exception $e ) {
-        return bw_exception( $e );
+        return self::bw_display_error_msg( $e );
       }
     }
 
@@ -333,45 +338,61 @@ if (!class_exists('Blipper_Widget')) {
      * @return string|bool The HTML that will render the blip or false on
      * failure.
      */
-    private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, string $content = null, string $cache_key = '' ) {
-      // bw_log( 'method', __METHOD__ . '()' );
+    private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, ?string $content = null, string $cache_key = '' ) {
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      self::$cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+      $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
-
       try {
-        $the_cache = self::bw_get_cache();
-        // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
-        // error_log( 'is widget: ' . var_export( $is_widget, true ) );
-        // error_log( 'widget settings updated: ' . var_export( isset( $settings['updated'] ) ? $settings['updated'] : 'not set', true ) );
-        // error_log( 'shortcode cache key: ' . var_export( $cache_key, true ) );
-        // error_log( 'cache keys match: ' . var_export( self::$cache_key === $cache_key, true ) );
-        $updated = $is_widget ? $settings['updated'] : self::$cache_key !== $cache_key;
-        // error_log( 'updated: ' . var_export( $updated, true ) );
+        $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
+        error_log( 'client ok: ' . var_export( $client_ok, true ) );
+        if ( $client_ok ) {
+          self::$cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+          $the_cache = self::bw_get_cache();
+          // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
+          // error_log( 'is widget: ' . var_export( $is_widget, true ) );
+          // error_log( 'widget settings updated: ' . var_export( isset( $settings['updated'] ) ? $settings['updated'] : 'not set', true ) );
+          // error_log( 'shortcode cache key: ' . var_export( $cache_key, true ) );
+          // error_log( 'cache keys match: ' . var_export( self::$cache_key === $cache_key, true ) );
+          $updated = $is_widget ? $settings['updated'] : self::$cache_key !== $cache_key;
+          // error_log( 'updated: ' . var_export( $updated, true ) );
 
-        // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
-        // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
+          // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
+          // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
 
-        if ( empty( $the_cache ) || $updated ) {
-          // error_log( 'rendering the blip from scratch' );
+          if ( empty( $the_cache ) || $updated ) {
+            error_log( 'rendering the blip from scratch' );
 
-          // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
-          return self::bw_generate_blip( $args, $settings, $the_title, $is_widget, $content );
+            // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
+            $the_blip = self::bw_generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
+          } else {
+            error_log( 'rendering the blip from the cache' );
+            // error_log( 'the cache: ' . var_export( $the_cache, true ) );
+
+            // The blip has been cached recently and its settings have not changed, so return the cached blip:
+            $the_blip = $the_cache;
+          }
         } else {
-          // error_log( 'rendering the blip from the cache' );
-          // error_log( 'the cache: ' . var_export( $the_cache, true ) );
-
-          // The blip has been cached recently and its settings have not changed, so return the cached blip:
-          return $the_cache;
+          bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          self::$client = null;
+          // $deleted = delete_transient( self::$cache_key );
+          // error_log( 'deleted transient ' . var_export( self::$cache_key, true ) . ': ' . var_export( $deleted, true ) );
+          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
         }
+      } catch ( Blipper_Widget_OAuthException $e ) {
+        bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        self::bw_display_error_msg( $e, __( 'Please check your OAuth credentials are valid and try again', 'blipper-widget' ) );
+        // return '';
       } catch ( \Exception $e ) {
-        return bw_exception( $e );
+        self::bw_display_error_msg( $e );
+        // return '';
       }
+      return $the_blip;
     }
 
-    private static function bw_get_cache( string $cache_key = null ): bool|array|string {
+    private static function bw_get_cache( ?string $cache_key = null ): bool|array|string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -391,11 +412,12 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Generate the blip from scratch
      */
-    private static function bw_generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ) {
+    private static function bw_generate_blip( array $args, array $settings, string $the_title, $is_widget, $content ): string|false {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      if ( self::bw_create_blipfoto_client() ) {
+      if ( ( self::$client ?? null ) !== null ) {
+      // if ( self::bw_create_blipfoto_client() ) {
         // $plugin_data = self::$settings::bw_get_plugin_data();
 
         // $the_blip = '<!-- Start of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' by ' . $plugin_data['Author'] . ' -->' . $the_title . self::bw_get_blip( $args, $settings, $is_widget, $content ) . '<!-- End of ' . $plugin_data['Name'] . ' ' . $plugin_data['Version'] . ' -->';
@@ -403,6 +425,7 @@ if (!class_exists('Blipper_Widget')) {
 
         // Save the blip in the cache for next time:
         self::bw_set_cache( $the_blip );
+        // error_log( 'saved cache keys: ' . var_export( self::$cache_keys, true ) );
         // error_log( 'the blip: ' . var_export( $the_blip, true ) );
         return $the_blip;
       } else {
@@ -747,22 +770,24 @@ if (!class_exists('Blipper_Widget')) {
       * @return   bool      $client_ok        True if the client was created
       *                                         successfully, else false
       */
-    private static function bw_create_blipfoto_client( $args = null ) {
+    private static function bw_create_blipfoto_client( $args = null ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $client_ok = false;
-      $create_new_client = false;
-      if ( empty( self::$client ) ) {
-        $create_new_client = true;
-      } else if ( !empty( self::$client->accessToken() ) ) {
-        $client_ok = true;
-      }
+      $create_new_client = empty( self::$client ) ? true : false;
+      $client_ok = !$create_new_client && empty( self::$client->accessToken() ) ? false : true;
+      // $create_new_client = false;
+      // if ( empty( self::$client ) ) {
+      //   // $create_new_client = true;
+      // } else if ( !empty( self::$client->accessToken() ) ) {
+      //   $client_ok = true;
+      // }
       // error_log( 'client ok: ' . var_export( $client_ok, true ) );
       // error_log( 'create new client: ' . var_export( $create_new_client, true ) );
 
       // Get the settings from the back-end form:
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
+
 
       if ( !$client_ok || $create_new_client ) {
         $client_ok = self::bw_check_oauth_credentials_exist( $oauth_settings );
@@ -776,9 +801,13 @@ if (!class_exists('Blipper_Widget')) {
         $client_ok = self::bw_create_blipfoto_client_get_user_profile( $oauth_settings );
       }
 
-      if ( !$client_ok && BW_DEBUG ) {
-        trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
+      if ( !$client_ok ) {
+        bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        // if ( BW_DEBUG ) {
+        //   trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
+        // }
       }
+      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
       return $client_ok;
     }
 
@@ -814,6 +843,11 @@ if (!class_exists('Blipper_Widget')) {
         self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the Blipfoto account' );
+      } finally {
+        if ( !$credentials_exist ) {
+          error_log( 'credentials don\'t exist' );
+          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        }
       }
       return $credentials_exist;
     }
@@ -842,13 +876,13 @@ if (!class_exists('Blipper_Widget')) {
       $client_ok = false;
       try {
         // Create a new client using the OAuth settings from the database
-        self::$client = new Blipper_Widget_Client (
+        self::$client = self::$client ?? new Blipper_Widget_Client (
           '', // client id
           '', // client secret
           $oauth_settings['access-token'],
         );
         // error_log( 'client: ' . var_export( self::$client, true ) );
-        if ( empty( self::$client ) || !isset( self::$client ) ) {
+        if ( !isset( self::$client ) || empty( self::$client ) ) {
           unset( self::$client );
           throw new Blipper_Widget_ApiResponseException( 'Failed to create the Blipfoto client.' );
         } else {
@@ -858,7 +892,12 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e, 'Please try again later' );
       } catch ( \Exception $e ) {
-        self::bw_display_error_msg( $e, 'Something has gone wrong creating the client' );
+        self::bw_display_error_msg( $e, 'Something has gone wrong creating the Blipfoto client' );
+      } finally {
+        if ( !$client_ok ) {
+          error_log( 'client is not ok' );
+          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        }
       }
       return $client_ok;
     }
@@ -902,6 +941,11 @@ if (!class_exists('Blipper_Widget')) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting your Blipfoto account' );
+      } finally {
+        if ( !$user_profile_ok ) {
+          error_log( 'user profile is not ok' );
+          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        }
       }
       return $user_profile_ok;
     }

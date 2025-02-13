@@ -25,6 +25,7 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
+use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
 
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
@@ -51,7 +52,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
   /**
     * @since    0.0.2
     * @author    pandammonium
-    * @property string[]    DEFAULT_OAUTH_SETTINGS   The widget's default settings
+    * @var string[]    DEFAULT_OAUTH_SETTINGS   The widget's default settings
     */
     private const DEFAULT_OAUTH_SETTINGS = [
       'username'     => '',
@@ -84,11 +85,11 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
       add_action(
         hook_name: 'admin_menu',
-        callback: [ Blipper_Widget_Settings::class, 'bw_admin_menu' ]
+        callback: [ self::class, 'bw_admin_menu' ]
       );
 
       // Ensure the admin page is initialised only when needed:
-      // Not calling this results in repeated error messages, if error messages
+      // Not calling this results in repeated error messages if error messages
       // are displayed. Repeated error messages look pants.
       if ( !empty ( $GLOBALS['pagenow'] )
         and ( 'options-general.php' === $GLOBALS['pagenow']
@@ -98,7 +99,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       ) {
         add_action(
           hook_name: 'admin_init',
-          callback: [ Blipper_Widget_Settings::class, 'bw_admin_init' ]
+          callback: [ self::class, 'bw_admin_init' ]
         );
       }
     }
@@ -122,7 +123,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         menu_title: __( $plugin_data['Name'], 'blipper-widget' ),
         capability: 'manage_options',
         menu_slug: 'blipper-widget',
-        callback: [ Blipper_Widget_Settings::class, 'bw_options_page' ],
+        callback: [ self::class, 'bw_options_page' ],
         position: 8
       );
     }
@@ -144,7 +145,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // option name:
         'blipper-widget-settings-oauth',
         // callback function to validate input
-        [ Blipper_Widget_Settings::class, 'bw_oauth_validate' ]
+        [ self::class, 'bw_oauth_validate' ]
       );
 
       add_settings_section(
@@ -155,7 +156,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         __( 'Blipfoto OAuth 2.0 settings', 'blipper-widget' ),
         // section callback function to render information and instructions about
         // this section:
-        [ Blipper_Widget_Settings::class, 'bw_oauth_instructions' ],
+        [ self::class, 'bw_oauth_instructions' ],
         // page id (i.e. menu slug):
         'blipper-widget'
       );
@@ -167,7 +168,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto username', 'blipper-widget' ),
         // callback function to render the field on the form:
-        [ Blipper_Widget_Settings::class, 'bw_render_input_field' ],
+        [ self::class, 'bw_render_input_field' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -189,7 +190,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         // translators: do not translate 'Blipfoto': it is the name of a service
         __( 'Blipfoto access token', 'blipper-widget' ),
         // callback function to render the field on the form:
-        [ Blipper_Widget_Settings::class, 'bw_render_input_field' ],
+        [ self::class, 'bw_render_input_field' ],
         // page id (i.e. menu slug):
         'blipper-widget',
         // section id the field belongs to:
@@ -400,12 +401,12 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
         $output['access-token'] = $input['access-token'];
 
         if ( $is_valid ) {
-          self::bw_test_connection( $output );
+          if ( !self::bw_test_connection( $output ) ) {
+            bw_delete_all_cached_blips( 'bw_' );
+          }
         }
       }
-
       return $output;
-
     }
 
   /**
@@ -600,7 +601,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     * @param     string[]     The OAuth settings provided by the user.
     * @return    void
     */
-    private static function bw_test_connection( $oauth_settings ) {
+    private static function bw_test_connection( array $oauth_settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -683,7 +684,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                        stores the widget's OAuth settings.
     */
     public static function bw_settings_have_been_set() {
-      // bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       return false !== get_option( 'blipper-widget-settings-oauth' );
