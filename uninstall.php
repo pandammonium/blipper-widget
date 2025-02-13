@@ -20,7 +20,7 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
   exit();
 }
 
-use function Blipper_Widget\bw_delete_all_cached_blips;
+use Blipper_Widget;
 
 if (!function_exists( 'blipper_widget_uninstall' )) {
 /**
@@ -47,7 +47,7 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
         if ( is_array( $value ) ) {
           foreach ( $value as $inner_key => $inner_value ) {
             if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
-                 false !== strpos( $inner_value, 'bw_' ) ) {
+                 false !== strpos( $inner_value, BW_PREFIX ) ) {
               // Don't want to mess with any widget that isn't the Blipper Widget.
               unset( $sidebar_widgets[$key][$value] );
             }
@@ -73,8 +73,7 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
         }
 
         // Delete all Blipper Widget transients
-        bw_delete_all_cached_blips( 'bw_' );
-
+        bw_delete_all_cached_blips( BW_CACHE_KEY );
       }
     }
   }

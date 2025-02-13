@@ -93,17 +93,6 @@ if (!class_exists('Blipper_Widget')) {
     private static string $cache_key = '';
 
     /**
-     * @const The prefix used in the cache key to distinguish it from other
-     * transient keys.
-     * * Default: `''`.
-     * @access private
-     *
-     * @author pandammonium
-     * @since 1.2.3
-     */
-    private const CACHE_PREFIX = 'bw_';
-
-    /**
       * @since    1.1.1
       * @deprecated 1.2.6
       * @property array     $style_control_classes   The classes used for styling
@@ -310,7 +299,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $cache_key = self::CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
+      $cache_key = BW_CACHE_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $args ) . $the_title );
       // bw_log( 'cache key', $cache_key );
       return $cache_key;
     }
@@ -339,14 +328,14 @@ if (!class_exists('Blipper_Widget')) {
      * failure.
      */
     private static function bw_render_the_blip( array $args, array $settings, string $the_title, bool $is_widget, ?string $content = null, string $cache_key = '' ) {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
       try {
         $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
-        error_log( 'client ok: ' . var_export( $client_ok, true ) );
+        // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
           self::$cache_key = self::bw_get_a_cache_key( $settings, $the_title );
           $the_cache = self::bw_get_cache();
@@ -375,14 +364,14 @@ if (!class_exists('Blipper_Widget')) {
             $the_blip = $the_cache;
           }
         } else {
-          bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          bw_delete_all_cached_blips( BW_CACHE_PREFIX );
           self::$client = null;
           // $deleted = delete_transient( self::$cache_key );
           // error_log( 'deleted transient ' . var_export( self::$cache_key, true ) . ': ' . var_export( $deleted, true ) );
-          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          // bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
-        bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         self::bw_display_error_msg( $e, __( 'Please check your OAuth credentials are valid and try again', 'blipper-widget' ) );
         // return '';
       } catch ( \Exception $e ) {
@@ -802,7 +791,7 @@ if (!class_exists('Blipper_Widget')) {
       }
 
       if ( !$client_ok ) {
-        bw_delete_all_cached_blips( self::CACHE_PREFIX );
+        bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         // if ( BW_DEBUG ) {
         //   trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
         // }
@@ -846,7 +835,7 @@ if (!class_exists('Blipper_Widget')) {
       } finally {
         if ( !$credentials_exist ) {
           error_log( 'credentials don\'t exist' );
-          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          // bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         }
       }
       return $credentials_exist;
@@ -896,7 +885,7 @@ if (!class_exists('Blipper_Widget')) {
       } finally {
         if ( !$client_ok ) {
           error_log( 'client is not ok' );
-          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          // bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         }
       }
       return $client_ok;
@@ -944,7 +933,7 @@ if (!class_exists('Blipper_Widget')) {
       } finally {
         if ( !$user_profile_ok ) {
           error_log( 'user profile is not ok' );
-          // bw_delete_all_cached_blips( self::CACHE_PREFIX );
+          // bw_delete_all_cached_blips( BW_CACHE_PREFIX );
         }
       }
       return $user_profile_ok;

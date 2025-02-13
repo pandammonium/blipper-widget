@@ -56,17 +56,36 @@ use Blipper_Widget\Widget\Blipper_Widget;
  * @ignore This variable is used to determine the debug status of WordPress
  * and should not be accessed elsewhere.
  * @var bool $status True if WordPress is set to log debug information.
- * @since
+ * @since 1.2.6
  */
 $status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG_LOG' ) && true === WP_DEBUG_LOG );
 /**
- * @ignore
+ * @ignore This constant is used for debug purposes only.
  */
 define( 'BW_DEBUG', true && $status );
 /**
- * @ignore
+ * @var The prefix used to identify Blipper Widget strings.
+ *
+ * Used in the cache key to distinguish it from other transient keys.
+ *
+ * @author pandammonium
+ * @since 1.2.3
  */
-define( 'BW_PREFIX', 'BW | ' );
+define( 'BW_ID', 'bw' );
+/**
+ * @var The prefix used in the cache key to distinguish it from other
+ * transient keys.
+ *
+ * @author pandammonium
+ * @since 1.2.3
+ */
+define( 'BW_PREFIX', BW_ID . '_' );
+/**
+ * @var The prefix used to identify Blipper Widget debug notices.
+ *
+ * @author pandammonium
+ */
+define( 'BW_PREFIX_DEBUG', strtoupper( BW_ID ) . ' | ' );
 
 // --- Action hooks --------------------------------------------------------- //
 
@@ -127,7 +146,7 @@ if (!function_exists('bw_exception')) {
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
     if ( BW_DEBUG ) {
-      error_log( BW_PREFIX . wp_strip_all_tags( $e->getMessage() ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
+      error_log( BW_PREFIX_DEBUG . wp_strip_all_tags( $e->getMessage() ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
@@ -194,14 +213,14 @@ if ( !function_exists( 'bw_log' ) ) {
           echo $string;
         }
       } else {
-        $string = BW_PREFIX . print_r( $data_name, true );
+        $string = BW_PREFIX_DEBUG . print_r( $data_name, true );
         if ( $includes_data ) {
           error_log( $string . ': ' . var_export( $data, true ) );
         } else {
           error_log( $string );
         }
       }
-      return BW_PREFIX . print_r( $data_name, true ) . ': ' . var_export( $data, true );
+      return BW_PREFIX_DEBUG . print_r( $data_name, true ) . ': ' . var_export( $data, true );
     } else {
       return '';
     }
