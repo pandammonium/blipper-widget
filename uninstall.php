@@ -20,7 +20,11 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
   exit();
 }
 
-use Blipper_Widget;
+require_once( plugin_dir_path(__FILE__ ) . 'blipper-widget.php' );
+
+// use Blipper_Widget;
+use function Blipper_Widget\bw_delete_all_cached_blips;
+use function Blipper_Widget\bw_exception;
 
 if (!function_exists( 'blipper_widget_uninstall' )) {
 /**
@@ -32,48 +36,67 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
 
     if ( current_user_can( 'edit_plugins' ) ) {
 
-      // Delete options in database
-      $option_name = 'blipper-widget-settings-oauth';
-      delete_option( $option_name );
-      // For site options in multi-site:
-      delete_site_option( $option_name );
+      try {
+        // Delete options in database
+        $option_name = 'blipper-widget-settings-oauth';
+        delete_option( $option_name );
+        // For site options in multi-site:
+        delete_site_option( $option_name );
 
-      // Unregister the widget
-      unregister_widget( 'Blipper_Widget' );
+        // Unregister the widget
+        unregister_widget( 'Blipper_Widget' );
 
-      // Clean up widget options
-      $sidebar_widgets = get_option( 'sidebars_widgets' );
-      foreach ( $sidebar_widgets as $key => $value ) {
-        if ( is_array( $value ) ) {
-          foreach ( $value as $inner_key => $inner_value ) {
-            if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
-                 false !== strpos( $inner_value, BW_PREFIX ) ) {
-              // Don't want to mess with any widget that isn't the Blipper Widget.
-              unset( $sidebar_widgets[$key][$value] );
+        // Clean up widget options
+        $sidebar_widgets = get_option( 'sidebars_widgets' );
+        foreach ( $sidebar_widgets as $key => $value ) {
+          if ( is_array( $value ) ) {
+            foreach ( $value as $inner_key => $inner_value ) {
+              if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
+                   false !== strpos( $inner_value, BW_PREFIX ) ) {
+                // Don't want to mess with any widget that isn't the Blipper Widget.
+                error_log( 'sidebar widgets [key]: ' . var_export( $sidebar_widgets[$key], true ) );
+                unset( $sidebar_widgets[$key][$value] );
+              }
             }
+            // Tidy up the array
+            $sidebar_widgets[$key] = array_values( $sidebar_widgets[$key] );
           }
-          // Tidy up the array
-          $sidebar_widgets[$key] = array_values( $sidebar_widgets[$key] );
         }
+        update_option( 'sidebars_widgets', $sidebar_widgets );
+      } catch ( \TypeError $e ) {
+        bw_exception( $e );
+      } catch ( \Exception $e ) {
+        bw_exception( $e );
       }
-      update_option( 'sidebars_widgets', $sidebar_widgets );
 
-      // Delete orphaned options
-      $all_options = wp_load_alloptions();
-      foreach ( $all_options as $key => $value ) {
-        if ( false !== strpos( $key, 'blipper_widget'  ) ) {
-          delete_option( $key );
-          // For options in multi-site:
-          delete_site_option( $key );
+      try {
+        // Delete orphaned options
+        $all_options = wp_load_alloptions();
+        foreach ( $all_options as $key => $value ) {
+          if ( false !== strpos( $key, 'blipper_widget'  ) ) {
+            delete_option( $key );
+            // For options in multi-site:
+            delete_site_option( $key );
+          }
+          if ( false !== strpos( $key, 'blipper-widget'  ) ) {
+            delete_option( $key );
+            // For options in multi-site:
+            delete_site_option( $key );
+          }
         }
-        if ( false !== strpos( $key, 'blipper-widget'  ) ) {
-          delete_option( $key );
-          // For options in multi-site:
-          delete_site_option( $key );
-        }
+      } catch ( \TypeError $e ) {
+        bw_exception( $e );
+      } catch ( \Exception $e ) {
+        bw_exception( $e );
+      }
 
+      try {
         // Delete all Blipper Widget transients
-        bw_delete_all_cached_blips( BW_CACHE_KEY );
+        bw_delete_all_cached_blips( BW_PREFIX );
+      } catch ( \TypeError $e ) {
+        bw_exception( $e );
+      } catch ( \Exception $e ) {
+        bw_exception( $e );
       }
     }
   }
