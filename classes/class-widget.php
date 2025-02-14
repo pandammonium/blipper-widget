@@ -812,8 +812,8 @@ if (!class_exists('Blipper_Widget')) {
      * @return bool True if all fields have been filled in; otherwise false.
      */
     private static function bw_check_oauth_credentials_exist( array $oauth_settings ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $credentials_exist = false;
       try {
