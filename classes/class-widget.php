@@ -380,6 +380,40 @@ if (!class_exists('Blipper_Widget')) {
       return $the_blip;
     }
 
+    /**
+     * Replaces the old-style cache key with a new-style cache key.
+     *
+     * The cache key previously included the title with HTML tags. The HTML
+     * tags aren't accessible everywhere, so they should be replaced with
+     * cache keys that don't include the HTML tags. The cache associated with
+     * the old-style cache key should deleted.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array<string, string> $settings The blip settings containing
+     * the unadorned title.
+     * @param string $the_title The title with the HTML tags, for example
+     * `<h2>My latest blip</h2>`.
+     * @return string The new cache key created using the blip title without
+     * the HTML tags.
+     */
+    private static function bw_replace_old_style_cache_key( array $settings, string $the_title ): string {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // If there's an old-style cache key, get its cache (transient) and delete it:
+      $old_style_cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+      return $old_style_cache_key;
+      $deleted = delete_transient( $old_style_cache_key );
+      bw_log( 'Old-style transient ' . var_export( $old_style_cache_key, true ) . ' found and deleted', $deleted );
+
+      // Now create a new cache key without the HTML tags:
+      $new_style_cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
+      bw_log( 'New-style cache key: ', $new_style_cache_key );
+      return $new_style_cache_key;
+    }
+
     private static function bw_get_cache( ?string $cache_key = null ): bool|array|string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
