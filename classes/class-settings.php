@@ -401,7 +401,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
         if ( $is_valid ) {
           if ( !self::bw_test_connection( $output ) ) {
-            bw_delete_all_cached_blips( BW_CACHE_PREFIX );
+            bw_delete_all_cached_blips( BW_PREFIX );
           }
         }
       }
