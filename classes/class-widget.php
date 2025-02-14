@@ -351,13 +351,13 @@ if (!class_exists('Blipper_Widget')) {
           // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
 
           if ( empty( $the_cache ) || $updated ) {
-            error_log( 'rendering the blip from scratch' );
+            // bw_log( data_name: 'Rendering the blip from scratch', includes_data: false );
 
             // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
             $the_blip = self::bw_generate_blip( $args, $settings, $the_title, $is_widget, $content );
 
           } else {
-            error_log( 'rendering the blip from the cache' );
+            // bw_log( data_name: 'Rendering the blip from the cache', includes_data: false );
             // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
