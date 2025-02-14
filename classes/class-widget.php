@@ -758,6 +758,8 @@ if (!class_exists('Blipper_Widget')) {
       *                                         apparently unused
       * @return   bool      $client_ok        True if the client was created
       *                                         successfully, else false
+      * @throws Blipper_Widget_OAuthException If no OAuth credentials (ie
+      * username and access token) have been supplied.
       */
     private static function bw_create_blipfoto_client( $args = null ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -765,18 +767,15 @@ if (!class_exists('Blipper_Widget')) {
 
       $create_new_client = empty( self::$client ) ? true : false;
       $client_ok = !$create_new_client && empty( self::$client->accessToken() ) ? false : true;
-      // $create_new_client = false;
-      // if ( empty( self::$client ) ) {
-      //   // $create_new_client = true;
-      // } else if ( !empty( self::$client->accessToken() ) ) {
-      //   $client_ok = true;
-      // }
       // error_log( 'client ok: ' . var_export( $client_ok, true ) );
       // error_log( 'create new client: ' . var_export( $create_new_client, true ) );
 
       // Get the settings from the back-end form:
       $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
+      if ( empty( $oauth_settings ) ) {
+        throw new Blipper_Widget_OAuthException();
+      }
 
       if ( !$client_ok || $create_new_client ) {
         $client_ok = self::bw_check_oauth_credentials_exist( $oauth_settings );
