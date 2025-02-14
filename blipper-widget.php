@@ -155,7 +155,7 @@ if (!function_exists('bw_exception')) {
 
 if ( !function_exists( 'bw_delete_all_cached_blips')) {
   function bw_delete_all_cached_blips( string $prefix ): bool {
-    bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // bw_log( 'arguments', func_get_args() );
 
     global $wpdb;
@@ -166,21 +166,22 @@ if ( !function_exists( 'bw_delete_all_cached_blips')) {
         "SELECT option_name FROM $wpdb->options WHERE option_name LIKE %s",
         $wpdb->esc_like('_transient_' . $prefix ) . '%'
     ));
-    error_log( 'transients: ' . var_export( $transients, true ) );
+    // error_log( 'transients: ' . var_export( $transients, true ) );
 
     // Loop through and delete each transient
     foreach ( $transients as $transient ) {
       $transient_name = str_replace( '_transient_', '', $transient );
-      error_log( 'transient: ' . var_export( $transient_name, true ) );
+      // error_log( 'transient: ' . var_export( $transient_name, true ) );
       $result = delete_transient( $transient_name );
-      error_log( 'deleted transient: ' . var_export( $result, true ) );
+      // error_log( 'deleted transient: ' . var_export( $result, true ) );
       $deleted[] = $result;
     }
-    // Delete all the Blipper Widget transients:
-    return array_all( $deleted, function( string $value ) {
-      error_log( 'deleted ' . var_export( $value, true ) . ': ' . var_export( true === $value , true) );
+    // Check all the Blipper Widget transients were deleted:
+    $result = array_all( $deleted, function( string $value ) {
       return true === $value;
     });
+    // error_log( 'result of deletion: ' . var_export( $result, true ) );
+    return $result;
   }
 }
 
@@ -200,7 +201,7 @@ if ( !function_exists( 'bw_log' ) ) {
    * * `true`: Echo the data name and the data
    * * `false`: Send the data name and the data to the error log (default)
    */
-  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true ) {
+  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true ): string {
     // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
