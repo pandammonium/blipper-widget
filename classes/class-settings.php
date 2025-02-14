@@ -26,6 +26,8 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseE
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
 use Blipper_Widget;
+use function Blipper_Widget\bw_log;
+
 
 // -- Blipper Widget Settings (Back End) ------------------------------------ //
 
@@ -683,7 +685,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
     *                        stores the widget's OAuth settings.
     */
     public static function bw_settings_have_been_set() {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       return false !== get_option( 'blipper-widget-settings-oauth' );
@@ -700,8 +702,8 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      // error_log( 'settings have been set: ' . var_export( self::bw_settings_have_been_set(), true ) );
       return get_option( 'blipper-widget-settings-oauth' );
-
     }
 
   /**
