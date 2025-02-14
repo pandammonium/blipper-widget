@@ -279,8 +279,10 @@ if (!class_exists('Blipper_Widget')) {
           return $setting !== 'hide' && $setting !== null;
         });
         // error_log( 'filtered settings: ' . var_export( $settings, true ) );
-        // Generate a cache key based on the filtered settings and augmented title:
-        $cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+
+        // Generate a cache key based on the filtered settings and plain title:
+        $cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
+        // error_log( 'cache key (excluding HTML tags): ' . var_export( $cache_key, true ) );
 
         return self::bw_render_the_blip(
           args: $defaults,
@@ -337,7 +339,8 @@ if (!class_exists('Blipper_Widget')) {
         $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
         // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
-          self::$cache_key = self::bw_get_a_cache_key( $settings, $the_title );
+          // The cache key no longer includes the title's HMTL tags; if the blip has been cached using this old style, it must be deleted so as to keep things tidy:
+          self::$cache_key = self::bw_replace_old_style_cache_key( $settings, $the_title );
           $the_cache = self::bw_get_cache();
           // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
           // error_log( 'is widget: ' . var_export( $is_widget, true ) );
