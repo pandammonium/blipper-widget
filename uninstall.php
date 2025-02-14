@@ -37,7 +37,7 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
     if ( current_user_can( 'edit_plugins' ) ) {
 
       try {
-        // Delete options in database
+        // Delete options in database:
         $option_name = 'blipper-widget-settings-oauth';
         delete_option( $option_name );
         // For site options in multi-site:
@@ -52,10 +52,11 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
           if ( is_array( $value ) ) {
             foreach ( $value as $inner_key => $inner_value ) {
               if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
+                   false !== strpos( $inner_value, 'blipper-widget' ) ||
                    false !== strpos( $inner_value, BW_PREFIX ) ) {
                 // Don't want to mess with any widget that isn't the Blipper Widget.
-                error_log( 'sidebar widgets [key]: ' . var_export( $sidebar_widgets[$key], true ) );
-                unset( $sidebar_widgets[$key][$value] );
+                // error_log( 'sidebar widgets [key][0]: ' . var_export( $sidebar_widgets[$key][0], true ) );
+                unset( $sidebar_widgets[$key][0] );
               }
             }
             // Tidy up the array
@@ -70,7 +71,7 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
       }
 
       try {
-        // Delete orphaned options
+        // Delete orphaned options:
         $all_options = wp_load_alloptions();
         foreach ( $all_options as $key => $value ) {
           if ( false !== strpos( $key, 'blipper_widget'  ) ) {
@@ -91,8 +92,11 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
       }
 
       try {
-        // Delete all Blipper Widget transients
-        bw_delete_all_cached_blips( BW_PREFIX );
+        // Delete all Blipper Widget transients (cached blips):
+        $result = bw_delete_all_cached_blips( BW_PREFIX );
+        if ( !$result ) {
+          throw new \Exception( 'Failed to delete all cached blips. Please check your transients and delete all those that start with ' . BW_PREFIX );
+        }
       } catch ( \TypeError $e ) {
         bw_exception( $e );
       } catch ( \Exception $e ) {
