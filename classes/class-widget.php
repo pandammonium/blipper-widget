@@ -368,7 +368,6 @@ if (!class_exists('Blipper_Widget')) {
           self::$client = null;
           // $deleted = delete_transient( self::$cache_key );
           // error_log( 'deleted transient ' . var_export( self::$cache_key, true ) . ': ' . var_export( $deleted, true ) );
-          // bw_delete_all_cached_blips( BW_PREFIX );
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
         bw_delete_all_cached_blips( BW_PREFIX );
@@ -545,6 +544,11 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'Updated widget settings', $updated_settings_only );
       $settings['updated'] = empty( $updated_settings_only ) ? false : true;
       // bw_log( 'Widget settings updated', $settings['updated'] );
+
+      if ( $settings['updated'] ) {
+        // Delete the cache so there isn't an unnecessary build-up of transients. At the moment, it's not possible to get the cache key for just this blip because the heading level is included in the hash that the cache key is created from; the heading level is not available at this time. Therefore, we're going to delete the whole lot. Hopefully, this is temporary:
+        bw_delete_all_cached_blips( BW_PREFIX );
+      }
 
       return $settings;
     }
