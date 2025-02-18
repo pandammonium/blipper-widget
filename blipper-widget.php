@@ -62,7 +62,7 @@ $status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG
 /**
  * @ignore This constant is used for debug purposes only.
  */
-define( 'BW_DEBUG', false && $status );
+define( 'BW_DEBUG', true && $status );
 /**
  * @var The prefix used to identify Blipper Widget strings.
  *
