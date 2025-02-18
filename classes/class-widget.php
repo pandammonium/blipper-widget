@@ -463,7 +463,7 @@ if (!class_exists('Blipper_Widget')) {
             $user_attributes['updated'] = false;
 
           } else {
-            bw_log( data_name: 'Rendering the blip from the cache', includes_data: false );
+            bw_log( 'Rendering the blip from the cache', self::$cache_key );
             // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
