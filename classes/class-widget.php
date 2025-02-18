@@ -94,7 +94,7 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
       * @since    1.1.1
-      * @deprecated 1.2.6
+      * @deprecated 1.2.6 Unused.
       * @property array     $style_control_classes   The classes used for styling
       *                                              the widget.
       */
@@ -108,8 +108,9 @@ if (!class_exists('Blipper_Widget')) {
 
     /**
       * @since    0.0.1
+      * @deprecated 1.2.6 Unnecessary because the settings class
+      * (Blipper_Widget_Settings) is now static.
       * @property Blipper_Widget_Settings   $settings The Blipper Widget settings
-      * @deprecated 1.2.6
       */
       private static ?Blipper_Widget_Settings $settings = null;
 
@@ -168,7 +169,6 @@ if (!class_exists('Blipper_Widget')) {
         callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
       );
 
-
       add_shortcode(
         tag: 'blipper_widget',
         callback: [ self::class, 'bw_shortcode_blip_display' ]
@@ -176,7 +176,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Render the widget on the WP site in a widget-enabled area.  This is the
+      * Renders the widget in a widget-enabled area. This is the
       * front-end of the widget.
       *
       * @since    0.0.1
@@ -205,15 +205,16 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Render the form used in the widget admin settings panel or the WordPress
-      * customiser.  This is the back-end of the widget.  The form displays the
-      * settings already saved in the database, and allows the user to change them
-      * if desired.
+      * Renders the form used in the widget settings (user attributes) panel
+      * or the customiser. The form displays the settings already saved in
+      * the database, and allows the user to change them if desired. This is
+      * the back end of the widget (but not the backend of the plugin. The
+      * backend of the plugin is in Settings > Blipper Widget)
       *
       * @since    0.0.1
       * @api
       * @param    array     $settings  The settings currently saved in the database
-      * @return void
+      * @return string And empty string. The parent function returns 'noform'.
       */
     public function form( $settings ): string {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -224,8 +225,9 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Update the widget settings (attributes) that were set using the form in the admin
-      * panel/customiser.
+      * Updates the widget settings (user attributes) that were set using the
+      * widget settings (attributes) form in the admin panel (Appearance >
+      * Widgets > Blipper Widget) or the customiser.
       *
       * @since    0.0.1
       * @api
@@ -266,7 +268,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Add a shortcode so the widget can be placed in a post or on a page.
+     * Adds a shortcode so the widget can be placed in a post or on a page.
      *
      * @param array    $shortcode_attributes        The settings (attributes) included in the
      *                                shortcode.  Not all the available settings are
@@ -531,7 +533,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Generate the blip from scratch
+     * Generates the blip from scratch
      */
     private static function bw_generate_blip( array $user_attributes, string $styled_title, bool $is_widget, ?array $widget_settings = null, ?string $content = null ): string|false {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -614,7 +616,9 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Normalise the arguments from the shortcode
+     * Normalises the arguments from the shortcode
+     *
+     * @deprecated 1.2.6 Doesn't seem necessary any more.
      */
     private static function bw_normalise_attributes( string|array|null $shortcode_attributes, $shortcode = '' ): string|array|null {
       bw_log( 'method', __METHOD__ . '()' );
@@ -644,20 +648,6 @@ if (!class_exists('Blipper_Widget')) {
                 error_log( 'normalised atts[' . $shortcode_attributes[ $key ] . ']: ' . var_export( $normalised_attributes[ $key ], true ) );
                 unset( $shortcode_attributes[ $i ] );
                 ++$i;
-              } else if ( isset( $shortcode_attributes[0] ) ) {
-                // Loop through each pair
-                foreach ($shortcode_attributes as $pair) {
-                  error_log( var_export( $pair, true ) );
-                  $key_value = explode('=', $pair, 2);
-                  // Check if we have both key and value
-                  if (count($key_value) === 2) {
-                    // Trim the key and value, and handle quotes for the title
-                    $key = trim($key_value[0]);
-                    $value = trim($key_value[1], "'"); // Remove single quotes from the value if present
-                    // Add to the array
-                    $normalised_attributes[$key] = $value;
-                  }
-                }
               }
             }
           break;
@@ -727,9 +717,10 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Validate the input.
-      * Make sure the input comprises only printable/alphanumeric (depending on the
-      * field) characters; otherwise, return an empty string/the default value.
+      * Validates the input.
+      *
+      * Makes sure the input comprises only printable/alphanumeric (depending on the
+      * field) characters; otherwise, returns an empty string/the default value.
       *
       * @since    0.0.1
       * @param    array     $new_settings     The setting the user wants to change
@@ -795,7 +786,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Get the values to display on the settings form.
+      * Gets the values to display on the settings form.
       *
       * @since    0.0.1
       * @param    array     $settings         The BW widget settings saved in
@@ -841,7 +832,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Gets the display value.
+     * Gets the display value of the given setting.
      */
     private static function bw_get_display_value( $setting, $settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -875,7 +866,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Load the files this widget needs.
+      * Loads the files this widget needs.
       *
       * @since    0.0.1
       */
@@ -889,7 +880,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Load the Blipfoto API.
+      * Loads the Blipfoto API.
       *
       * @since    0.0.1
       */
@@ -928,7 +919,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Construct an instance of the Blipfoto client and test it's ok
+      * Creates an instance of the Blipfoto client and tests it's ok
       *
       * @since    0.0.1
       * @param    array     $widget_settings             The WP widget settings;
@@ -1116,7 +1107,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Get the blip using the settings stored in the database.
+      * Gets the blip using the user-set attributes and the widget settings.
       *
       * @since    1.1
       * @param    array     $widget_settings             The WP widget settings
@@ -1494,6 +1485,8 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
+     * Gets the HTML used to render the blip and stores it in $the_blip.
+     *
      * @param string|null $content The text from between the bracketed terms of the
      * shortcode.
      */
@@ -1841,7 +1834,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Return the class or style attributes (and their values) used to style the
+     * Returns the class or style attributes (and their values) used to style the
      * given element.
      *
      * @since    1.1.1
@@ -1916,7 +1909,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Sanitise third-party HTML.
+     * Sanitises third-party HTML.
      *
      * @since     1.1.1
      * @access    private
@@ -1953,7 +1946,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Sanitise URL.
+     * Sanitises URL.
      *
      * @since     1.1.1
      * @access    private
@@ -1969,7 +1962,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Display the blip using the settings stored in the database.
+      * Displays the blip using the settings stored in the database.
       *
       * @since    0.0.1
       * @param    array     $settings         The settings saved in the database
@@ -1995,7 +1988,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-      * Display the back-end widget form.
+      * Displays the back-end widget form.
       *
       * @since     0.0.1
       * @access    private
@@ -2538,7 +2531,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Display an error message after an exception was thrown.
+     * Displays an error message after an exception was thrown.
      *
      * @param    \Exception $e                  The exception object
      * containing information
@@ -2565,7 +2558,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Display an error message for a user that can manage options.
+     * Displays an error message for a user that can manage options.
      *
      * @param    \Exception $e                  The exception object
      * containing information
@@ -2592,7 +2585,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Display an error message for a user that cannot manage options.
+     * Displays an error message for a user that cannot manage options.
      *
      * @since    1.1.1
      *
@@ -2616,7 +2609,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Display a message based on the exception class.
+     * Displays a message based on the exception class.
      */
     private static function bw_get_exception_class( $e ) {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2645,7 +2638,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Use the exception class to get appropriate CSS classes.
+     * Uses the exception class to get appropriate CSS classes.
      */
     private static function bw_get_css_error_classes( $e ) {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2683,10 +2676,10 @@ if (!class_exists('Blipper_Widget')) {
     // --- Action hooks ------------------------------------------------------- //
 
     /**
-     * Check the Blipfoto OAuth settings have been set, otherwise display a
+     * Checks the Blipfoto OAuth settings have been set, otherwise display a
      * message to the user.
      *
-     * @deprecated
+     * @deprecated 1.2.6
      */
     public static function bw_settings_check() {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2704,9 +2697,9 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Add the WP colour picker.
+     * Adds the WP colour picker.
      *
-     * @deprecated
+     * @deprecated 1.2.6 Use bw_enqueue_scripts() instead.
      */
     public static function bw_load_colour_picker() {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2724,7 +2717,7 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Print scripts.
+     * Prints the Javascript scripts.
      *
      * @since 0.0.5
      */
