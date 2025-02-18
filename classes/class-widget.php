@@ -26,6 +26,7 @@ use Blipper_Widget\Settings\Blipper_Widget_Settings;
 
 use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
+use function Blipper_Widget\bw_exception;
 
 if (!class_exists('Blipper_Widget')) {
   /**
@@ -480,10 +481,13 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( Blipper_Widget_OAuthException $e ) {
         bw_delete_all_cached_blips( BW_PREFIX );
         self::bw_display_error_msg( $e, __( 'Please check your OAuth credentials are valid and try again', 'blipper-widget' ) );
-        // return '';
+      } catch ( \ErrorException $e ) {
+        self::bw_display_error_msg(
+          e: $e,
+          writeToLog: true
+        );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
-        // return '';
       }
       return $the_blip;
     }
@@ -516,8 +520,12 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'Old-style cache key ' . ( $old_style_cache_key ? 'found and deleted' : 'not found or not deleted' ) );
 
       // Now create a new cache key without the HTML tags:
-      $new_style_cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
-      // bw_log( 'New-style cache key', $new_style_cache_key );
+      if ( !empty( $settings ) ) {
+        $new_style_cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
+      } else {
+        throw new \ErrorException( 'Widget settings not found.' );
+      }
+      bw_log( 'New-style cache key', $new_style_cache_key );
       return $new_style_cache_key;
     }
 
@@ -2548,9 +2556,11 @@ if (!class_exists('Blipper_Widget')) {
      * user.
      * @param    bool $request_limit_reached True if the Blipfoto request
      * limit has been reached; otherwise false.
+     * @param bool $writeToLog True to write the error to the log file as
+     * well; false not to. Default is false.
      * @since    1.1.1
     */
-    private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false ): void {
+    private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false, bool $writeToLog = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
       if ( $request_limit_reached  ) {
@@ -2563,7 +2573,12 @@ if (!class_exists('Blipper_Widget')) {
       } else {
         self::bw_display_public_error_msg( $request_limit_reached );
       }
+
+      if ( $writeToLog ) {
+        bw_exception( $e );
+      }
     }
+
 
     /**
      * Displays an error message for a user that can manage options.

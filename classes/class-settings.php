@@ -26,6 +26,7 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseE
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
 use Blipper_Widget;
+use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
 
 
