@@ -322,7 +322,7 @@ if (!class_exists('Blipper_Widget')) {
         // });
         // // error_log( 'widget-consistent attributes: ' . var_export( $current_attributes, true ) );
         // Generate a new cache key based on the current attributes and the title:
-        $new_cache_key = self::bw_get_a_cache_key( $current_attributes, $current_attributes['title'] );
+        $new_cache_key = self::bw_replace_old_style_cache_key( $current_attributes, $current_attributes['title'] );
         // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
         $old_cache_key = '';
 
@@ -359,7 +359,7 @@ if (!class_exists('Blipper_Widget')) {
           // error_log( 'filtered old attributes: ' . var_export( $old_attributes, true ) );
 
           // Generate the old cache key based on the old attributes and the old title:
-          $old_cache_key = self::bw_get_a_cache_key( $old_attributes, $old_attributes['title'] );
+          $old_cache_key = self::bw_replace_old_style_cache_key( $old_attributes, $old_attributes['title'] );
           // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
           $updated = self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
 
@@ -429,8 +429,8 @@ if (!class_exists('Blipper_Widget')) {
      * failure.
      */
     private static function bw_render_the_blip( array $user_attributes, string $styled_title, bool $is_widget, ?array $widget_settings = null, ?string $content = null, string $cache_key = '' ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
@@ -520,11 +520,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'Old-style cache key ' . ( $old_style_cache_key ? 'found and deleted' : 'not found or not deleted' ) );
 
       // Now create a new cache key without the HTML tags:
-      if ( !empty( $settings ) ) {
-        $new_style_cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
-      } else {
-        throw new \ErrorException( 'Widget settings not found.' );
-      }
+      $new_style_cache_key = self::bw_get_a_cache_key( $settings, $settings['title'] );
       bw_log( 'New-style cache key', $new_style_cache_key );
       return $new_style_cache_key;
     }
@@ -682,7 +678,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // error_log( 'old settings: ' . var_export( $old_settings, true ) );
       // Get the old cache key, if there is one, before the old settings are manipulated:
-      $old_cache_key = self::bw_get_a_cache_key( $old_settings, $old_settings['title'] );
+      $old_cache_key = self::bw_replace_old_style_cache_key( $old_settings, $old_settings['title'] );
       // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
 
       // bw_log( 'new settings', $new_settings );
