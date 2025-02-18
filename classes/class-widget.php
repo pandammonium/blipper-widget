@@ -165,12 +165,12 @@ if (!class_exists('Blipper_Widget')) {
         callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
       );
 
-      add_action(
-        hook_name: 'delete_widget',
-        callback: [ self::class, 'bw_delete_widget' ],
-        priority: 10,
-        accepted_args: 3
-      );
+      // add_action(
+      //   hook_name: 'delete_widget',
+      //   callback: [ self::class, 'bw_on_delete_widget' ],
+      //   priority: 10,
+      //   accepted_args: 3
+      // );
 
       add_shortcode(
         tag: 'blipper_widget',
@@ -2717,20 +2717,20 @@ if (!class_exists('Blipper_Widget')) {
 
     // --- Action hooks ------------------------------------------------------- //
 
-    /**
-     * Removes data that doesn't need storing if an instance of the widget is
-     * removed.
-     *
-     * @author pandammonium
-     * @since 1.2.6
-     */
-    public static function bw_delete_widget( $instance, $widget, $sidebar_id ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+    // /**
+    //  * Removes data that doesn't need storing if an instance of the widget is
+    //  * removed.
+    //  *
+    //  * @author pandammonium
+    //  * @since 1.2.6
+    //  */
+    // public static function bw_on_delete_widget( $instance, $widget, $sidebar_id ) {
+    //   // bw_log( 'method', __METHOD__ . '()' );
+    //   // bw_log( 'arguments', func_get_args() );
 
-      // Log or perform actions when a widget is removed
-      error_log( 'Widget removed: ' . $widget->id_base . ' from sidebar: ' . $sidebar_id );
-    }
+    //   // Log or perform actions when a widget is removed
+    //   error_log( 'Widget removed: ' . $widget->id_base . ' from sidebar: ' . $sidebar_id );
+    // }
 
     /**
      * Checks the Blipfoto OAuth settings have been set, otherwise displays a
