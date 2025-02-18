@@ -186,9 +186,29 @@ if (!class_exists('Blipper_Widget')) {
       * @api
       */
     public function widget( $widget_settings, $user_attributes ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
+      try {
+        if ( empty( $widget_settings ) ) {
+          throw new \ErrorException( 'Widget settings (args) not found', 0, E_USER_ERROR );
+        }
+        if ( empty( $user_attributes ) ) {
+          throw new \ErrorException( 'Widget user settings (instance) not found', 0, E_USER_ERROR );
+        }
+      // } catch ( \ErrorException $e ) {
+      //   self::bw_display_error_msg(
+      //     e: $e,
+      //     writeToLog: true
+      //   );
+      //   return;
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg(
+          e: $e,
+          writeToLog: true
+        );
+        return;
+      }
       echo $widget_settings['before_widget'];
 
       $styled_title = '';
@@ -255,9 +275,9 @@ if (!class_exists('Blipper_Widget')) {
 
       // Check if this is a valid post or page type and if it's not an autosave:
       $post_type = get_post_type( $post_id );
-      error_log( 'post type: ' . var_export( $post_type, true ) );
+      // error_log( 'post type: ' . var_export( $post_type, true ) );
       if ( ( 'post' !== $post_type && 'page' !== $post_type ) || defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-        error_log( 'not saving old attributes of ' . var_export( $post_type, true ) );
+        // error_log( 'not saving old attributes of ' . var_export( $post_type, true ) );
         return;
       }
       // Get the post content:
@@ -511,8 +531,8 @@ if (!class_exists('Blipper_Widget')) {
      * the HTML tags.
      */
     private static function bw_replace_old_style_cache_key( array $settings, string $styled_title ): string {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       // If there's an old-style cache key, get its cache (transient) and delete it:
       $old_style_cache_key = self::bw_get_a_cache_key( $settings, $styled_title );
@@ -537,7 +557,7 @@ if (!class_exists('Blipper_Widget')) {
         // bw_log( 'transient', $transient );
         return $transient;
       } else {
-        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0, E_USER_WARNING );
       }
       // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
@@ -601,13 +621,13 @@ if (!class_exists('Blipper_Widget')) {
           }
         } else {
           if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
-            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, E_USER_WARNING );
+            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0, E_USER_WARNING );
           }
         }
         if ( false === $result ) {
           $deleted = self::bw_delete_cache( self::$cache_key );
           $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
-          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, E_USER_WARNING );
+          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, 0, E_USER_WARNING );
         } else {
       bw_log( 'Cached blip with key', self::$cache_key );
         }
@@ -631,8 +651,8 @@ if (!class_exists('Blipper_Widget')) {
      * @deprecated 1.2.6 Doesn't seem necessary any more.
      */
     private static function bw_normalise_attributes( string|array|null $shortcode_attributes, $shortcode = '' ): string|array|null {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       if ( null === $shortcode_attributes ) {
         return null;
@@ -665,7 +685,7 @@ if (!class_exists('Blipper_Widget')) {
             $normalised_attributes = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $shortcode_attributes);
           break;
           default:
-            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $shortcode_attributes, true ) . ']' . '</kbd></samp>. These attributes are invalid', E_USER_ERROR ) ;
+            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $shortcode_attributes, true ) . ']' . '</kbd></samp>. These attributes are invalid', 0, E_USER_ERROR ) ;
         }
       }
       bw_log( 'normalised attributes', $normalised_attributes );
@@ -972,7 +992,7 @@ if (!class_exists('Blipper_Widget')) {
       if ( !$client_ok ) {
         bw_delete_all_cached_blips( BW_PREFIX );
         // if ( BW_DEBUG ) {
-        //   trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), E_USER_WARNING );
+        //   trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), 0, E_USER_WARNING );
         // }
       }
       // error_log( 'client ok: ' . var_export( $client_ok, true ) );
@@ -1989,8 +2009,8 @@ if (!class_exists('Blipper_Widget')) {
       *                                         when in a widgety area
       */
     private function bw_display_blip( $user_attributes, $is_widget, $content = null ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       return self::bw_get_blip(
         user_attributes: $user_attributes,
@@ -2559,6 +2579,7 @@ if (!class_exists('Blipper_Widget')) {
     private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false, bool $writeToLog = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
+
       if ( $request_limit_reached  ) {
         bw_log( 'Blipfoto request limit reached', $request_limit_reached );
       }
@@ -2634,6 +2655,8 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      // error_log( 'class: ' . var_export( get_class( $e ), true ) );
+
       switch ( get_class( $e ) ) {
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException':
           return 'Blipfoto error';
@@ -2647,7 +2670,7 @@ if (!class_exists('Blipper_Widget')) {
           return 'Network error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
           return 'OAuth error';
-        case '\ErrorException':
+        case 'ErrorException':
         case 'Error':
           return 'Error';
         case 'Exception':
