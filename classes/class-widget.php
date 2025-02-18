@@ -165,8 +165,6 @@ if (!class_exists('Blipper_Widget')) {
       );
 
       add_action(
-        hook_name: 'post_save',
-        callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
       );
 
       add_shortcode(
@@ -183,8 +181,8 @@ if (!class_exists('Blipper_Widget')) {
       * @api
       */
     public function widget( $widget_settings, $user_attributes ) {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       echo $widget_settings['before_widget'];
 
@@ -247,10 +245,14 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      // Find out which action hook invoked this method:
+      // error_log( 'Method ' . __METHOD__ . '() was called by: ' . var_export( current_filter() . '()', true ) );
+
       // Check if this is a valid post or page type and if it's not an autosave:
-      // error_log( 'post type: ' . var_export( get_post_type( $post_id ), true ) );
-      if ( ( 'post' !== get_post_type( $post_id ) && 'page' !== get_post_type( $post_id ) ) || defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-        // error_log( 'not saving old attributes' );
+      $post_type = get_post_type( $post_id );
+      error_log( 'post type: ' . var_export( $post_type, true ) );
+      if ( ( 'post' !== $post_type && 'page' !== $post_type ) || defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        error_log( 'not saving old attributes of ' . var_export( $post_type, true ) );
         return;
       }
       // Get the post content:
@@ -263,7 +265,7 @@ if (!class_exists('Blipper_Widget')) {
         // Store the old attributes in post meta:
         update_post_meta( $post_id, '_bw_old_attributes', $matches[1] );
         $old_attributes = get_post_meta($post_id, '_bw_old_attributes', true);
-        // error_log( 'post ' . $post_id . '; saved old attributes: ' . var_export( $old_attributes, true ) );
+        error_log( 'post ' . $post_id . '; saved old attributes: ' . var_export( $old_attributes, true ) );
       }
     }
 
@@ -317,6 +319,7 @@ if (!class_exists('Blipper_Widget')) {
         // Generate a new cache key based on the current attributes and the title:
         $new_cache_key = self::bw_get_a_cache_key( $current_attributes, $current_attributes['title'] );
         // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
+        $old_cache_key = '';
 
         // Get the current post ID
         $post_id = get_the_ID();
@@ -337,13 +340,12 @@ if (!class_exists('Blipper_Widget')) {
               $key = trim( $key_value[0] );
               // $value = str_replace( array_keys( self::QUOTES ), array_values( self::QUOTES ), $old_attributes[ 'title' ] );
               $value = trim( $key_value[1], "'" ); // Remove single quotes from the value if present
-              // Add to the array
               $temp_atts[$key] = $value;
             }
           }
           // error_log( 'temp attributes: ' . var_export( $temp_atts, true ) );
           $old_attributes = shortcode_atts( $defaults, $temp_atts, $shortcode );
-          // error_log( 'old attributes: ' . var_export( $old_attributes, true ) );
+          error_log( 'old attributes: ' . var_export( $old_attributes, true ) );
 
 
           // $old_attributes = array_filter( $old_attributes, function( $attribute ) {
@@ -358,9 +360,9 @@ if (!class_exists('Blipper_Widget')) {
 
           if ( $updated ) {
             $deleted = self::bw_delete_cache( $old_cache_key );
-            error_log( 'deleted old cache: ' . var_export( $deleted, true ) );
+            error_log( 'deleted old shortcode cache: ' . var_export( $deleted, true ) );
           } else {
-            error_log( 'attributes haven\'t changed' );
+            error_log( 'shortcode attributes haven\'t changed' );
           }
         }
         return self::bw_render_the_blip(
@@ -422,8 +424,8 @@ if (!class_exists('Blipper_Widget')) {
      * failure.
      */
     private static function bw_render_the_blip( array $user_attributes, string $styled_title, bool $is_widget, ?array $widget_settings = null, ?string $content = null, string $cache_key = '' ) {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
@@ -501,8 +503,8 @@ if (!class_exists('Blipper_Widget')) {
      * the HTML tags.
      */
     private static function bw_replace_old_style_cache_key( array $settings, string $styled_title ): string {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       // If there's an old-style cache key, get its cache (transient) and delete it:
       $old_style_cache_key = self::bw_get_a_cache_key( $settings, $styled_title );
@@ -611,7 +613,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $result = delete_transient( $cache_key );
-      bw_log( 'Deleted cache ' . $cache_key, $result );
+      // bw_log( 'Deleted cache ' . $cache_key, $result );
       return $result;
     }
 
@@ -711,7 +713,9 @@ if (!class_exists('Blipper_Widget')) {
       if ( $updated ) {
         // Delete the cache so there isn't an unnecessary build-up of transients.
         $deleted = self::bw_delete_cache( $old_cache_key );
-        // error_log( 'deleted old cache: ' . var_export( $deleted, true ) );
+        error_log( 'deleted old widget cache: ' . var_export( $deleted, true ) );
+      } else {
+        error_log( 'widget settings haven\'t changed' );
       }
       return $settings;
     }
