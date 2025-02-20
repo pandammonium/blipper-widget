@@ -188,10 +188,10 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      if ( empty( $user_attributes ) ) {
-        $user_attributes = array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] );
-        // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
-      }
+      // if ( empty( $user_attributes ) ) {
+      //   $user_attributes = array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] );
+      //   // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
+      // }
 
       echo $widget_settings['before_widget'];
 
@@ -373,8 +373,8 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     private static function bw_compare_old_and_new_attributes( array $old_attributes, array $new_attributes ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       // Need to perform array_diff_assoc() both ways round because it's not known whether there'll be settings missing from the new one or the old one or whatever. The results of each operation need merging. If the resulting array is empty, there have been no changes to the settings:
       $updated_attributes_only = array_merge( array_diff_assoc( $new_attributes, $old_attributes ), array_diff_assoc( $old_attributes, $new_attributes ) );
@@ -444,7 +444,7 @@ if (!class_exists('Blipper_Widget')) {
           // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
 
           if ( empty( $the_cache ) /*|| $updated*/ ) {
-            bw_log( data_name: 'Rendering the blip from scratch', includes_data: false );
+            bw_log( data_name: 'Rendering blip from scratch', includes_data: false );
 
             // The blip does not exist in the cache or its settings have changed, so it needs to be generated:
             $the_blip = self::bw_generate_blip(
@@ -458,7 +458,7 @@ if (!class_exists('Blipper_Widget')) {
             $user_attributes['updated'] = false;
 
           } else {
-            bw_log( 'Rendering the blip from the cache', self::$cache_key );
+            bw_log( 'Rendering blip from the cache', self::$cache_key );
             // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
@@ -582,7 +582,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $result = delete_transient( $cache_key );
-      // bw_log( 'Deleted cache ' . $cache_key, $result );
+      bw_log( 'Deleted cache ' . var_export( $cache_key, true ), $result );
       return $result;
     }
 
@@ -638,9 +638,10 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       // Get the old cache key, if there is one, before the old settings are manipulated, so that it can be deleted if the settings have been updated:
-      $complete_old_settings = array_replace( array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] ), $old_settings );
+      // $complete_old_settings = array_replace( array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] ), $old_settings );
       $the_old_blip_title = self::bw_get_the_blip_title( $old_settings );
-      $old_cache_key = self::bw_get_a_cache_key( $complete_old_settings, $the_old_blip_title );
+      // $old_cache_key = self::bw_get_a_cache_key( $complete_old_settings, $the_old_blip_title );
+      $old_cache_key = self::bw_get_a_cache_key( $old_settings, $the_old_blip_title );
       // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
 
       $settings = [];
@@ -675,12 +676,12 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'New settings', $new_settings );
 
       $updated = empty( $old_cache_key ) || self::bw_compare_old_and_new_attributes( $new_settings, $old_settings );
-      error_log( 'widget settings have changed: ' . var_export( $updated, true ) );
+      // error_log( 'widget settings have changed: ' . var_export( $updated, true ) );
 
       if ( $updated ) {
         // Delete the cache so there isn't an unnecessary build-up of transients.
         $deleted = self::bw_delete_cache( $old_cache_key );
-        error_log( 'deleted old widget cache ' . var_export( $old_cache_key, true ) . ': ' . var_export( $deleted, true ) );
+        // error_log( 'deleted old widget cache ' . var_export( $old_cache_key, true ) . ': ' . var_export( $deleted, true ) );
       // } else {
       //   error_log( 'widget settings haven\'t changed' );
       }
