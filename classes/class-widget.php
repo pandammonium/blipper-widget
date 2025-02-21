@@ -2393,8 +2393,8 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     private static function bw_get_default_setting_value( $setting_type, $setting, $is_color = false ) {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       if ( array_key_exists( $setting_type, self::DEFAULT_SETTING_VALUES ) ) {
 
