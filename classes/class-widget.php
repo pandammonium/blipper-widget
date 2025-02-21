@@ -264,18 +264,18 @@ if (!class_exists('Blipper_Widget')) {
       // Get the post content and see if the shortcode is present. If it is, then harvest the shortcode's attributes and store them in the post meta:
       $post_content = get_post_field( 'post_content', $post_id );
       preg_match( '/\[blipper_widget\s+([^]]+)\]/', $post_content, $matches );
-      error_log( 'matches: ' . var_export( $matches, true ) );
+      // error_log( 'matches: ' . var_export( $matches, true ) );
       if ( !empty( $matches[1] ) ) {
         // Clear up any existing old attributes:
         $old_attributes = get_post_meta( $post_id, '_bw_old_attributes', true );
-        error_log( 'post ' . $post_id . '; existing old attributes: ' . var_export( $old_attributes, true ) );
+        // error_log( 'post ' . $post_id . '; existing old attributes: ' . var_export( $old_attributes, true ) );
         delete_post_meta( $post_id, '_bw_old_attributes' );
-        error_log( 'post ' . $post_id . '; deleted old attributes: ' . var_export( empty( $old_attributes ), true ) );
+        // error_log( 'post ' . $post_id . '; deleted old attributes: ' . var_export( empty( $old_attributes ), true ) );
 
         // Save the new old attributes:
         update_post_meta( $post_id, '_bw_old_attributes', $matches[1] );
         $old_attributes = get_post_meta($post_id, '_bw_old_attributes', true);
-        error_log( 'post ' . $post_id . '; saved old attributes: ' . var_export( $old_attributes, true ) );
+        // error_log( 'post ' . $post_id . '; saved old attributes: ' . var_export( $old_attributes, true ) );
       }
     }
 
@@ -334,13 +334,13 @@ if (!class_exists('Blipper_Widget')) {
           // Generate the old cache key based on the old attributes and the old title:
           $the_old_blip_title = self::bw_get_the_blip_title( $old_attributes );
           $old_cache_key = self::bw_get_a_cache_key( $old_attributes, $the_old_blip_title );
-          error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
-          error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
+          // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
+          // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
           // $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
           $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
 
           if ( $updated ) {
-            error_log( 'shortcode attributes have changed' );
+            // error_log( 'shortcode attributes have changed' );
             $deleted = self::bw_delete_cache( $old_cache_key );
             // error_log( 'deleted old shortcode cache: ' . var_export( $deleted, true ) );
             // $old_attributes = get_post_meta( $post_id, '_bw_old_attributes', true );
@@ -350,7 +350,7 @@ if (!class_exists('Blipper_Widget')) {
             // error_log( 'post ' . $post_id . '; deleted old attributes: ' . var_export( empty( $old_attributes ), true ) );
             self::bw_save_old_shortcode_attributes( $post_id );
           } else {
-            error_log( 'shortcode attributes haven\'t changed' );
+            // error_log( 'shortcode attributes haven\'t changed' );
           }
         }
         return self::bw_render_the_blip(
@@ -423,7 +423,7 @@ if (!class_exists('Blipper_Widget')) {
         // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
           self::$cache_key = self::bw_get_a_cache_key( $user_attributes, $the_blip_title );
-          error_log( 'new cache key: ' . var_export( self::$cache_key, true ) );
+          // error_log( 'new cache key: ' . var_export( self::$cache_key, true ) );
           $the_cache = self::bw_get_cache();
           // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
           // error_log( 'is widget: ' . var_export( $is_widget, true ) );
@@ -446,7 +446,7 @@ if (!class_exists('Blipper_Widget')) {
             );
 
           } else {
-            bw_log( 'Rendering blip from the cache', self::$cache_key );
+            bw_log( 'Rendering blip from cache', self::$cache_key );
             // error_log( 'the cache: ' . var_export( $the_cache, true ) );
 
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
