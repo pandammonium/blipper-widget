@@ -144,37 +144,7 @@ if (!class_exists('Blipper_Widget')) {
 
       self::$settings = new Blipper_Widget_Settings();
 
-      // function to load Blipper Widget:
-      // add_action( 'admin_notices', [ self::class, 'bw_settings_check' ] );
-      // add_action( 'load-widgets.php', [ self::class, 'bw_load_colour_picker' ] );
-
-      add_action(
-        hook_name: 'admin_enqueue_scripts',
-        callback: [ self::class, 'bw_enqueue_scripts' ]
-      );
-
-      add_action(
-        hook_name: 'admin_footer-widgets.php',
-        callback: [ self::class, 'bw_print_scripts' ],
-        priority: 9999
-      );
-
-      add_action(
-        hook_name: 'pre_post_update',
-        callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
-      );
-
-      add_action(
-        hook_name: 'delete_widget',
-        callback: [ self::class, 'bw_on_delete_widget' ],
-        priority: 10,
-        accepted_args: 3
-      );
-
-      add_shortcode(
-        tag: 'blipper_widget',
-        callback: [ self::class, 'bw_shortcode_blip_display' ]
-      );
+      self::add_hooks_and_filters();
     }
 
     /**
@@ -2780,6 +2750,59 @@ if (!class_exists('Blipper_Widget')) {
         }( jQuery ) );
         </script>
       <?php
+    }
+
+    /**
+     * Adds all the hooks, filters and shortcodes that Blipper Widget needs.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     */
+    public static function add_hooks_and_filters(): void {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      // function to load Blipper Widget:
+      // add_action( 'admin_notices', [ self::class, 'bw_settings_check' ] );
+      // add_action( 'load-widgets.php', [ self::class, 'bw_load_colour_picker' ] );
+
+      add_action(
+        hook_name: 'admin_enqueue_scripts',
+        callback: [ self::class, 'bw_enqueue_scripts' ]
+      );
+
+      add_action(
+        hook_name: 'admin_footer-widgets.php',
+        callback: [ self::class, 'bw_print_scripts' ],
+        priority: 9999
+      );
+
+      add_action(
+        hook_name: 'customize_save_after',
+        callback: 'bw_on_widget_setting_change_in_customiser'
+      );
+
+      add_action(
+        hook_name: 'delete_widget',
+        callback: [ self::class, 'bw_on_delete_widget' ],
+        accepted_args: 3
+      );
+
+      add_action(
+        hook_name: 'pre_post_update',
+        callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
+      );
+
+      add_action(
+        hook_name: 'updated_widget',
+        callback: [ self::class, 'bw_on_widget_setting_change_in_backend' ],
+        accepted_args: 3
+      );
+
+      add_shortcode(
+        tag: 'blipper_widget',
+        callback: [ self::class, 'bw_shortcode_blip_display' ]
+      );
     }
   }
 }
