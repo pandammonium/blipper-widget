@@ -2656,21 +2656,33 @@ if (!class_exists('Blipper_Widget')) {
      * @author pandammonium
      * @since 1.2.6
      *
-     * @param $instance
-     * @param $widget
-     * @param sidebar_id
+     * @param $widget_id The identifier of this instance of the widget.
+     * @param sidebar_id The identifier of the sidebar on which the widget
+     * was placed.
+     * @param $id_base The identifier of the Blipper Widget widget.
      */
-    public static function bw_on_delete_widget( $instance, $widget, $sidebar_id ) {
+    public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): void {
       bw_log( 'method', __METHOD__ . '()' );
       bw_log( 'arguments', func_get_args() );
 
-      $args = func_get_args();
-      foreach( $args as $key => $value ) {
-        error_log( gettype( $key ) . ' ' . gettype( $value ) );
-      }
+      $all_widget_settings = parent::get_settings();
+      // error_log( 'all widget options: ' . var_export( $all_widget_settings, true ) );
 
-      // Log or perform actions when a widget is removed
-      error_log( 'Widget ' . $widget->id_base . ' removed from sidebar ' . $sidebar_id );
+      // Get the settings for this widget. Start by finding the array key from the widget id:
+      $widget_key = str_replace( $id_base . '-', '', $widget_id ) + 0;
+      error_log( 'widget key: ' . var_export( $widget_key, true ) );
+      error_log( 'this widget options: ' . var_export( $all_widget_settings[$widget_key], true ) );
+
+      // Log or perform actions when a widget is removed:
+      if ( empty( $all_widget_settings[ $widget_key ] ) ) {
+        error_log( 'settings not found for widget ' . var_export( $widget_id, true ) );
+      } else {
+        self::$cache_key = self::bw_get_a_cache_key( $all_widget_settings[$widget_key], $all_widget_settings[ $widget_key ]['title'] );
+        $deleted = self::bw_delete_cache( self::$cache_key );
+        if ( $deleted ) {
+          error_log( 'Widget ' . $widget_id . ' removed from sidebar ' . $sidebar_id );
+        }
+      }
     }
 
     /**
@@ -2756,7 +2768,7 @@ if (!class_exists('Blipper_Widget')) {
      * @author pandammonium
      * @since 1.2.6
      */
-    public static function add_hooks_and_filters(): void {
+    public function add_hooks_and_filters(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2782,7 +2794,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_action(
         hook_name: 'delete_widget',
-        callback: [ self::class, 'bw_on_delete_widget' ],
+        callback: [ $this, 'bw_on_delete_widget_from_backend' ],
         accepted_args: 3
       );
 
