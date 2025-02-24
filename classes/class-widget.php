@@ -213,7 +213,6 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       return self::bw_validate_widget_settings( $new_settings, $old_settings );
-
     }
 
     public static function bw_save_old_shortcode_attributes( int $post_id ): void {
@@ -306,7 +305,6 @@ if (!class_exists('Blipper_Widget')) {
           $old_cache_key = self::bw_get_a_cache_key( $old_attributes, $the_old_blip_title );
           // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
           // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
-          // $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
           $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
 
           if ( $updated ) {
