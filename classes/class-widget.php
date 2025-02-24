@@ -2709,7 +2709,7 @@ if (!class_exists('Blipper_Widget')) {
      * Checks the Blipfoto OAuth settings have been set, otherwise displays a
      * message to the user.
      *
-     * @deprecated 1.2.6
+     * @deprecated 1.2.6 Superseded by improved error handling.
      */
     public static function bw_settings_check() {
       // bw_log( 'method', __METHOD__ . '()' );
