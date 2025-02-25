@@ -451,7 +451,7 @@ if (!class_exists('Blipper_Widget')) {
         // bw_log( 'transient', $transient );
         return $transient;
       } else {
-        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0, E_USER_WARNING );
+        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0 );
       }
       // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
     }
@@ -515,13 +515,13 @@ if (!class_exists('Blipper_Widget')) {
           }
         } else {
           if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
-            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0, E_USER_WARNING );
+            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY . '.', 0 );
           }
         }
         if ( false === $result ) {
           $deleted = self::bw_delete_cache( self::$cache_key );
-          $deleted_msg = 'Failed to set cache. ' . ( $deleted ? 'Cache has been deleted' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted, so it is still lurking' : ' Cache doesn\'t exist' ) );
-          throw new \Exception( 'Failed to set cache ' . self::$cache_key . '. ' . $deleted_msg, 0, E_USER_WARNING );
+          $deleted_msg = ( $deleted ? 'Cache has been deleted.' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted.' : ' Cache was not found.' ) );
+          throw new \Exception( 'Failed to save blip in cache ' . self::$cache_key . '. ' . $deleted_msg, 0 );
         } else {
       bw_log( 'Cached blip with key', self::$cache_key );
         }
@@ -578,7 +578,7 @@ if (!class_exists('Blipper_Widget')) {
             $normalised_attributes = str_replace(array_keys(self::QUOTES), array_values(self::QUOTES), $shortcode_attributes);
           break;
           default:
-            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $shortcode_attributes, true ) . ']' . '</kbd></samp>. These attributes are invalid', 0, E_USER_ERROR ) ;
+            throw new \Exception( 'Please check your shortcode: <samp><kbd>[' . ( '' === $shortcode ? '&lt;shortcode&gt;' : $shortcode ) . ' ' . print_r( $shortcode_attributes, true ) . ']' . '</kbd></samp>. These attributes are invalid' ) ;
         }
       }
       bw_log( 'Normalised attributes', $normalised_attributes );
