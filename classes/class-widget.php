@@ -351,7 +351,7 @@ if (!class_exists('Blipper_Widget')) {
           $old_cache_key = self::bw_get_a_cache_key( $old_attributes, $the_old_blip_title );
           // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
           // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
-          $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes );
+          $updated = ( $new_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_attributes, $current_attributes, false );
 
           if ( $updated ) {
             // error_log( 'shortcode attributes have changed' );
@@ -379,16 +379,29 @@ if (!class_exists('Blipper_Widget')) {
       }
     }
 
-    private static function bw_compare_old_and_new_attributes( array $old_attributes, array $new_attributes ): bool {
+    /**
+     * Compares the old and new attributes to see if there's been any change.
+     *
+     * @param array<string, mixed> $old_attributes The settings as they were
+     * before they were changed in the Customiser or the shortcode.
+     * @param array<string, mixed> $new_attributes The settings as they are
+     * after they were changed in the Customiser or the shortcode.
+     * @param bool $is_widget True if the blip is being rendered by the
+     * widget; false if the blip is being rendered by a shortcode. Used for
+     * debug purposes only.
+     * @return bool True if the settings are different; false of they're the
+     * same.
+     */
+    private static function bw_compare_old_and_new_attributes( array $old_attributes, array $new_attributes, bool $is_widget ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // Need to perform array_diff_assoc() both ways round because it's not known whether there'll be settings missing from the new one or the old one or whatever. The results of each operation need merging. If the resulting array is empty, there have been no changes to the settings:
       $updated_attributes_only = array_merge( array_diff_assoc( $new_attributes, $old_attributes ), array_diff_assoc( $old_attributes, $new_attributes ) );
       $result = empty( $updated_attributes_only ) ? false : true;
-      bw_log( 'Attributes changed', $result );
+      bw_log( ( $is_widget ? 'Widget' : 'Shortcode' ) . ' attributes changed', $result );
       if ( $result ) {
-        bw_log( 'Changed attributes', $updated_attributes_only );
+        // bw_log( 'Changed attributes', $updated_attributes_only );
       }
       return $result;
     }
@@ -437,6 +450,9 @@ if (!class_exists('Blipper_Widget')) {
      * current settings. This is really only needed when coming from the
      * shortcode, at least for now. Perhaps the shortcode code won't need to
      * check this, but done here later.
+     * @param bool $is_widget True if the blip is being rendered by the
+     * widget; false if the blip is being rendered by a shortcode. Used for
+     * debug purposes only.
      * @return string|bool The HTML that will render the blip or false on
      * failure.
      */
@@ -457,7 +473,7 @@ if (!class_exists('Blipper_Widget')) {
           // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
 
           if ( empty( $the_cache ) ) {
-            // bw_log( data_name: 'Rendering blip from scratch', includes_data: false );
+            bw_log( data_name: 'Generating ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from scratch', includes_data: false );
             // The blip does not exist in the cache, so it needs to be generated:
             $the_blip = self::bw_generate_blip(
               widget_settings: $widget_settings,
@@ -466,7 +482,7 @@ if (!class_exists('Blipper_Widget')) {
               content: $content
             );
           } else {
-            // bw_log( 'Rendering blip from cache', self::$cache_key );
+            bw_log( 'Rendering ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from cache', self::$cache_key );
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
             $the_blip = $the_cache;
           }
@@ -533,7 +549,7 @@ if (!class_exists('Blipper_Widget')) {
 
         // Save the blip in the cache for next time it's loaded before it expires:
         try {
-          self::bw_set_cache( $the_blip );
+          self::bw_set_cache( $the_blip, $is_widget );
         } catch ( \Exception $e ) {
           self::bw_display_error_msg( $e );
         } finally {
@@ -553,9 +569,12 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @param string $data_to_cache The data that should be cached – that is,
      * the newly generated blip data.
+     * @param bool $is_widget True if the blip is being rendered by the
+     * widget; false if the blip is being rendered by a shortcode. Used for
+     * debug purposes only.
      * @return bool True if the data was successfully cached; otherwise false.
      */
-    private static function bw_set_cache( string $data_to_cache ): bool {
+    private static function bw_set_cache( string $data_to_cache, $is_widget ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -592,7 +611,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( \TypeError $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        // bw_log( 'Blip cached with key ' . var_export( self::$cache_key, true ), $result );
+        bw_log( ( $is_widget ? 'Widget' : 'Shortcode' ) . ' blip cached with key ' . var_export( self::$cache_key, true ), $result );
       }
 
       try {
@@ -703,7 +722,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'Old settings (manipulated)', $old_settings );
       // bw_log( 'New settings (manipulated)', $new_settings );
 
-      $updated = empty( $old_cache_key ) || self::bw_compare_old_and_new_attributes( $new_settings, $old_settings );
+      $updated = empty( $old_cache_key ) || self::bw_compare_old_and_new_attributes( $new_settings, $old_settings, true );
       // error_log( 'widget settings have changed: ' . var_export( $updated, true ) );
 
       if ( $updated ) {
@@ -1491,6 +1510,8 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @param string|null $content The text from between the bracketed terms of the
      * shortcode.
+     * @param bool $is_widget True if the blip is being rendered by the
+     * widget; false if the blip is being rendered by a shortcode.
      */
     private static function bw_get_blip_display_blip( string &$the_blip, array $user_attributes, bool $is_widget, array $data, ?array $widget_settings = null, ?string $content = null ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
