@@ -2709,6 +2709,38 @@ if (!class_exists('Blipper_Widget')) {
     // --- Action hooks ------------------------------------------------------- //
 
     /**
+     * Does stuff that needs doing if a widget setting is changed in the
+     * backend.
+     *
+     * The backend widget settings are access from Appearance > Widgets >
+     * Blipper Widget.
+     *
+     * @author pandammonium
+     * @since 1.2.6
+     *
+     * @param array $new_widget_settings The new settings for the widget.
+     * @param string $widget_id The widget ID (e.g., text, recent-posts,
+     * etc.).
+     * @param array $widget_args The arguments passed to the widget.
+     */
+    private function bw_on_widget_setting_change_in_backend( array $new_widget_settings, string $widget_id, array $widget_args ): void {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
+
+      $widget_settings = $this->bw_get_widget_settings( $widget_id, $id_base );
+      if ( false !== $widget_settings ) {
+        foreach ( $widget_settings as $setting ) {
+          // Check if it's a widget setting:
+          if ( 0 === strpos( $setting->id, 'widget_' ) ) {
+            error_log( 'widget setting: ' . var_export( $setting, true ) );
+            // // Do something with the widget settings:
+            // $new_value = $setting->value(); // Get the new value
+            // // Process the new value as needed
+          }
+        }
+      }
+    }
+    /**
      * Removes data that doesn't need storing if an instance of the widget is
      * removed.
      *
@@ -2721,26 +2753,36 @@ if (!class_exists('Blipper_Widget')) {
      * @param $id_base The identifier of the Blipper Widget widget.
      */
     public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): void {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $widget_settings = $this->bw_get_widget_settings( $widget_id, $id_base );
+      // Log or perform actions when a widget is removed:
+      if ( false !== $widget_settings ) {
+        self::$cache_key = self::bw_get_a_cache_key( $widget_settings, $widget_settings['title'] );
+        $deleted = self::bw_delete_cache( self::$cache_key );
+        if ( $deleted ) {
+          error_log( 'Widget ' . $widget_id . ' removed from sidebar ' . $sidebar_id );
+        }
+      }
+    }
+
+    private function bw_get_widget_settings( string $widget_id, string $id_base ): array|false {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $all_widget_settings = parent::get_settings();
       // error_log( 'all widget options: ' . var_export( $all_widget_settings, true ) );
 
       // Get the settings for this widget. Start by finding the array key from the widget id:
       $widget_key = str_replace( $id_base . '-', '', $widget_id ) + 0;
-      error_log( 'widget key: ' . var_export( $widget_key, true ) );
-      error_log( 'this widget options: ' . var_export( $all_widget_settings[$widget_key], true ) );
-
-      // Log or perform actions when a widget is removed:
+      // error_log( 'widget key: ' . var_export( $widget_key, true ) );
+      // error_log( 'widget ' . var_export( $widget_key, true ) . ' options: ' . var_export( $all_widget_settings[$widget_key], true ) );
       if ( empty( $all_widget_settings[ $widget_key ] ) ) {
-        error_log( 'settings not found for widget ' . var_export( $widget_id, true ) );
+        bw_log( 'Settings not found for widget ', $widget_id );
+        return false;
       } else {
-        self::$cache_key = self::bw_get_a_cache_key( $all_widget_settings[$widget_key], $all_widget_settings[ $widget_key ]['title'] );
-        $deleted = self::bw_delete_cache( self::$cache_key );
-        if ( $deleted ) {
-          error_log( 'Widget ' . $widget_id . ' removed from sidebar ' . $sidebar_id );
-        }
+        return $all_widget_settings[ $widget_key ];
       }
     }
 
@@ -2864,7 +2906,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_action(
         hook_name: 'updated_widget',
-        callback: [ self::class, 'bw_on_widget_setting_change_in_backend' ],
+        callback: [ $this, 'bw_on_widget_setting_change_in_backend' ],
         accepted_args: 3
       );
 
