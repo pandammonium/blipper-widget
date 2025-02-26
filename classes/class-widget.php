@@ -118,32 +118,58 @@ if (!class_exists('Blipper_Widget')) {
       * @property array     $style_control_classes   The classes used for styling
       *                                              the widget.
       */
-      private $style_control_classes;
+    private $style_control_classes;
 
     /**
       * @since    0.0.1
       * @property Blipper_Widget_Client     $client   The Blipfoto client
       */
-      private static ?Blipper_Widget_Client $client = null;
+    private static ?Blipper_Widget_Client $client = null;
 
     /**
+      * @var Blipper_Widget_Settings $settings The Blipper Widget settings.
       * @since    0.0.1
       * @deprecated 1.2.6 Unnecessary because the settings class
       * (Blipper_Widget_Settings) is now static.
-      * @property Blipper_Widget_Settings   $settings The Blipper Widget settings
       */
-      private static ?Blipper_Widget_Settings $settings = null;
+    private static ?Blipper_Widget_Settings $settings = null;
 
-      private const QUOTES = [
-        '“' => '',
-        '”' => '',
-        '‘' => '',
-        '’' => '',
-        '&#8217;' => '',
-        '&#8217;' => '',
-        '&#8220;' => '',
-        '&#8221;' => ''
-      ];
+    /**
+     * @var array BW_ALLOWED_HTML Stores the HTML elements from third-party
+     * sources that are deemed safe enough to display.
+     * @since 1.2.6
+     * @author pandammonium
+     */
+    private const BW_ALLOWED_HTML = [
+      'p' => [],
+      'h1' => [],
+      'h2' => [],
+      'h3' => [],
+      'h4' => [],
+      'h5' => [],
+      'h6' => [],
+      'i' => [],
+      'b' => [],
+      'em' => [],
+      'strong' => [],
+      // 'div' => [],
+      'br' => [],
+      // 'a' => [
+      //   'href' => [],
+      //   'title' => [],
+      // ],
+    ];
+
+    private const QUOTES = [
+      '“' => '',
+      '”' => '',
+      '‘' => '',
+      '’' => '',
+      '&#8217;' => '',
+      '&#8217;' => '',
+      '&#8220;' => '',
+      '&#8221;' => ''
+    ];
 
     /**
       * Constructs an instance of the widget.
@@ -1409,9 +1435,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       try {
-        // Use the HTML variation because it's easier to deal with than the
-        // version potentially containing markup.
-        $data['descriptive_text'] = $data['details']->data( 'details.description_html' );
+        $data['descriptive_text'] = self::bw_sanitise_html( $data['details']->data( 'details.description_html' ), self::BW_ALLOWED_HTML );
         if ( isset( $data['descriptive_text'] ) ) {
           return true;
         } else {
@@ -1806,7 +1830,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $html = empty( $data['descriptive_text'] ) ? '' : '<div' . self::bw_get_styling( 'div|desc-text', $is_widget, $style_control, $user_attributes ) . ">"
-        . self::bw_sanitise_html( $data['descriptive_text'] )
+        . $data['descriptive_text']
         . '</div>';
       return $html;
     }
@@ -1899,28 +1923,10 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $allowed_html = [
-        'p' => [],
-        'h1' => [],
-        'h2' => [],
-        'h3' => [],
-        'h4' => [],
-        'h5' => [],
-        'h6' => [],
-        'i' => [],
-        'b' => [],
-        'em' => [],
-        'div' => [],
-        'br' => [],
-        'a' => [
-          'href' => [],
-          'title' => [],
-        ],
-      ];
       // bw_log( 'dirty html', $html );
-      // bw_log( 'clean html', wp_kses( $html, $allowed_html ) );
+      // bw_log( 'clean html', wp_kses( $html, self::BW_ALLOWED_HTML ) );
 
-      return wp_kses( $html, $allowed_html );
+      return wp_kses( $html, self::BW_ALLOWED_HTML );
     }
 
     /**
