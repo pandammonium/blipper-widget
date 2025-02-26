@@ -93,6 +93,21 @@ if (!class_exists('Blipper_Widget')) {
     private static string $cache_key = '';
 
     /**
+     * @var number WP_TRANSIENT_KEY_LIMIT Reflects the maximum character
+     * limit permitted for WordPress transient names. It is currently 172.
+     * @access private
+     *
+     * @since 1.2.6
+     * @author pandammonium
+     *
+     * @see https://developer.wordpress.org/reference/functions/set_transient/
+     *  WordPress developer documentation for set_transient().
+     * @see https://developer.wordpress.org/reference/functions/get_transient/
+     *   WordPress developer documentation for get_transient().
+     */
+    private const WP_TRANSIENT_KEY_LIMIT = 172;
+
+    /**
       * @since    1.1.1
       * @deprecated 1.2.6 Unused.
       * @property array     $style_control_classes   The classes used for styling
@@ -347,14 +362,28 @@ if (!class_exists('Blipper_Widget')) {
       return $result;
     }
 
-    private static function bw_get_a_cache_key( array $settings, string $the_blip_title ) {
+    private static function bw_get_a_cache_key( array $settings, string $the_blip_title ): string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      ksort( $settings );
-      $cache_key = BW_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $settings ) . wp_strip_all_tags( $the_blip_title ) );
-      // bw_log( 'cache key', $cache_key );
-      return $cache_key;
+      try {
+        ksort( $settings );
+        $cache_key = BW_PREFIX . md5( self::CACHE_EXPIRY . implode( ' ', $settings ) . wp_strip_all_tags( $the_blip_title ) );
+        // bw_log( 'Cache key', $cache_key );
+        // bw_log( 'Cache key ' . var_export( $cache_key, true ) . ' generated from', [ self::CACHE_EXPIRY, $settings, wp_strip_all_tags( $the_blip_title ), ] );
+        $length = strlen( $cache_key );
+        if ( self::WP_TRANSIENT_KEY_LIMIT < $length ) {
+          bw_log( 'Cache key length (must be <' . self::WP_TRANSIENT_KEY_LIMIT + 1 . ' chars)', var_export( $length, true ) );
+          $cache_key = substr( $cache_key, 0, self::WP_TRANSIENT_KEY_LIMIT );
+          throw new \LengthException( 'Too long a cache key generated; it should be less than ' . self::WP_TRANSIENT_KEY_LIMIT + 1 . ' characters, but it is ' . var_export( $length, true ) . ' characters. Cache key has been truncated, which may cause errors later.' );
+        }
+      } catch ( \LengthException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e );
+      } finally {
+        return $cache_key;
+      }
     }
 
     /**
@@ -439,21 +468,24 @@ if (!class_exists('Blipper_Widget')) {
       return $the_blip;
     }
 
-    private static function bw_get_cache( ?string $cache_key = null ): bool|array|string {
+    /**
+     * Gets the given cache (stored as a WP transient).
+     *
+     * @since <1.2.6
+     * @author pandammonium
+     *
+     * @param ?string $cache_key The key of the cache to find. If it's not
+     * provided, the stored cache key is used. Default is null.
+     * @return false|string Returns false on failure, otherwise returns the
+     * transient in the form of a string.
+     */
+    private static function bw_get_cache( ?string $cache_key = null ): string|false {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      // bw_log( 'cache key', self::$cache_key );
-      // bw_log( 'cache expiry', self::CACHE_EXPIRY );
-
-      if ( is_numeric( self::CACHE_EXPIRY ) ) {
-        $transient = get_transient( $cache_key ?? self::$cache_key );
-        // bw_log( 'transient', $transient );
-        return $transient;
-      } else {
-        throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY, 0 );
-      }
-      // bw_log( 'cache exists', false === $transient ? 'not found' : 'found' );
+      $transient = get_transient( $cache_key ?? self::$cache_key );
+      // bw_log( data_name: 'Cache', data: $transient, is_html: true );
+      return $transient;
     }
 
     /**
@@ -475,11 +507,18 @@ if (!class_exists('Blipper_Widget')) {
             widget_settings: $widget_settings,
             content: $content
           ) . '</div>';
+        // bw_log( 'Creating blip with user attributes', $user_attributes );
+        // bw_log( 'The blip', $the_blip );
 
         // Save the blip in the cache for next time it's loaded before it expires:
-        self::bw_set_cache( $the_blip );
-        // bw_log( 'The blip: ', $the_blip );
-        return $the_blip;
+        try {
+          self::bw_set_cache( $the_blip );
+        } catch ( \Exception $e ) {
+          self::bw_display_error_msg( $e );
+        } finally {
+          // Need to display the blip whether it's been cached or not.
+          return $the_blip;
+        }
       } else {
         return false;
       }
@@ -491,10 +530,11 @@ if (!class_exists('Blipper_Widget')) {
      * @author dartiss, pandammonium
      * @since 2.0.0
      *
-     * @param int $i The current line number of the readme file.
-     * @return void
+     * @param string $data_to_cache The data that should be cached – that is,
+     * the newly generated blip data.
+     * @return bool True if the data was successfully cached; otherwise false.
      */
-    private static function bw_set_cache( mixed $data_to_cache ): void {
+    private static function bw_set_cache( string $data_to_cache ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -504,8 +544,15 @@ if (!class_exists('Blipper_Widget')) {
       $result = false;
 
       try {
-        if ( is_numeric( self::CACHE_EXPIRY ) ) {
-
+        if ( null === self::CACHE_EXPIRY || is_numeric( self::CACHE_EXPIRY ) ) {
+          // error_log( 'cache is null or numeric' );
+          if ( empty( self::$cache_key ) ) {
+            error_log( 'cache key is empty' );
+            throw new \LogicException( 'The cache key has not yet been set.' );
+          } else if ( false === strpos( BW_PREFIX, substr( self::$cache_key, 0, strlen( BW_PREFIX ) ) ) ) {
+            error_log( 'cache key does not start with ' . BW_PREFIX );
+            throw new \InvalidArgumentException( 'The cache key is invalid.' );
+          }
           $transient = get_transient( self::$cache_key );
           if ( false === $transient ) {
             $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
@@ -514,19 +561,30 @@ if (!class_exists('Blipper_Widget')) {
             $result = true;
           }
         } else {
-          if ( 'no' !== strtolower( self::CACHE_EXPIRY ) ) {
-            throw new \Exception( 'Cache expiry time is invalid. Expected a number; got ' . gettype( self::CACHE_EXPIRY ) . ' ' . self::CACHE_EXPIRY . '.', 0 );
-          }
+          // error_log( 'cache is neither null nor numeric' );
+          throw new \TypeError( 'Cache expiry time is invalid. Expected null or integer; got ' . var_export( gettype( self::CACHE_EXPIRY ), true ) . ' with value ' . var_export( self::CACHE_EXPIRY, true ) . '.' );
         }
+      } catch ( \LogicException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( \InvalidArgumentException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( \TypeError $e ) {
+        self::bw_display_error_msg( $e );
+      } finally {
+        // bw_log( 'Blip cached with key ' . var_export( self::$cache_key, true ), $result );
+      }
+
+      try {
         if ( false === $result ) {
+          // Clean up on failure.
           $deleted = self::bw_delete_cache( self::$cache_key );
-          $deleted_msg = ( $deleted ? 'Cache has been deleted.' : ( get_transient( self::$cache_key ) ? 'Cache was not deleted.' : ' Cache was not found.' ) );
-          throw new \Exception( 'Failed to save blip in cache ' . self::$cache_key . '. ' . $deleted_msg, 0 );
-        } else {
-      bw_log( 'Cached blip with key', self::$cache_key );
+          $deleted_msg = ( $deleted ? 'Cache has been deleted.' : ( ( !isset( $transient ) || false === $transient ) ? 'Cache was not created.' : ' Cache was not deleted and still exists in some state.' ) );
+          throw new \Exception( 'Failed to save blip in cache ' . var_export( self::$cache_key, true ) . '. ' . $deleted_msg );
         }
       } catch( \Exception $e ) {
-        throw( $e );
+        self::bw_display_error_msg( $e );
+      } finally {
+        return $result;
       }
     }
 
@@ -2508,14 +2566,14 @@ if (!class_exists('Blipper_Widget')) {
      * well; false not to. Default is false.
      * @since    1.1.1
     */
-    private static function bw_display_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false, bool $writeToLog = false ): void {
+    private static function bw_display_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false, bool $writeToLog = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       if ( $request_limit_reached  ) {
         bw_log( 'Blipfoto request limit reached', $request_limit_reached );
       }
-      // bw_log( self::bw_get_exception_class( $e ), null, false, false );
+      // bw_log( 'Throwable class: ' . self::bw_get_throwable_class( $e ), null, false, false );
 
       if ( current_user_can( 'manage_options' ) ) {
         self::bw_display_private_error_msg( $e, $additional_info, $request_limit_reached );
@@ -2541,14 +2599,14 @@ if (!class_exists('Blipper_Widget')) {
      * limit has been reached; otherwise false.
      * @since    1.1.1
       */
-    private static function bw_display_private_error_msg( \Exception $e, string $additional_info = '', bool $request_limit_reached = false ): void {
+    private static function bw_display_private_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $exception_class = __( self::bw_get_exception_class( $e ), 'blipper-widget' );
+      $exception_class = __( self::bw_get_throwable_class( $e ), 'blipper-widget' );
       $code = ' (' . $e->getCode() . ')';
       $start = '<p>Blipper Widget <span class=\'' . self::bw_get_css_error_classes( $e ) . '\'>' . $exception_class . $code . '</span>: ';
-      $message = __( $e->getMessage(), 'blipper-widget' );
+      $message = __( htmlspecialchars( $e->getMessage() ), 'blipper-widget' );
       $additional_info = empty( $additional_info ) ? '' : (' ' . __( $additional_info . '.', 'blipper-widget' ));
       $request_limit_info = ( $request_limit_reached ? __( ' Please try again in 15 minutes.', 'blipper-widget' ) : '' );
       $end = '</p>';
@@ -2583,31 +2641,33 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Displays a message based on the exception class.
      */
-    private static function bw_get_exception_class( $e ) {
+    private static function bw_get_throwable_class( $e ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       // error_log( 'class: ' . var_export( get_class( $e ), true ) );
 
       switch ( get_class( $e ) ) {
-        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException':
-          return 'Blipfoto error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException':
-          return 'Blipfoto API response error';
+        return 'Blipfoto API response error';
+        case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_BaseException':
+        return 'Blipfoto error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_FileException':
-          return 'File error';
+        return 'File error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidResponseException':
-          return 'Invalid response';
+        return 'Invalid response';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException':
-          return 'Network error';
+        return 'Network error';
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
-          return 'OAuth error';
+        return 'OAuth error';
         case 'ErrorException':
         case 'Error':
-          return 'Error';
+        return 'Error';
+        case 'InvalidArgumentException':
+        case 'LengthException':
         case 'Exception':
         default:
-          return 'Warning';
+        return 'Warning';
         }
     }
 
@@ -2626,12 +2686,12 @@ if (!class_exists('Blipper_Widget')) {
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_NetworkException':
         case 'Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException':
         case 'ErrorException':
-          return self::bw_get_css_class( 'error' );
+        return self::bw_get_css_class( 'error' );
         case 'Exception':
-          return self::bw_get_css_class( 'warning' );
+        return self::bw_get_css_class( 'warning' );
         default:
           // error_log( 'exception class: ' . var_export( get_class( $e ), true ) );
-          return self::bw_get_css_class( 'notice' );
+        return self::bw_get_css_class( 'notice' );
         }
     }
 
@@ -2643,7 +2703,7 @@ if (!class_exists('Blipper_Widget')) {
         case 'error':
         case 'warning':
         case 'notice':
-          return __( $type . ' ' . 'blipper-widget-' . $type , 'blipper-widget' );
+        return __( $type . ' ' . 'blipper-widget-' . $type, 'blipper-widget' );
       }
     }
 

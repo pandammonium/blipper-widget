@@ -200,23 +200,44 @@ if ( !function_exists( 'bw_log' ) ) {
    * @param bool $echo
    * * `true`: Echo the data name and the data
    * * `false`: Send the data name and the data to the error log (default)
+   * @param bool $includes_data Sometimes, it's desirable to output text with
+   * no data or value. If false, any data supplied is ignored; if true, the
+   * data must be given. Default is true.
+   * @param bool $is_html Treat HTML as a special case if true; treat it as
+   * any other data if false. Default is false.
    */
-  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true ): string {
+  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true, bool $is_html = false ): string {
     // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
     if ( BW_DEBUG ) {
+      if ( $is_html && 'string' === gettype( $data ) ) {
+        function bw_pretty_print_html( string $html ): string {
+          // Use regex to add a newline after each HTML tag
+          $pretty_html = preg_replace('/(>)(<)/', "$1\n$2", $html);
+          return "\n" . $pretty_html;
+        }
+        $data = bw_pretty_print_html( $data );
+      }
       if ( $echo ) {
-        $string = 'Blipper Widget: ' . print_r( $data_name, false );
+        $string = 'Blipper Widget | ' . print_r( $data_name, true );
         if ( $includes_data ) {
-          echo $string . ': ' . var_export( $data, false );
+          if ( $is_html ) {
+            echo $string . ': <pre>' . htmlspecialchars( $data ) . '</pre>';
+          } else {
+            echo $string . ': ' . print_r( htmlspecialchars( $data ), true );
+          }
         } else {
           echo $string;
         }
       } else {
         $string = BW_PREFIX_DEBUG . print_r( $data_name, true );
         if ( $includes_data ) {
-          error_log( $string . ': ' . var_export( $data, true ) );
+          if ( $is_html ) {
+            error_log( $string . ':' . $data );
+          } else {
+            error_log( $string . ': ' . var_export( $data, true ) );
+          }
         } else {
           error_log( $string );
         }
