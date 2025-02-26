@@ -69,16 +69,21 @@ if (!class_exists('Blipper_Widget')) {
       );
 
     /**
-     * @var string Defines the length of time the cache should be retained for in
-     * minutes. Must have a numeric value (i.e. `true ===
-     * is_numeric(self::CACHE_EXPIRY)`).
-     * Default: `'60'`.
+     * @var ?int CACHE_EXPIRY Define how long the cache (implemented as a
+     * WP transient) should persist for. If null, then it never expires. If a
+     * number, then the cache should expire up to that many seconds after
+     * creation. NB There is no guarantee that a transient will not expire
+     * before the expiration time is up. WP default: 60. The WP constant for
+     * the number of seconds in a day is used here because the idea behind
+     * Blipfoto is that one blip a day is published. If the cache expired in
+     * a longer time, new blips might not be shown.
      * @access private
      *
      * @author pandammonium
      * @since 1.2.3
      */
     private const CACHE_EXPIRY = DAY_IN_SECONDS;
+
     /**
      * @var string The key used to identify each cache. Generated using the
      * MD5 algorithm, which isn't recommended for secure cryptographic
@@ -409,7 +414,7 @@ if (!class_exists('Blipper_Widget')) {
      * @return string|bool The HTML that will render the blip or false on
      * failure.
      */
-    private static function bw_render_the_blip( array $user_attributes, bool $is_widget, ?string $the_blip_title = null, ?array $widget_settings = null, ?string $content = null, string $cache_key = '' ) {
+    private static function bw_render_the_blip( array $user_attributes, bool $is_widget, ?string $the_blip_title = null, ?array $widget_settings = null, ?string $content = null, ?string $cache_key = null ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -420,20 +425,13 @@ if (!class_exists('Blipper_Widget')) {
         // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
           self::$cache_key = self::bw_get_a_cache_key( $user_attributes, $the_blip_title );
-          // error_log( 'new cache key: ' . var_export( self::$cache_key, true ) );
           $the_cache = self::bw_get_cache();
-          // error_log( 'cache is empty: ' . var_export( empty( $the_cache ), true ) );
-          // error_log( 'is widget: ' . var_export( $is_widget, true ) );
-          // error_log( 'shortcode cache key: ' . var_export( $cache_key, true ) );
           // error_log( 'cache keys match: ' . var_export( self::$cache_key === $cache_key, true ) );
-          // error_log( 'updated: ' . var_export( $updated, true ) );
 
           // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
-          // bw_log( 'This blip\'s settings have changed', ( $updated ? 'yes' : 'no' ) );
 
           if ( empty( $the_cache ) ) {
-            bw_log( data_name: 'Rendering blip from scratch', includes_data: false );
-
+            // bw_log( data_name: 'Rendering blip from scratch', includes_data: false );
             // The blip does not exist in the cache, so it needs to be generated:
             $the_blip = self::bw_generate_blip(
               widget_settings: $widget_settings,
@@ -441,11 +439,8 @@ if (!class_exists('Blipper_Widget')) {
               is_widget: $is_widget,
               content: $content
             );
-
           } else {
-            bw_log( 'Rendering blip from cache', self::$cache_key );
-            // error_log( 'the cache: ' . var_export( $the_cache, true ) );
-
+            // bw_log( 'Rendering blip from cache', self::$cache_key );
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
             $the_blip = $the_cache;
           }
@@ -2704,6 +2699,10 @@ if (!class_exists('Blipper_Widget')) {
         case 'warning':
         case 'notice':
         return __( $type . ' ' . 'blipper-widget-' . $type, 'blipper-widget' );
+        default:
+          // Unrecognised type.
+          bw_log( 'CSS class type', $type );
+        return '';
       }
     }
 
