@@ -426,6 +426,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
       } finally {
+        bw_log( 'Generated cache key: ', $cache_key );
         return $cache_key;
       }
     }
@@ -497,7 +498,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg(
           e: $e,
-          writeToLog: true
+          write_to_log: true
         );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
@@ -2584,11 +2585,11 @@ if (!class_exists('Blipper_Widget')) {
      * user.
      * @param    bool $request_limit_reached True if the Blipfoto request
      * limit has been reached; otherwise false.
-     * @param bool $writeToLog True to write the error to the log file as
+     * @param bool $write_to_log True to write the error to the log file as
      * well; false not to. Default is false.
      * @since    1.1.1
     */
-    private static function bw_display_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false, bool $writeToLog = false ): void {
+    private static function bw_display_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false, bool $write_to_log = false ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2603,7 +2604,7 @@ if (!class_exists('Blipper_Widget')) {
         self::bw_display_public_error_msg( $request_limit_reached );
       }
 
-      if ( $writeToLog ) {
+      if ( $write_to_log ) {
         bw_exception( $e );
       }
     }
@@ -2754,8 +2755,9 @@ if (!class_exists('Blipper_Widget')) {
       bw_log( 'method', __METHOD__ . '()' );
       bw_log( 'arguments', func_get_args() );
 
-      $widget_settings = $this->bw_get_widget_settings( $widget_id, $id_base );
-      if ( false !== $widget_settings ) {
+      $widget_settings = [];
+      $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
+      if ( false !== $result ) {
         foreach ( $widget_settings as $setting ) {
           // Check if it's a widget setting:
           if ( 0 === strpos( $setting->id, 'widget_' ) ) {
@@ -2767,6 +2769,24 @@ if (!class_exists('Blipper_Widget')) {
         }
       }
     }
+
+    /**
+     * Deletes all the Blipper Widget widgets from Appearance > Widgets on
+     * pressing the Clear Inactive Widgets button.
+     */
+    public function bw_on_delete_inactive_widgets_from_backend() {
+      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $sidebars_widgets = wp_get_sidebars_widgets();
+      $sidebar_id = 'wp_inactive_widgets';
+
+      foreach ( $sidebars_widgets[$sidebar_id] as $key => $widget_id ) {
+        // error_log( 'widget id: ' . var_export( $widget_id, true ) );
+        $this->bw_on_delete_widget_from_backend( $widget_id, $sidebar_id, BW_ID_BASE );
+      }
+    }
+
     /**
      * Removes data that doesn't need storing if an instance of the widget is
      * removed.
@@ -2780,36 +2800,81 @@ if (!class_exists('Blipper_Widget')) {
      * @param $id_base The identifier of the Blipper Widget widget.
      */
     public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): void {
-      // bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $widget_settings = $this->bw_get_widget_settings( $widget_id, $id_base );
+      $deleted = false;
+      $cache_is_clean = false;
+      $option_is_gone = false;
+      $widget_settings = [];
+
+      $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
+      error_log( 'widget settings: ' . var_export( $widget_settings, true ) );
       // Log or perform actions when a widget is removed:
-      if ( false !== $widget_settings ) {
-        self::$cache_key = self::bw_get_a_cache_key( $widget_settings, $widget_settings['title'] );
-        $deleted = self::bw_delete_cache( self::$cache_key );
-        if ( $deleted ) {
-          error_log( 'Widget ' . $widget_id . ' removed from sidebar ' . $sidebar_id );
+      if ( false === $result ) {
+        // An error occurred; cannot delete cache (if it exists).
+      } else {
+        if ( empty( $widget_settings ) ) {
+          // Report success because there not being any settings isn't a failure:
+          $cache_is_clean = true;
+        } else {
+          self::$cache_key = self::bw_get_a_cache_key( $widget_settings, $widget_settings['title'] );
+          if ( false === self::bw_get_cache( self::$cache_key ) ) {
+            bw_log( 'Cache not found', self::$cache_key );
+            $cache_is_clean = true;
+          } else {
+            $cache_is_clean = self::bw_delete_cache( self::$cache_key );
+          }
+          bw_log( 'Cleaned cache of widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ), $cache_is_clean );
         }
       }
+
+      if ( 'wp_inactive_widgets' === $sidebar_id ) {
+        bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is inactive', includes_data: false );
+        // Report success because the widget isn't on a sidebar to be deleted from it:
+        $option_is_gone = true;
+      } else {
+        $option_is_gone = delete_option( $widget_id, true );
+      }
+      bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is no longer on sidebar ' . $sidebar_id, $option_is_gone );
+
+      $deleted = $cache_is_clean && $option_is_gone;
+      bw_log( 'Cleaned up widget ' . var_export( $widget_id, true ), $deleted );
     }
 
-    private function bw_get_widget_settings( string $widget_id, string $id_base ): array|false {
+    /**
+     * @return bool True on success, which includes not being able to find
+     * the settings; false on failure.
+     */
+    private function bw_get_widget_settings( string $widget_id, string $id_base, array &$widget_settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $all_widget_settings = parent::get_settings();
-      // error_log( 'all widget options: ' . var_export( $all_widget_settings, true ) );
 
-      // Get the settings for this widget. Start by finding the array key from the widget id:
-      $widget_key = str_replace( $id_base . '-', '', $widget_id ) + 0;
-      // error_log( 'widget key: ' . var_export( $widget_key, true ) );
-      // error_log( 'widget ' . var_export( $widget_key, true ) . ' options: ' . var_export( $all_widget_settings[$widget_key], true ) );
-      if ( empty( $all_widget_settings[ $widget_key ] ) ) {
-        bw_log( 'Settings not found for widget ', $widget_id );
+      try {
+        // Get the settings for this widget. Start by finding the array key from the widget id:
+        $key_string = str_replace( $id_base . '-', '', $widget_id );
+        // error_log( 'key string: ' . var_export( $key_string, true ) );
+        $widget_key = (int)$key_string;
+        // error_log( 'widget key: ' . var_export( $widget_key, true ) );
+        // Casting a string that doesn't start with a digit returns 0, which is a valid array index. Therefore, need to distinguish between a genuine zero and a zero caused by an unexpected error, although it's likely that zero will never be a valid value because the id numbering typically seems to start at one – but you can't be too careful:
+        if ( 0 === $widget_key && '0' !== $key_string ) {
+          throw new \LogicException( 'Unexpected widget id' );
+        }
+        error_log( 'widget key: ' . var_export( $widget_key, true ) );
+        // error_log( 'widget ' . var_export( $widget_key, true ) . ' options: ' . var_export( $all_widget_settings[$widget_key], true ) );
+        if ( empty( $all_widget_settings[ $widget_key ] ) ) {
+          bw_log( 'Settings not found for widget ' . $widget_id . '; therefore cannot find cache to delete it', includes_data: false );
+          return true;
+        } else {
+          $widget_settings = $all_widget_settings[ $widget_key ];
+          return true;
+        }
+      } catch ( \LogicException $e ) {
+        self::bw_display_error_msg( $e, write_to_log: false );
+        $widget_settings = [];
         return false;
-      } else {
-        return $all_widget_settings[ $widget_key ];
       }
     }
 
@@ -2929,6 +2994,12 @@ if (!class_exists('Blipper_Widget')) {
       add_action(
         hook_name: 'pre_post_update',
         callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
+      );
+
+      add_action(
+        hook_name: 'widgets.php',
+        callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ],
+        accepted_args: 0
       );
 
       add_action(
