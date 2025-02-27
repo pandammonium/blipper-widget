@@ -2775,7 +2775,7 @@ if (!class_exists('Blipper_Widget')) {
      * pressing the Clear Inactive Widgets button.
      */
     public function bw_on_delete_inactive_widgets_from_backend() {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $sidebars_widgets = wp_get_sidebars_widgets();
@@ -2800,7 +2800,7 @@ if (!class_exists('Blipper_Widget')) {
      * @param $id_base The identifier of the Blipper Widget widget.
      */
     public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): void {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       $deleted = false;
@@ -2834,7 +2834,14 @@ if (!class_exists('Blipper_Widget')) {
         // Report success because the widget isn't on a sidebar to be deleted from it:
         $option_is_gone = true;
       } else {
-        $option_is_gone = delete_option( $widget_id, true );
+        if ( empty( $widget_settings ) ) {
+          // Report success because there not being any settings isn't a failure:
+          $option_is_gone = true;
+        } else {
+          unset( $widget_settings[$widget_id] );
+          $option_is_gone = update_option( 'widget_' . $id_base, $widget_settings );
+          // $option_is_gone = delete_option( $widget_id, true );
+        }
       }
       bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is no longer on sidebar ' . $sidebar_id, $option_is_gone );
 
