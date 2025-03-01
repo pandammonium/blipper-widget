@@ -44,8 +44,8 @@ namespace Blipper_Widget;
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-require_once( plugin_dir_path(__FILE__ ) . 'classes/class-settings.php' );
-require_once( plugin_dir_path(__FILE__ ) . 'classes/class-widget.php' );
+require_once( plugin_dir_path( __FILE__ ) . 'classes/class-settings.php' );
+require_once( plugin_dir_path( __FILE__ ) . 'classes/class-widget.php' );
 
 use Blipper_Widget\Settings\Blipper_Widget_Settings;
 use Blipper_Widget\Widget\Blipper_Widget;
