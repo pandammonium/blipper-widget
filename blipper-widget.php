@@ -276,7 +276,7 @@ if ( !function_exists( 'enqueue_custom_script' ) ) {
     // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
-    $custom_widget_script = plugin_dir_url(__FILE__) . 'includes/js/custom-widget-script.js';
+    // $custom_widget_script = plugin_dir_url(__FILE__) . 'includes/js/custom-widget-script.js';
     error_log( 'custom widget script: ' . var_export( $custom_widget_script, true ) );
     wp_enqueue_script(
       'custom-widget-script',

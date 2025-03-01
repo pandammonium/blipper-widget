@@ -2787,7 +2787,7 @@ if (!class_exists('Blipper_Widget')) {
       $inactive_widget_ids = self::get_inactive_widget_ids();
       // Perform custom actions with the inactive widget IDs
       foreach ( $inactive_widget_ids as $widget_id ) {
-        error_log( 'inactive widget id: ' . $widget_id );
+        // error_log( 'inactive widget id: ' . $widget_id );
         $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
       }
 
@@ -2855,7 +2855,7 @@ if (!class_exists('Blipper_Widget')) {
           } else {
             $cache_is_clean = self::bw_delete_cache( self::$cache_key );
           }
-          bw_log( 'Cleaned cache of widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ), $cache_is_clean );
+          bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ) . ' cleaned', $cache_is_clean );
         }
       }
 
@@ -2865,6 +2865,7 @@ if (!class_exists('Blipper_Widget')) {
         $option_is_gone = true;
       } else {
         if ( empty( $widget_settings ) ) {
+          bw_log( 'Widget ' . var_export( $widget_id, true ) . '\'s settings not found', includes_data: false );
           // Report success because there not being any settings isn't a failure:
           $option_is_gone = true;
         } else {
@@ -2873,7 +2874,7 @@ if (!class_exists('Blipper_Widget')) {
           // $option_is_gone = delete_option( $widget_id, true );
         }
       }
-      bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is no longer on sidebar ' . $sidebar_id, $option_is_gone );
+      bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . $sidebar_id . ' gone', $option_is_gone );
 
       $deleted = $cache_is_clean && $option_is_gone;
       bw_log( 'Cleaned up widget ' . var_export( $widget_id, true ), $deleted );
