@@ -3064,12 +3064,6 @@ if (!class_exists('Blipper_Widget')) {
         callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ]
       );
 
-      // add_action(
-      //   hook_name: 'wp_dashboard_widgets',//'widgets.php',
-      //   callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ],
-      //   accepted_args: 0
-      // );
-
       add_shortcode(
         tag: 'blipper_widget',
         callback: [ self::class, 'bw_shortcode_blip_display' ]
