@@ -2773,18 +2773,48 @@ if (!class_exists('Blipper_Widget')) {
     /**
      * Deletes all the Blipper Widget widgets from Appearance > Widgets on
      * pressing the Clear Inactive Widgets button.
+     *
+     * @since 1.2.6
+     * @author pandammonium
      */
     public function bw_on_delete_inactive_widgets_from_backend() {
-      // bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $sidebars_widgets = wp_get_sidebars_widgets();
-      $sidebar_id = 'wp_inactive_widgets';
+      check_ajax_referer('custom-widget-nonce', 'nonce');
 
-      foreach ( $sidebars_widgets[$sidebar_id] as $key => $widget_id ) {
-        // error_log( 'widget id: ' . var_export( $widget_id, true ) );
-        $this->bw_on_delete_widget_from_backend( $widget_id, $sidebar_id, BW_ID_BASE );
+      // Get the IDs of the inactive widgets
+      $inactive_widget_ids = self::get_inactive_widget_ids();
+      // Perform custom actions with the inactive widget IDs
+      foreach ( $inactive_widget_ids as $widget_id ) {
+        error_log( 'inactive widget id: ' . $widget_id );
+        $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
       }
+
+      // Send a response back to the client
+      wp_send_json_success( 'Custom action executed successfully.' );
+    }
+
+    /**
+     * Gets the widgets that are in Appearance > Widgets > Inactive Widgets.
+     *
+     * @since 1.2.6
+     * @author pandammonium
+     *
+     * @return array An array containing the IDs of any inactive widgets. If
+     * there aren't any, the array will be empty.
+     */
+    public static function get_inactive_widget_ids(): array {
+      // Get all sidebar widgets
+      $sidebars_widgets = wp_get_sidebars_widgets();
+
+      // Check if the inactive widgets sidebar exists:
+      if ( isset( $sidebars_widgets['wp_inactive_widgets'] ) ) {
+          // Return the widget IDs in the inactive widgets sidebar:
+          return $sidebars_widgets['wp_inactive_widgets'];
+      }
+      // Return an empty array if the inactive widgets sidebar does not exist:
+      return [];
     }
 
     /**
@@ -2988,8 +3018,17 @@ if (!class_exists('Blipper_Widget')) {
       );
 
       add_action(
+        hook_name: 'customize_publish_after',// or customize_save_after
+        callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
+        priority: 9999,
+        accepted_args: 1
+      );
+
+      add_action(
         hook_name: 'customize_save_after',
-        callback: 'bw_on_widget_setting_change_in_customiser'
+        callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
+        priority: 9999,
+        accepted_args: 1
       );
 
       add_action(
@@ -3004,16 +3043,21 @@ if (!class_exists('Blipper_Widget')) {
       );
 
       add_action(
-        hook_name: 'widgets.php',
-        callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ],
-        accepted_args: 0
-      );
-
-      add_action(
         hook_name: 'updated_widget',
         callback: [ $this, 'bw_on_widget_setting_change_in_backend' ],
         accepted_args: 3
       );
+
+      add_action(
+        hook_name: 'wp_ajax_bw_on_delete_inactive_widgets_from_backend',
+        callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ]
+      );
+
+      // add_action(
+      //   hook_name: 'wp_dashboard_widgets',//'widgets.php',
+      //   callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ],
+      //   accepted_args: 0
+      // );
 
       add_shortcode(
         tag: 'blipper_widget',

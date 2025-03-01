@@ -87,6 +87,14 @@ define( 'BW_PREFIX', BW_ID . '_' );
  */
 define( 'BW_PREFIX_DEBUG', strtoupper( BW_ID ) . ' | ' );
 
+/**
+ * @var string BW_ID_BASE The string that WP uses as the ID base for widgets.
+ *
+ * @author pandammonium
+ * @since 1.2.6
+ */
+define( 'BW_ID_BASE', 'blipper_widget' );
+
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('bw_register_widget')) {
@@ -247,4 +255,41 @@ if ( !function_exists( 'bw_log' ) ) {
       return '';
     }
   }
+}
+
+// ------------------------------------------------------------------------- //
+
+// Scripts
+
+/**
+ * Enqueues scripts that are independent of the OAuth settings and the Widget.
+ *
+ * Enqueues the Javascript script that will handle the case when Appearance >
+ * Widgets > Clear Inactive Widgets is pressed.
+ *
+ * @since 1.2.6
+ * @author pandammonium
+ *
+ */
+if ( !function_exists( 'enqueue_custom_script' ) ) {
+  function enqueue_custom_script( string $args ): void {
+    // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
+    // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
+
+    $custom_widget_script = plugin_dir_url(__FILE__) . 'includes/js/custom-widget-script.js';
+    error_log( 'custom widget script: ' . var_export( $custom_widget_script, true ) );
+    wp_enqueue_script(
+      'custom-widget-script',
+      $custom_widget_script,
+      array('jquery'),
+      null,
+      true
+    );
+
+    wp_localize_script('custom-widget-script', 'custom_widget_ajax', array(
+      'ajax_url' => admin_url('admin-ajax.php'),
+      'nonce' => wp_create_nonce('custom-widget-nonce')
+    ));
+  }
+  add_action('admin_enqueue_scripts', 'Blipper_Widget\enqueue_custom_script');
 }
