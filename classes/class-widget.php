@@ -2960,6 +2960,22 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      $delete_inactive_widgets_script = plugin_dir_url(__FILE__) . '../includes/js/delete-inactive-widgets.js';
+      // error_log( 'delete inactive widgets script: ' . var_export( $delete_inactive_widgets_script, true ) );
+      wp_enqueue_script(
+        'delete-inactive-widgets',
+        $delete_inactive_widgets_script,
+        array('jquery'),
+        null,
+        true
+      );
+
+      wp_localize_script('delete-inactive-widgets', 'delete_inactive_widgets_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('delete-inactive-widgets-nonce')
+      ));
+
+
       if ( 'widgets.php' === $hook_suffix ) {
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
