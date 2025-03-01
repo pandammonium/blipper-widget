@@ -276,25 +276,25 @@ if ( !function_exists( 'bw_log' ) ) {
  * @author pandammonium
  *
  */
-if ( !function_exists( 'enqueue_custom_script' ) ) {
-  function enqueue_custom_script( string $args ): void {
+if ( !function_exists( 'bw_enqueue_scripts' ) ) {
+  function bw_enqueue_scripts( string $args ): void {
     // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
-    // $custom_widget_script = plugin_dir_url(__FILE__) . 'includes/js/custom-widget-script.js';
-    error_log( 'custom widget script: ' . var_export( $custom_widget_script, true ) );
+    $delete_inactive_widgets_script = plugin_dir_url(__FILE__) . 'includes/js/delete-inactive-widgets.js';
+    error_log( 'delete inactive widgets script: ' . var_export( $delete_inactive_widgets_script, true ) );
     wp_enqueue_script(
-      'custom-widget-script',
-      $custom_widget_script,
+      'delete-inactive-widgets',
+      $delete_inactive_widgets_script,
       array('jquery'),
       null,
       true
     );
 
-    wp_localize_script('custom-widget-script', 'custom_widget_ajax', array(
+    wp_localize_script('delete-inactive-widgets', 'delete_inactive_widgets_ajax', array(
       'ajax_url' => admin_url('admin-ajax.php'),
-      'nonce' => wp_create_nonce('custom-widget-nonce')
+      'nonce' => wp_create_nonce('delete-inactive-widgets-nonce')
     ));
   }
-  add_action('admin_enqueue_scripts', 'Blipper_Widget\enqueue_custom_script');
+  add_action('admin_enqueue_scripts', 'Blipper_Widget\bw_enqueue_scripts');
 }

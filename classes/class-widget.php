@@ -2781,11 +2781,10 @@ if (!class_exists('Blipper_Widget')) {
       bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      check_ajax_referer('custom-widget-nonce', 'nonce');
+      check_ajax_referer('delete-inactive-widgets-nonce', 'nonce');
 
       // Get the IDs of the inactive widgets
       $inactive_widget_ids = self::get_inactive_widget_ids();
-      // Perform custom actions with the inactive widget IDs
       foreach ( $inactive_widget_ids as $widget_id ) {
         // error_log( 'inactive widget id: ' . $widget_id );
         $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
