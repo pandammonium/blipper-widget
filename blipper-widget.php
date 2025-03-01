@@ -282,7 +282,7 @@ if ( !function_exists( 'bw_enqueue_scripts' ) ) {
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
     $delete_inactive_widgets_script = plugin_dir_url(__FILE__) . 'includes/js/delete-inactive-widgets.js';
-    error_log( 'delete inactive widgets script: ' . var_export( $delete_inactive_widgets_script, true ) );
+    // error_log( 'delete inactive widgets script: ' . var_export( $delete_inactive_widgets_script, true ) );
     wp_enqueue_script(
       'delete-inactive-widgets',
       $delete_inactive_widgets_script,
