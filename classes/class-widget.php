@@ -2881,6 +2881,16 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
+     * Gets the settings of the Blipper Widget widget specified by the widget
+     * identifier.
+     *
+     * @param string widget_id The identifier of the widget whose settings
+     * are to be obtained.
+     * @param string id_base A prefix indicating the type of widget to get.
+     * Should be 'blipper_widget' for Blipper Widget widgets.
+     * @param array &$widget_settings The array in which the widget settings
+     * are returned.
+     *
      * @return bool True on success, which includes not being able to find
      * the settings; false on failure.
      */
@@ -2922,7 +2932,7 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @deprecated 1.2.6 Superseded by improved error handling.
      */
-    public static function bw_settings_check() {
+    public static function bw_settings_check(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2942,12 +2952,12 @@ if (!class_exists('Blipper_Widget')) {
      *
      * @deprecated 1.2.6 Use bw_enqueue_scripts() instead.
      */
-    public static function bw_load_colour_picker() {
+    public static function bw_load_colour_picker(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
     }
 
-    public static function bw_enqueue_scripts( $hook_suffix ) {
+    public static function bw_enqueue_scripts( $hook_suffix ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2958,11 +2968,11 @@ if (!class_exists('Blipper_Widget')) {
     }
 
     /**
-     * Prints the Javascript scripts.
+     * Prints the Javascript scripts needed by the widget settings form.
      *
      * @since 0.0.5
      */
-    public static function bw_print_scripts() {
+    public static function bw_print_scripts(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 

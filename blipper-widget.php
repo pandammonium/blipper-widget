@@ -53,18 +53,21 @@ use Blipper_Widget\Widget\Blipper_Widget;
 // -------------------------------------------------------------------------- //
 
 /**
+ * @var bool $status True if WordPress is set to log debug information.
  * @ignore This variable is used to determine the debug status of WordPress
  * and should not be accessed elsewhere.
- * @var bool $status True if WordPress is set to log debug information.
  * @since 1.2.6
  */
 $status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG_LOG' ) && true === WP_DEBUG_LOG );
 /**
+ * @var bool BW_DEBUG Indicates whether Blipper Widget debug output should be turned on (true) or off (false). Depends on WP debug and debug log settings, as given by $status.
  * @ignore This constant is used for debug purposes only.
+ * @since <1.2.6
  */
 define( 'BW_DEBUG', true && $status );
+
 /**
- * @var The prefix used to identify Blipper Widget strings.
+ * @var string BW_ID The prefix used to identify Blipper Widget strings.
  *
  * Used in the cache key to distinguish it from other transient keys.
  *
@@ -72,16 +75,18 @@ define( 'BW_DEBUG', true && $status );
  * @since 1.2.3
  */
 define( 'BW_ID', 'bw' );
+
 /**
- * @var The prefix used in the cache key to distinguish it from other
+ * @var string BW_PREFIX The prefix used in the cache key to distinguish it from other
  * transient keys.
  *
  * @author pandammonium
  * @since 1.2.3
  */
 define( 'BW_PREFIX', BW_ID . '_' );
+
 /**
- * @var The prefix used to identify Blipper Widget debug notices.
+ * @var string BW_PREFIX_DEBUG The prefix used to identify Blipper Widget debug notices.
  *
  * @author pandammonium
  */
