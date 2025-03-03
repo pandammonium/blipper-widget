@@ -2804,7 +2804,8 @@ if (!class_exists('Blipper_Widget')) {
       $inactive_widget_ids = self::get_inactive_widget_ids();
       foreach ( $inactive_widget_ids as $widget_id ) {
         // error_log( 'inactive widget id: ' . $widget_id );
-        $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
+        $result = $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
+        // error_log( 'inactive widget ' . var_export( $widget_id, true ) . ' cleaned up: ' . var_export( $result, true ) );
       }
 
       // Send a response back to the client
@@ -2837,6 +2838,9 @@ if (!class_exists('Blipper_Widget')) {
      * Removes data that doesn't need storing if an instance of the widget is
      * removed.
      *
+     * This is done in two stages. First, the cache, if there is one, is
+     * deleted. Second, the widget settings are removed.
+     *
      * @author pandammonium
      * @since 1.2.6
      *
@@ -2844,56 +2848,68 @@ if (!class_exists('Blipper_Widget')) {
      * @param sidebar_id The identifier of the sidebar on which the widget
      * was placed.
      * @param $id_base The identifier of the Blipper Widget widget.
+     * @return bool True if the given widget is absent from the cache and the
+     * database. False if it could not be removed or if the widget is not a
+     * Blipper Widget widget.
      */
-    public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): void {
-      // bw_log( 'method', __METHOD__ . '()' );
-      // bw_log( 'arguments', func_get_args() );
+    public function bw_on_delete_widget_from_backend( string $widget_id, string $sidebar_id, string $id_base ): bool {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
 
       $deleted = false;
       $cache_is_clean = false;
       $option_is_gone = false;
-      $widget_settings = [];
 
-      $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
-      error_log( 'widget settings: ' . var_export( $widget_settings, true ) );
-      // Log or perform actions when a widget is removed:
-      if ( false === $result ) {
-        // An error occurred; cannot delete cache (if it exists).
-      } else {
-        if ( empty( $widget_settings ) ) {
-          // Report success because there not being any settings isn't a failure:
-          $cache_is_clean = true;
+      $needle = BW_ID_BASE;// . '-';
+      if ( str_starts_with( haystack: $widget_id, needle: $needle ) ) {
+
+        $widget_settings = [];
+        $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
+        error_log( 'widget settings (' . var_export( $result, true ) . '): ' . var_export( $widget_settings, true ) );
+        // Log or perform actions when a widget is removed:
+        if ( false === $result ) {
+          // An error occurred; cannot delete cache (if it exists).
         } else {
-          self::$cache_key = self::bw_get_a_cache_key( $widget_settings, $widget_settings['title'] );
-          if ( false === self::bw_get_cache( self::$cache_key ) ) {
-            bw_log( 'Cache not found', self::$cache_key );
+          if ( empty( $widget_settings ) ) {
+            // Report success because there not being any settings isn't a failure:
             $cache_is_clean = true;
           } else {
-            $cache_is_clean = self::bw_delete_cache( self::$cache_key );
+            self::$cache_key = self::bw_get_a_cache_key( $widget_settings, $widget_settings['title'] );
+            if ( false === self::bw_get_cache( self::$cache_key ) ) {
+              bw_log( 'Cache not found', self::$cache_key );
+              // If there's no cached blip, then there's nothing to tidy up:
+              $cache_is_clean = true;
+            } else {
+              $cache_is_clean = self::bw_delete_cache( self::$cache_key );
+            }
           }
-          bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ) . ' cleaned', $cache_is_clean );
+          bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ) . ' cache cleaned', $cache_is_clean );
         }
-      }
 
-      if ( 'wp_inactive_widgets' === $sidebar_id ) {
-        bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is inactive', includes_data: false );
-        // Report success because the widget isn't on a sidebar to be deleted from it:
-        $option_is_gone = true;
-      } else {
-        if ( empty( $widget_settings ) ) {
-          bw_log( 'Widget ' . var_export( $widget_id, true ) . '\'s settings not found', includes_data: false );
-          // Report success because there not being any settings isn't a failure:
+        if ( 'wp_inactive_widgets' === $sidebar_id ) {
+          bw_log( 'Widget ' . var_export( $widget_id, true ) . ' is inactive', includes_data: false );
+          // Report success because the widget isn't on a sidebar to be deleted from it:
           $option_is_gone = true;
         } else {
-          unset( $widget_settings[$widget_id] );
-          $option_is_gone = update_option( 'widget_' . $id_base, $widget_settings );
-          // $option_is_gone = delete_option( $widget_id, true );
+          if ( empty( $widget_settings ) ) {
+            bw_log( 'Widget ' . var_export( $widget_id, true ) . '\'s settings not found', includes_data: false );
+            // Report success because there not being any settings isn't a failure:
+            $option_is_gone = true;
+          } else {
+            unset( $widget_settings[$widget_id] );
+            // Why update option rather than delete it?
+            $option_is_gone = update_option( 'widget_' . $id_base, $widget_settings );
+            // $option_is_gone = delete_option( $widget_id, true );
+          }
         }
+        bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ) . ' settings cleaned', $option_is_gone );
+      } else {
+        error_log( 'widget ' . var_export( $widget_id, true ) . ' is not a blipper widget' );
       }
-      bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . $sidebar_id . ' gone', $option_is_gone );
 
       $deleted = $cache_is_clean && $option_is_gone;
       bw_log( 'Cleaned up widget ' . var_export( $widget_id, true ), $deleted );
+      return $deleted;
     }
 
     /**
