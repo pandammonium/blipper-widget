@@ -443,7 +443,7 @@ if (!class_exists('Blipper_Widget')) {
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        bw_log( 'Generated cache key: ', $cache_key );
+        bw_log( 'Generated cache key', $cache_key );
         return $cache_key;
       }
     }
