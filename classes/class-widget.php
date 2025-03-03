@@ -310,7 +310,7 @@ if (!class_exists('Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       try {
-        $defaults = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], self::DEFAULT_SETTING_VALUES['common'] );
+        $defaults = self::bw_get_default_attributes( false );
         $current_attributes = shortcode_atts( $defaults, $shortcode_attributes, $shortcode );
         $the_blip_title = self::bw_get_the_blip_title( $current_attributes );
 
@@ -377,6 +377,23 @@ if (!class_exists('Blipper_Widget')) {
       } catch( \Exception $e ) {
         return self::bw_display_error_msg( $e );
       }
+    }
+
+    private static function bw_get_default_attributes( bool $is_widget ): array {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $default_attributes = [];
+      if ( $is_widget ) {
+        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] );
+      } else {
+        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], self::DEFAULT_SETTING_VALUES['common'] );
+      }
+      $default_attributes = array_filter( $default_attributes, function( $setting ) {
+        return $setting !== 'hide' && !empty( $setting );
+      });
+      ksort( $default_attributes );
+      return $default_attributes;
     }
 
     /**
