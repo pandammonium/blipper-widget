@@ -3116,6 +3116,464 @@ if (!class_exists('Blipper_Widget')) {
         tag: 'blipper_widget',
         callback: [ self::class, 'bw_shortcode_blip_display' ]
       );
+
+
+      // Testing Customiser hooks
+
+      // add_action(
+      //   hook_name: 'customize_save',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_register',
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_save_after',
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_load_themes',
+      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 3
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_render_panel',
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_controls_head',
+      //   callback: function() {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 0
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_controls_init',
+      //   callback: function() {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 0
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_save_response',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_control_active',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_filter(
+      //   hook_name: 'customize_partial_render',
+      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 3
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_post_value_set',
+      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 3
+      // );
+
+      // add_filter(
+      //   hook_name: 'customize_refresh_nonces',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_render_control',
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_render_section',
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_filter(
+      //   hook_name: 'customize_section_active',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_save_' . BW_ID_BASE,
+      //   callback: function( $arg ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 1
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_loaded_components',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'is_wide_widget_in_customizer',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      // add_action(
+      //   hook_name: 'customize_changeset_branching',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      add_filter(
+        hook_name: 'customize_changeset_save_data',
+        callback: function( $arg1, $arg2 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
+      add_filter(
+        hook_name: 'customize_previewable_devices',
+        callback: function( $arg ) {
+          error_log( current_filter() . '; arg(s) not relevant' );
+          // error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
+
+      add_filter(
+        hook_name: 'customize_dynamic_partial_args',
+        callback: function( $arg1, $arg2 ) {
+          error_log( current_filter() );
+          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+          error_log( '$arg2: ' . var_export( $arg2, true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
+      // add_filter(
+      //   hook_name: 'customize_dynamic_setting_args',
+      //   callback: function( $arg1, $arg2 ) {
+      //     error_log( current_filter() );
+      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 2
+      // );
+
+      add_filter(
+        hook_name: 'widget_customizer_setting_args',
+        callback: function( $arg1, $arg2 ) {
+          if ( str_starts_with( $arg2, 'widget_' . BW_ID_BASE ) ) {
+            error_log( current_filter() );
+            error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+            error_log( '$arg2: ' . var_export( $arg2, true ) );
+          }
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
+      // add_filter(
+      //   hook_name: 'customizer_widgets_section_args',
+      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //     error_log( current_filter() );
+      //     error_log( var_export( func_get_args(), true ) );
+      //   },
+      //   priority: 10,
+      //   accepted_args: 3
+      // );
+
+      add_action(
+        hook_name: 'customize_controls_print_styles',
+        callback: function() {
+          error_log( current_filter() );
+        },
+        priority: 10,
+        accepted_args: 0
+      );
+
+      add_action(
+        hook_name: 'customize_render_partials_after',
+        callback: function( $arg1, $arg2 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
+      add_action(
+        hook_name: 'customize_controls_print_scripts',
+        callback: function() {
+          error_log( current_filter() );
+        },
+        priority: 10,
+        accepted_args: 0
+      );
+
+      add_action(
+        hook_name: 'customize_render_partials_before',
+        callback: function( $arg1, $arg2 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
+      add_action(
+        hook_name: 'customize_save_validation_before',
+        callback: function( $arg ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
+
+      add_action(
+        hook_name: 'customize_controls_enqueue_scripts',
+        callback: function() {
+          error_log( current_filter() );
+        },
+        priority: 10,
+        accepted_args: 0
+      );
+
+      add_filter(
+        hook_name: 'customize_render_partials_response',
+        callback: function( $arg1, $arg2, $arg3 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 3
+      );
+
+      add_action(
+        hook_name: 'customize_render_control_' . $this->id,
+        callback: function( $arg ) {
+          error_log( current_filter() );
+          error_log( 'this id: ' . $this->id );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
+
+      add_action(
+        hook_name: 'customize_render_section_' . $this->id,
+        callback: function() {
+          error_log( current_filter() );
+          error_log( 'this id: ' . $this->id );
+        },
+        priority: 10,
+        accepted_args: 0
+      );
+
+      add_action(
+        hook_name: 'stop_previewing_theme',
+        callback: function( $arg ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
+
+      add_action(
+        hook_name: 'start_previewing_theme',
+        callback: function( $arg ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
+
+      add_filter(
+        hook_name: 'update_custom_css_data',
+        callback: function( $arg1, $arg2 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
+
     }
+
+    private static function bw_array_to_string( mixed $input, int $indent_by = 0 ) {
+
+      $output = '';
+      static $seen = [];
+      $indent = str_repeat( '  ', $indent_by );
+
+      switch ( gettype( $input ) ) {
+        case 'array':
+          // error_log( 'input is array' );
+          if ( in_array( $input, $seen, false ) ) {
+            // error_log( 'found a circular reference' );
+            $output .= '⛔️';
+          } else {
+            $seen[] = $input;
+            $output .= PHP_EOL . $indent . 'array ' . '[' . PHP_EOL;
+            foreach ( $input as $key => $value ) {
+              // error_log( 'key: ' . var_export( $key, true ) );
+              $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+            }
+            $output .= $indent . ']';
+          }
+        break;
+        case 'object':
+          // error_log( 'input is object' );
+          if ( in_array( $input, $seen, false ) ) {
+            // error_log( 'found a circular reference' );
+            $output .= '⛔️';
+          } else {
+            $seen[] = $input;
+            $properties = get_object_vars( $input );
+            if ( empty( $properties ) ) {
+              // error_log( '  … with no public properties' );
+            } else {
+              // error_log( '  … with these public properties:' );
+              $output .= PHP_EOL . $indent . 'object ' . '{' . PHP_EOL;
+              foreach ( $properties as $property => $value ) {
+                // error_log( 'property: ' . var_export( $property, true ) . ' (value type ' . gettype( $value ) . ')' . self::bw_array_to_string( $value ) );
+                $output .= $indent . var_export( $property, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+              }
+              $output .= $indent . '}';
+            }
+          }
+        break;
+        default:
+          // error_log( 'input is ' . gettype( $input ) );
+          if ( in_array( $input, $seen, false ) ) {
+            // error_log( 'found a circular reference' );
+            $output .= '⛔️';
+          } else {
+            // error_log( $indent . 'value: ' . var_export( $input, true ) );
+            $output .= var_export( $input, true );
+          }
+        break;
+      }
+      return $output;
+    }
+
+    // private static function array_to_string($array, $indent = 0) {
+    //   // bw_log( 'method', __METHOD__ . '()' );
+
+    //   static $seen = [];
+
+    //   $result = '';
+
+    //   $indentStr = str_repeat('  ', $indent);
+
+    //   if (is_array($array)) {
+    //       if (in_array($array, $seen, true)) {
+    //           // Circular reference detected
+    //           $result .= $indentStr . 'Circular Reference' . PHP_EOL;
+    //       } else {
+    //           $seen[] = $array;
+    //           $result .= $indentStr . '[' . PHP_EOL;
+    //           foreach ($array as $key => $value) {
+    //               $result .= $indentStr . '  ' . var_export($key, true) . ' => ' . self::array_to_string($value, $indent + 1) . PHP_EOL;
+    //           }
+    //           $result .= $indentStr . ']' . PHP_EOL;
+    //           array_pop($seen);
+    //       }
+    //   } else {
+    //       $result .= $indentStr . var_export($array, true) . PHP_EOL;
+    //   }
+
+    //   return $result;
+    // }
   }
 }
