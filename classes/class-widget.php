@@ -3122,7 +3122,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_action(
       //   hook_name: 'customize_save',
-      //   callback: function( $arg1, $arg2 ) {
+      //   callback: function( $arg0, $arg1 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3152,7 +3152,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_action(
       //   hook_name: 'customize_load_themes',
-      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //   callback: function( $arg0, $arg1, $arg2 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3191,7 +3191,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_action(
       //   hook_name: 'customize_save_response',
-      //   callback: function( $arg1, $arg2 ) {
+      //   callback: function( $arg0, $arg1 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3201,9 +3201,9 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_action(
       //   hook_name: 'customize_control_active',
-      //   callback: function( $arg1, $arg2 ) {
+      //   callback: function( $arg0, $arg1 ) {
       //     error_log( current_filter() );
-      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
+      //     error_log( '$arg0: ' . var_export( $arg0, true ) );
       //   },
       //   priority: 10,
       //   accepted_args: 2
@@ -3211,7 +3211,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_filter(
       //   hook_name: 'customize_partial_render',
-      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //   callback: function( $arg0, $arg1, $arg2 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3221,7 +3221,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_action(
       //   hook_name: 'customize_post_value_set',
-      //   callback: function( $arg1, $arg2, $arg3 ) {
+      //   callback: function( $arg0, $arg1, $arg2 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3231,7 +3231,7 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_filter(
       //   hook_name: 'customize_refresh_nonces',
-      //   callback: function( $arg1, $arg2 ) {
+      //   callback: function( $arg0, $arg1 ) {
       //     error_log( current_filter() );
       //     error_log( var_export( func_get_args(), true ) );
       //   },
@@ -3259,57 +3259,58 @@ if (!class_exists('Blipper_Widget')) {
 
       // add_filter(
       //   hook_name: 'customize_section_active',
-      //   callback: function( $arg1, $arg2 ) {
+      //   callback: function( $arg0, $arg1 ) {
       //     error_log( current_filter() );
-      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
+      //     error_log( '$arg0: ' . var_export( $arg0, true ) );
       //   },
       //   priority: 10,
       //   accepted_args: 2
       // );
 
-      // add_action(
-      //   hook_name: 'customize_save_' . BW_ID_BASE,
-      //   callback: function( $arg ) {
-      //     error_log( current_filter() );
-      //     error_log( var_export( func_get_args(), true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 1
-      // );
+      add_action(
+        hook_name: 'customize_save_' . BW_ID_BASE,
+        callback: function( $arg ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 1
+      );
 
-      // add_action(
-      //   hook_name: 'customize_loaded_components',
-      //   callback: function( $arg1, $arg2 ) {
-      //     error_log( current_filter() );
-      //     error_log( var_export( func_get_args(), true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 2
-      // );
+      add_action(
+        hook_name: 'customize_loaded_components',
+        callback: function( $arg0, $arg1 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
 
-      // add_action(
-      //   hook_name: 'is_wide_widget_in_customizer',
-      //   callback: function( $arg1, $arg2 ) {
-      //     error_log( current_filter() );
-      //     error_log( var_export( func_get_args(), true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 2
-      // );
+      add_action(
+        hook_name: 'is_wide_widget_in_customizer',
+        callback: function( $arg0, $arg1 ) {
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
 
-      // add_action(
-      //   hook_name: 'customize_changeset_branching',
-      //   callback: function( $arg1, $arg2 ) {
-      //     error_log( current_filter() );
-      //     error_log( var_export( func_get_args(), true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 2
-      // );
+      add_action(
+        hook_name: 'customize_changeset_branching',
+        callback: function( $arg0, $arg1 ) {
+          error_log( current_filter() );
+          error_log( '$arg0: ' . var_export( $arg0, true ) );
+          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
 
       add_filter(
         hook_name: 'customize_changeset_save_data',
-        callback: function( $arg1, $arg2 ) {
+        callback: function( $arg0, $arg1 ) {
           error_log( current_filter() );
           error_log( var_export( func_get_args(), true ) );
         },
@@ -3320,8 +3321,8 @@ if (!class_exists('Blipper_Widget')) {
       add_filter(
         hook_name: 'customize_previewable_devices',
         callback: function( $arg ) {
-          error_log( current_filter() . '; arg(s) not relevant' );
-          // error_log( var_export( func_get_args(), true ) );
+          error_log( current_filter() );
+          error_log( var_export( func_get_args(), true ) );
         },
         priority: 10,
         accepted_args: 1
@@ -3329,47 +3330,38 @@ if (!class_exists('Blipper_Widget')) {
 
       add_filter(
         hook_name: 'customize_dynamic_partial_args',
-        callback: function( $arg1, $arg2 ) {
+        callback: function( $arg0, $arg1 ) {
           error_log( current_filter() );
-          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
-          error_log( '$arg2: ' . var_export( $arg2, true ) );
+          error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+          error_log( '$arg1: ' . var_export( $arg1, true ) );
         },
         priority: 10,
         accepted_args: 2
       );
 
-      // add_filter(
-      //   hook_name: 'customize_dynamic_setting_args',
-      //   callback: function( $arg1, $arg2 ) {
-      //     error_log( current_filter() );
-      //     error_log( '$arg1: ' . var_export( $arg1, true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 2
-      // );
+      add_filter(
+        hook_name: 'customize_dynamic_setting_args',
+        callback: function( $arg0, $arg1 ) {
+          error_log( current_filter() );
+          error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+          error_log( '$arg1: ' . var_export( $arg1, true ) );
+        },
+        priority: 10,
+        accepted_args: 2
+      );
 
       add_filter(
         hook_name: 'widget_customizer_setting_args',
-        callback: function( $arg1, $arg2 ) {
-          if ( str_starts_with( $arg2, 'widget_' . BW_ID_BASE ) ) {
+        callback: function( $arg0, $arg1 ) {
+          if ( str_starts_with( $arg1, 'widget_' . BW_ID_BASE ) ) {
             error_log( current_filter() );
-            error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
-            error_log( '$arg2: ' . var_export( $arg2, true ) );
+            error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+            error_log( '$arg1: ' . var_export( $arg1, true ) );
           }
         },
         priority: 10,
         accepted_args: 2
       );
-
-      // add_filter(
-      //   hook_name: 'customizer_widgets_section_args',
-      //   callback: function( $arg1, $arg2, $arg3 ) {
-      //     error_log( current_filter() );
-      //     error_log( var_export( func_get_args(), true ) );
-      //   },
-      //   priority: 10,
-      //   accepted_args: 3
-      // );
 
       add_action(
         hook_name: 'customize_controls_print_styles',
@@ -3382,7 +3374,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_action(
         hook_name: 'customize_render_partials_after',
-        callback: function( $arg1, $arg2 ) {
+        callback: function( $arg0, $arg1 ) {
           error_log( current_filter() );
           error_log( var_export( func_get_args(), true ) );
         },
@@ -3401,7 +3393,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_action(
         hook_name: 'customize_render_partials_before',
-        callback: function( $arg1, $arg2 ) {
+        callback: function( $arg0, $arg1 ) {
           error_log( current_filter() );
           error_log( var_export( func_get_args(), true ) );
         },
@@ -3430,7 +3422,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_filter(
         hook_name: 'customize_render_partials_response',
-        callback: function( $arg1, $arg2, $arg3 ) {
+        callback: function( $arg0, $arg1, $arg2 ) {
           error_log( current_filter() );
           error_log( var_export( func_get_args(), true ) );
         },
@@ -3480,7 +3472,7 @@ if (!class_exists('Blipper_Widget')) {
 
       add_filter(
         hook_name: 'update_custom_css_data',
-        callback: function( $arg1, $arg2 ) {
+        callback: function( $arg0, $arg1 ) {
           error_log( current_filter() );
           error_log( var_export( func_get_args(), true ) );
         },
@@ -3496,48 +3488,67 @@ if (!class_exists('Blipper_Widget')) {
       static $seen = [];
       $indent = str_repeat( '  ', $indent_by );
 
+      $circular_ref_text = function( mixed $input ): string {
+        return '⛔️ ' . ( 'object' === gettype( $input ) ? gettype( $input ) . ' (' . get_class( $input ) . ')' : gettype( $input ) );
+      };
+      $output_data = function( mixed $input, string $indent, int $indent_by = 0 ): string {
+        $output = '';
+        foreach ( $input as $key => $value ) {
+          // error_log( 'key: ' . var_export( $key, true ) );
+          $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+        }
+        return $output;
+      };
+
       switch ( gettype( $input ) ) {
         case 'array':
           // error_log( 'input is array' );
-          if ( in_array( $input, $seen, false ) ) {
+          if ( in_array( $input, $seen, true ) ) {
             // error_log( 'found a circular reference' );
-            $output .= '⛔️';
+            $output .= $circular_ref_text( $input );
           } else {
             $seen[] = $input;
-            $output .= PHP_EOL . $indent . 'array ' . '[' . PHP_EOL;
-            foreach ( $input as $key => $value ) {
-              // error_log( 'key: ' . var_export( $key, true ) );
-              $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
-            }
-            $output .= $indent . ']';
+            $output .= PHP_EOL . $indent . 'array ' . '(' . PHP_EOL;
+            // foreach ( $input as $key => $value ) {
+            //   // error_log( 'key: ' . var_export( $key, true ) );
+            //   $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+            // }
+            $output .= $output_data( $input, $indent, $indent_by );
+            $output .= $indent . ')';
           }
         break;
         case 'object':
           // error_log( 'input is object' );
-          if ( in_array( $input, $seen, false ) ) {
-            // error_log( 'found a circular reference' );
-            $output .= '⛔️';
-          } else {
+          if ( 'Closure' === get_class( $input ) ) {
+            $output .= 'object ' . get_class( $input ) . ')';
             $seen[] = $input;
-            $properties = get_object_vars( $input );
-            if ( empty( $properties ) ) {
-              // error_log( '  … with no public properties' );
+          } else {
+            if ( in_array( $input, $seen, true ) ) {
+              // error_log( 'found a circular reference' );
+              $output .= $circular_ref_text( $input );
             } else {
-              // error_log( '  … with these public properties:' );
-              $output .= PHP_EOL . $indent . 'object ' . '{' . PHP_EOL;
-              foreach ( $properties as $property => $value ) {
-                // error_log( 'property: ' . var_export( $property, true ) . ' (value type ' . gettype( $value ) . ')' . self::bw_array_to_string( $value ) );
-                $output .= $indent . var_export( $property, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+              $seen[] = $input;
+              $properties = get_object_vars( $input );
+              if ( empty( $properties ) ) {
+                // error_log( '  … with no public properties' );
+              } else {
+                // error_log( '  … with these public properties:' );
+                $output .= PHP_EOL . $indent . 'object ' . get_class( $input ) . ' {' . PHP_EOL;
+                // foreach ( $properties as $property => $value ) {
+                //   // error_log( 'property: ' . var_export( $property, true ) . ' (value type ' . gettype( $value ) . ')' . self::bw_array_to_string( $value ) );
+                //   $output .= $indent . var_export( $property, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+                // }
+                $output .= $output_data( $properties, $indent, $indent_by );
+                $output .= $indent . '}';
               }
-              $output .= $indent . '}';
             }
           }
         break;
         default:
           // error_log( 'input is ' . gettype( $input ) );
-          if ( in_array( $input, $seen, false ) ) {
+          if ( in_array( $input, $seen, true ) ) {
             // error_log( 'found a circular reference' );
-            $output .= '⛔️';
+            $output .= $circular_ref_text( $input );
           } else {
             // error_log( $indent . 'value: ' . var_export( $input, true ) );
             $output .= var_export( $input, true );
