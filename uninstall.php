@@ -41,13 +41,14 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
 
       try {
         // Delete options in database:
-        $option_name = 'blipper-widget-settings-oauth';
-        delete_option( $option_name );
-        // For site options in multi-site:
-        delete_site_option( $option_name );
-
-        // Unregister the widget
-        unregister_widget( 'Blipper_Widget' );
+        $option_names = [
+          'blipper-widget-settings-oauth',
+        ];
+        foreach ( $option_names as $option_name ) {
+          delete_option( $option_name );
+          // For site options in multi-site:
+          delete_site_option( $option_name );
+        }
 
         // Clean up widget options
         $sidebar_widgets = get_option( 'sidebars_widgets' );
@@ -67,6 +68,10 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
           }
         }
         update_option( 'sidebars_widgets', $sidebar_widgets );
+
+        // Unregister the widget:
+        unregister_widget( 'Blipper_Widget' );
+
       } catch ( \TypeError $e ) {
         bw_exception( $e );
       } catch ( \Exception $e ) {
