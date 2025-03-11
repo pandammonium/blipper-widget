@@ -299,6 +299,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
       // $this->bw_update_option( $user_attributes );
       $result = $this->bw_display_form( $user_attributes );
+
+      // $option_name = 'widget_' . $this->id_base;
+      // $result = update_option( $option_name, $settings );
+      // error_log( 'updated widget ' . $this->id . ' ' . $option_name . ': ' . var_export( $result, true ) . ( $result ? ' ' . var_export( get_option( $option_name ), true ) : '' ) );
+
       // error_log( 'form() this: ' . var_export( $this, true ) );
       return '';
     }
@@ -321,6 +326,16 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // error_log( 'update(): widget id: ' . var_export( $this->id, true ) );
 
       // bw_log( 'debug backtrace', debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 7 ) );
+
+      // Save the old settings so any cache created from them, eg in the Customiser, can be deleted later:
+      // $updated = update_option(
+      //   option: BW_DB_WIDGET_OLD_SETTINGS,
+      //   value: $old_settings
+      // );
+      // error_log( 'updated ' . BW_DB_WIDGET_OLD_SETTINGS . ': ' . var_export( $updated, true ) );
+      // if ( $updated ) {
+      //   error_log( var_export( get_option( BW_DB_WIDGET_OLD_SETTINGS ) ) );
+      // }
 
       return self::bw_validate_widget_settings( $new_settings, $old_settings );
     }

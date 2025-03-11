@@ -101,6 +101,14 @@ define( 'BW_PREFIX_DEBUG', strtoupper( BW_ID ) . ' | ' );
  */
 define( 'BW_ID_BASE', 'blipper_widget' );
 
+/**
+ * @var string BW_DB_PREFIX The string to prefix database options with.
+ *
+ * @author pandammonium
+ * @since 1.2.6
+ */
+define( 'BW_DB_PREFIX', 'blipper-widget' );
+
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('bw_register_widget')) {

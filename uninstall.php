@@ -111,6 +111,19 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
         bw_exception( $e );
       }
     }
+
+    // try {
+    //   // Delete old options (used – for now – in the Customiser):
+    //   $key = 'old_widget_settings_' . BW_ID_BASE;
+    //   $old_widget_settings = get_option( 'old_widget_settings_' . BW_ID_BASE );
+    //   if ( !empty( $old_widget_settings ) ) {
+    //     delete_option( $key );
+    //     // For options in multi-site:
+    //     delete_site_option( $key );
+    //   }
+    // } catch ( \Exception $e ) {
+    //   bw_exception( $e );
+    // }
   }
 }
 
