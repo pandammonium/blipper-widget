@@ -444,11 +444,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $default_attributes = [];
+      $default_attributes = self::DEFAULT_SETTING_VALUES['common'];
       if ( $is_widget ) {
-        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['widget'], self::DEFAULT_SETTING_VALUES['common'] );
+        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['widget'], $default_attributes );
       } else {
-        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], self::DEFAULT_SETTING_VALUES['common'] );
+        $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], $default_attributes );
       }
       $default_attributes = array_filter( $default_attributes, function( $setting ) {
         return $setting !== 'hide' && !empty( $setting );
