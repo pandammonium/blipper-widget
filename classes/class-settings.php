@@ -613,9 +613,9 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       try {
         if ( array_key_exists( 'access-token', $oauth_settings ) && !empty( $oauth_settings['access-token'] ) ) {
           $client = new Blipper_Widget_Client(
-           '',
-           '',
-           $oauth_settings['access-token']
+            '',
+            '',
+            $oauth_settings['access-token']
           );
         } else {
           throw new Blipper_Widget_OAuthException( 'The access token is missing.' );
