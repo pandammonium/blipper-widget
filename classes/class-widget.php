@@ -277,15 +277,15 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
     /**
       * Renders the form used in the widget settings (user attributes) panel
-      * or the customiser. The form displays the settings already saved in
+      * of the customiser. The form displays the settings already saved in
       * the database, and allows the user to change them if desired. This is
       * the back end of the widget (but not the backend of the plugin. The
-      * backend of the plugin is in Settings > Blipper Widget)
+      * backend of the plugin is in Settings > Blipper Widget).
       *
       * @since    0.0.1
       * @api
       * @param    array     $settings  The settings currently saved in the database
-      * @return string And empty string. The parent function returns 'noform'.
+      * @return string An empty string. The parent function returns 'noform'.
       */
     public function form( $settings ): string {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2982,6 +2982,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     /**
      * Gets the settings of the Blipper Widget widget specified by the widget
      * identifier.
+     *
+     * Depending on whether the widget settings were set in the constructor – using parent::set_settings() – or not, parent::get_settings() will return either a whole load of
      *
      * @param string widget_id The identifier of the widget whose settings
      * are to be obtained.
