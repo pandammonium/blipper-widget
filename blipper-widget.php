@@ -104,11 +104,11 @@ define( 'BW_ID_BASE', 'blipper_widget' );
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('bw_register_widget')) {
-/**
-  * Register the WP Blipper widget
-  *
-  * @since 0.0.1
-  */
+  /**
+   * Register the WP Blipper widget
+   *
+   * @since 0.0.1
+   */
   function bw_register_widget() {
     // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // bw_log( 'arguments', func_get_args() );
