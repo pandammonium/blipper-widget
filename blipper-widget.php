@@ -149,6 +149,378 @@ if (!function_exists('bw_add_settings_link')) {
   );
 }
 
+// ------ Testing Customiser hooks ------------------------------------------ //
+
+// add_action(
+//   hook_name: 'customize_save',
+//   callback: function( $arg ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// // add_action(
+// //   hook_name: 'customize_register',
+// //   callback: function( $arg ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 1
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_load_themes',
+// //   callback: function( $arg0, $arg1, $arg2 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 3
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_render_panel',
+// //   callback: function( $arg ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 1
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_controls_head',
+// //   callback: function() {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 0
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_controls_init',
+// //   callback: function() {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 0
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_save_response',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
+// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_control_active',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
+// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_filter(
+// //   hook_name: 'customize_partial_render',
+// //   callback: function( $arg0, $arg1, $arg2 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 3
+// // );
+
+// add_action(
+//   hook_name: 'customize_post_value_set',
+//   callback: function( $arg0, $arg1, $arg2 ) {
+//     // // error_log( current_filter() );
+//     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
+//     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
+//     // // error_log( '$arg2: ' . self::bw_array_to_string( $arg2 ) );
+
+//     if ( str_starts_with( $arg0, 'widget_' . BW_ID_BASE ) ) {
+//       // // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET (arg0)!' . PHP_EOL );
+//       $widget_settings = [];
+//       $widget_id = preg_replace('/widget_(blipper_widget)\[(\d+)\]/', BW_ID_BASE . '-$2', $arg0 );
+//       // // error_log( 'widget id: ' . $widget_id );
+//       $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $widget_settings );
+//       // // error_log( 'widget ' . var_export( $widget_id, true ) . ' (' . var_export( $result, true ) . '): ' . var_export( $widget_settings ) );
+//     } else if ( str_starts_with( $arg0, 'sidebars_widgets' ) ) {
+//       foreach ( $arg1 as $widget_id ) {
+//         // // error_log( 'widget id: ' . $widget_id );
+//         if ( str_starts_with( $widget_id, BW_ID_BASE ) ) {
+//           $widget_settings = [];
+//           $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $widget_settings );
+//           // // error_log( 'widget ' . var_export( $widget_id, true ) . ' settings (' . var_export( $result, true ) . '): ' . var_export( $widget_settings ) );
+//         }
+//       }
+//     }
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 3
+// );
+
+// add_action(
+//   hook_name: 'customize_render_control',
+//   callback: function( $arg ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_render_section',
+//   callback: function( $arg ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_save_' . BW_ID_BASE,
+//   callback: function( $arg ) {
+//     // // error_log( current_filter() );
+//     // // error_log( var_export( func_get_args(), true ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// // add_action(
+// //   hook_name: 'customize_loaded_components',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_action(
+// //   hook_name: 'customize_changeset_branching',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
+// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_filter(
+// //   hook_name: 'customize_changeset_save_data',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
+// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_filter(
+// //   hook_name: 'customize_previewable_devices',
+// //   callback: function( $arg ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 1
+// // );
+
+// // add_filter(
+// //   hook_name: 'customize_dynamic_partial_args',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+// //     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// // add_filter(
+// //   // BAD!
+// //   hook_name: 'widget_customizer_setting_args',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+// //     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// add_action(
+//   hook_name: 'customize_controls_print_styles',
+//   callback: function() {
+//     // // // error_log( current_filter() );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 0
+// );
+
+// add_action(
+//   hook_name: 'customize_render_partials_after',
+//   callback: function( $arg0, $arg1 ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( var_export( func_get_args(), true ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 2
+// );
+
+// add_action(
+//   hook_name: 'customize_controls_print_scripts',
+//   callback: function() {
+//     // // // error_log( current_filter() );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 0
+// );
+
+// add_action(
+//   hook_name: 'customize_render_partials_before',
+//   callback: function( $arg0, $arg1 ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( var_export( func_get_args(), true ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 2
+// );
+
+// add_action(
+//   hook_name: 'customize_save_validation_before',
+//   callback: function( $arg ) {
+//     // // error_log( current_filter() );
+//     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_controls_enqueue_scripts',
+//   callback: function() {
+//     // // // error_log( current_filter() );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 0
+// );
+
+// add_filter(
+//   hook_name: 'customize_render_partials_response',
+//   callback: function( $arg0, $arg1, $arg2 ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( var_export( func_get_args(), true ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 3
+// );
+
+// add_action(
+//   hook_name: 'customize_render_control_' . $this->id,
+//   callback: function( $arg ) {
+//     // // // error_log( current_filter() );
+//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // // error_log( 'this id: ' . $this->id );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_render_section_' . $this->id,
+//   callback: function() {
+//     // // error_log( current_filter() );
+//     // // error_log( 'this id: ' . $this->id );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 0
+// );
+
+// // add_action(
+// //   hook_name: 'stop_previewing_theme',
+// //   callback: function( $arg ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 1
+// // );
+
+// // add_action(
+// //   hook_name: 'start_previewing_theme',
+// //   callback: function( $arg ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 1
+// // );
+
+// // add_filter(
+// //   hook_name: 'update_custom_css_data',
+// //   callback: function( $arg0, $arg1 ) {
+// //     // // error_log( current_filter() );
+// //     // // error_log( var_export( func_get_args(), true ) );
+// //     return true;
+// //   },
+// //   priority: 10,
+// //   accepted_args: 2
+// // );
+
+// ------ End of testing Customiser hooks ----------------------------------- //
+
+// --- Error handling ------------------------------------------------------- //
+
 if (!function_exists('bw_exception')) {
 /**
   * Generic error handling

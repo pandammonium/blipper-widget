@@ -3097,6 +3097,116 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       <?php
     }
 
+    public static function bw_save_old_customiser_settings() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      // // Get the current old option, if there is one:
+      // $old_option = get_option( BW_DB_WIDGET_OLD_SETTINGS );
+      // ksort( $old_option );
+      // error_log( 'old ' . BW_DB_WIDGET_OLD_SETTINGS . ': ' . var_export( $old_option, true ) );
+
+      // // Store the current widget settings
+      // $current_option = get_option( 'widget_' . BW_ID_BASE );
+      // ksort( $current_option );
+      // error_log( 'current option: ' . var_export( $current_option, true ) );
+      // $updated = update_option(
+      //   option: BW_DB_WIDGET_OLD_SETTINGS,
+      //   value: $current_option
+      // );
+      // error_log( 'updated ' . BW_DB_WIDGET_OLD_SETTINGS . ': ' . var_export( $updated, true ) );
+      // if ( $updated ) {
+      //   // error_log( var_export( get_option( BW_DB_WIDGET_OLD_SETTINGS ) ) );
+      // }
+    }
+
+    public function bw_update_option( ?array $bw_option = null ): void {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $option_name = $this->option_name;
+
+      // error_log( 'widget id: ' . var_export( $this->id, true ) );
+      $key_string = str_replace( BW_ID_BASE . '-', '', $this->id );
+      // error_log( 'key string: ' . var_export( $key_string, true ) );
+      // $widget_key = (int)$key_string;
+      // error_log( 'widget key: ' . var_export( $widget_key, true ) );
+
+      // $settings = [
+      //   $widget_key => $option ?? self::bw_get_default_attributes( true ),
+      // ];
+      // error_log( 'going to set widget ' . $this->id . ' settings to: ' . var_export( $settings, true ) );
+
+
+      $widget_key = (int) $key_string; // Ensure it's an integer
+      // error_log( 'widget key: ' . var_export( $widget_key, true ) . ' (' . gettype( $widget_key ) . ')' );
+      $settings_array = $bw_option ?? self::bw_get_default_attributes( true );
+      // error_log( 'going to set widget ' . $this->id . ' settings to: ' . var_export( $settings_array, true ) );
+
+      $option_value = [ $widget_key => $settings_array ];
+      $option_value = array_combine(array_map('intval', array_keys($option_value)), array_values($option_value));
+      // error_log( 'setting widget ' . $this->id . ' settings to: ' . var_export( $option_value, true ) );
+
+      $result = update_option($option_name, $option_value);
+      // error_log( 'update option: ' . var_export( $result, true ) );
+
+      // $option = get_option($option_name);
+      // error_log('get_option( $option ): ' . var_export($option, true));
+
+      // $option = get_option($option_name, false);
+      // error_log('get_option( $option, false ): ' . var_export($option, true));
+
+      // 1. Remove all filters:
+      // remove_all_filters('pre_option_' . $option_name);
+      // remove_all_filters('option_' . $option_name);
+      // $option = get_option($option_name);
+      // error_log(var_export($option, true));
+
+      // 2. Remove widget options filtering (widget system interference)
+      $option = get_option($option_name, false);
+      // error_log('raw option data: ' . var_export($option, true));
+      // $unfiltered_option = wp_cache_get($option_name, 'options');
+      // error_log('uncached option data: ' . var_export($unfiltered_option, true));
+
+      // $result = update_option( $option_name, $settings );
+      // $result = delete_option( $option_name );
+      // $result = $result && add_option( $option_name, $settings );
+
+      // global $wpdb;
+      // $option_value = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = 'widget_blipper_widget'" );
+      // error_log( 'direct from the database: ' .  var_export( maybe_unserialize( $option_value ), true ) );
+
+      // error_log( 'updated widget ' . $this->id . ' ' . $option_name . ': ' . var_export( $result, true ) );
+      // $saved_option = 'unset';
+      // // $saved_options = get_option( $option_name );
+      // $saved_options = get_option($option_name);
+      // error_log('get option: ' . var_export($saved_options, true));
+
+      // if (!isset($saved_options[$widget_key])) {
+      //     // error_log('Key [' . $widget_key . '] does not exist!');
+      // } elseif (empty($saved_options[$widget_key])) {
+      //     // error_log('Key [' . $widget_key . '] exists but is empty!');
+      // } else {
+      //     // error_log('Key [' . $widget_key . '] has data: ' . var_export($saved_options[1], true));
+      // }
+
+      // if (isset($saved_options[(string)$widget_key])) {
+      //     // error_log('Key ' . (string)$widget_key . ' exists as a string: ' . var_export($saved_options[(string)$widget_key], true));
+      // }
+
+      // error_log( 'saved option ' . $this->id . ' ' . $option_name . ': ' . var_export( $saved_option, true ) ) ;
+
+      // remove_all_filters('option_' . $option_name);
+      // $unfiltered_option = get_option($option_name);
+      // error_log( 'UNFILTERED OPTION ' . $this->id . ' ' . $option_name . ': ' . var_export( $unfiltered_option, true ) ) ;
+
+      // $settings_array = array_map('intval', array_keys($option_value)); // Ensure values are integers
+      // update_option($option_name, [$widget_key => $settings_array]);
+      // $option_int = get_option($option_name);
+      // error_log('key type: ' . gettype($widget_key) . '; ' . var_export($option_int, true));
+    }
+
     /**
      * Adds all the hooks, filters and shortcodes that Blipper Widget needs.
      *
@@ -3106,537 +3216,184 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public function add_hooks_and_filters(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
 
       // function to load Blipper Widget:
       // add_action( 'admin_notices', [ self::class, 'bw_settings_check' ] );
       // add_action( 'load-widgets.php', [ self::class, 'bw_load_colour_picker' ] );
 
-      add_action(
-        hook_name: 'admin_enqueue_scripts',
-        callback: [ self::class, 'bw_enqueue_scripts' ]
-      );
+      if ( self::$hooks_and_filters_added ) {
+        // error_log( 'hooks and filters already added' );
+      } else {
+        add_action(
+          hook_name: 'admin_enqueue_scripts',
+          callback: [ self::class, 'bw_enqueue_scripts' ]
+        );
 
-      add_action(
-        hook_name: 'admin_footer-widgets.php',
-        callback: [ self::class, 'bw_print_scripts' ],
-        priority: 9999
-      );
+        add_action(
+          hook_name: 'admin_footer-widgets.php',
+          callback: [ self::class, 'bw_print_scripts' ],
+          priority: 9999
+        );
 
-      add_action(
-        hook_name: 'customize_publish_after',// or customize_save_after
-        callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
-        priority: 9999,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'customize_save_validation_before',
+          callback: [ self::class, 'bw_save_old_customiser_settings' ],
+          accepted_args: 0
+        );
 
-      add_action(
-        hook_name: 'customize_save_after',
-        callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
-        priority: 9999,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'customize_publish_after',
+          callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
+          priority: 9999,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'delete_widget',
-        callback: [ $this, 'bw_on_delete_widget_from_backend' ],
-        accepted_args: 3
-      );
+        add_action(
+          hook_name: 'customize_save_after',
+          callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
+          priority: 9999,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'pre_post_update',
-        callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
-      );
+        add_action(
+          hook_name: 'delete_widget',
+          callback: [ $this, 'bw_on_delete_widget_from_backend' ],
+          accepted_args: 3
+        );
 
-      add_action(
-        hook_name: 'updated_widget',
-        callback: [ $this, 'bw_on_widget_setting_change_in_backend' ],
-        accepted_args: 3
-      );
+        add_action(
+          hook_name: 'pre_post_update',
+          callback: [ self::class, 'bw_save_old_shortcode_attributes' ]
+        );
 
-      add_action(
-        hook_name: 'wp_ajax_bw_on_delete_inactive_widgets_from_backend',
-        callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ]
-      );
+        add_action(
+          hook_name: 'updated_widget',
+          callback: [ $this, 'bw_on_widget_setting_change_in_backend' ],
+          accepted_args: 3
+        );
 
-      add_shortcode(
-        tag: 'blipper_widget',
-        callback: [ self::class, 'bw_shortcode_blip_display' ]
-      );
+        // add_action(
+        //   hook_name: 'widgets_init',
+        //   callback: [ $this, 'bw_update_option' ],
+        //   accepted_args: 1
+        // );
 
-      // Repeating the above hooks with debug info ------------------------ //
+        add_action(
+          hook_name: 'wp_ajax_bw_on_delete_inactive_widgets_from_backend',
+          callback: [ $this, 'bw_on_delete_inactive_widgets_from_backend' ]
+        );
 
-      add_action(
-        hook_name: 'admin_enqueue_scripts',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
+        add_shortcode(
+          tag: 'blipper_widget',
+          callback: [ self::class, 'bw_shortcode_blip_display' ]
+        );
 
-      add_action(
-        hook_name: 'admin_footer-widgets.php',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 9999,
-        accepted_args: 1
-      );
+        // Repeating the above hooks with debug info ------------------------ //
 
-      add_action(
-        hook_name: 'customize_preview_init',
-        callback: function() {
-          error_log( current_filter() );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 0
-      );
+        add_action(
+          hook_name: 'admin_enqueue_scripts',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'customize_publish_after',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 9999,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'admin_footer-widgets.php',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'customize_save_after',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 9999,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'customize_preview_init',
+          callback: function() {
+            // error_log( current_filter() );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 0
+        );
 
-      add_action(
-        hook_name: 'delete_widget',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 3
-      );
+        add_action(
+          hook_name: 'customize_publish_after',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            if ( str_starts_with( $arg0, BW_ID_BASE ) ) {
+              // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET!' . PHP_EOL );
+            }
+            return true;
+          },
+          priority: 9999,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'pre_post_update',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'customize_save_after',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 1
+        );
 
-      add_action(
-        hook_name: 'updated_widget',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 3
-      );
+        add_action(
+          hook_name: 'delete_widget',
+          callback: function( $arg0, $arg1, $arg2 ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 3
+        );
 
-      add_action(
-        hook_name: 'wp_ajax_bw_on_delete_inactive_widgets_from_backend',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
+        add_action(
+          hook_name: 'pre_post_update',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 1
+        );
+
+        add_action(
+          hook_name: 'updated_widget',
+          callback: function( $arg0, $arg1, $arg2 ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 3
+        );
+
+        add_action(
+          hook_name: 'wp_ajax_bw_on_delete_inactive_widgets_from_backend',
+          callback: function( $arg ) {
+            // error_log( current_filter() );
+            // error_log( var_export( func_get_args(), true ) );
+            return true;
+          },
+          priority: 10,
+          accepted_args: 1
+        );
 
 
-      // Testing Customiser hooks ----------------------------------------- //
-
-      add_action(
-        hook_name: 'customize_save',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_register',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_save_after',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_load_themes',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 3
-      );
-
-      add_action(
-        hook_name: 'customize_render_panel',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_controls_head',
-        callback: function() {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_action(
-        hook_name: 'customize_controls_init',
-        callback: function() {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_action(
-        hook_name: 'customize_save_response',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_control_active',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( '$arg0: ' . var_export( $arg0, true ) );
-          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_filter(
-        hook_name: 'customize_partial_render',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 3
-      );
-
-      add_action(
-        hook_name: 'customize_post_value_set',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 3
-      );
-
-      add_filter(
-        hook_name: 'customize_refresh_nonces',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( '$arg0: ' . var_export( $arg0, true ) );
-          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_render_control',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_render_section',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_save_' . BW_ID_BASE,
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-          return true;
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_loaded_components',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'is_wide_widget_in_customizer',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_changeset_branching',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( '$arg0: ' . var_export( $arg0, true ) );
-          error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_filter(
-        hook_name: 'customize_changeset_save_data',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_filter(
-        hook_name: 'customize_previewable_devices',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_filter(
-        hook_name: 'customize_dynamic_partial_args',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
-          error_log( '$arg1: ' . var_export( $arg1, true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_filter(
-        hook_name: 'customize_dynamic_setting_args',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
-          error_log( '$arg1: ' . var_export( $arg1, true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_filter(
-        hook_name: 'widget_customizer_setting_args',
-        callback: function( $arg0, $arg1 ) {
-          if ( str_starts_with( $arg1, 'widget_' . BW_ID_BASE ) ) {
-            error_log( current_filter() );
-            error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
-            error_log( '$arg1: ' . var_export( $arg1, true ) );
-          }
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_controls_print_styles',
-        callback: function() {
-          error_log( current_filter() );
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_action(
-        hook_name: 'customize_render_partials_after',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_controls_print_scripts',
-        callback: function() {
-          error_log( current_filter() );
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_action(
-        hook_name: 'customize_render_partials_before',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
-      add_action(
-        hook_name: 'customize_save_validation_before',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_controls_enqueue_scripts',
-        callback: function() {
-          error_log( current_filter() );
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_filter(
-        hook_name: 'customize_render_partials_response',
-        callback: function( $arg0, $arg1, $arg2 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 3
-      );
-
-      add_action(
-        hook_name: 'customize_render_control_' . $this->id,
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( 'this id: ' . $this->id );
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'customize_render_section_' . $this->id,
-        callback: function() {
-          error_log( current_filter() );
-          error_log( 'this id: ' . $this->id );
-        },
-        priority: 10,
-        accepted_args: 0
-      );
-
-      add_action(
-        hook_name: 'stop_previewing_theme',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_action(
-        hook_name: 'start_previewing_theme',
-        callback: function( $arg ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 1
-      );
-
-      add_filter(
-        hook_name: 'update_custom_css_data',
-        callback: function( $arg0, $arg1 ) {
-          error_log( current_filter() );
-          error_log( var_export( func_get_args(), true ) );
-        },
-        priority: 10,
-        accepted_args: 2
-      );
-
+        self::$hooks_and_filters_added = true;
+      }
     }
 
     private static function bw_array_to_string( mixed $input, int $indent_by = 0 ) {
