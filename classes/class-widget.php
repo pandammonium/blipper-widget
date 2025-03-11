@@ -29,7 +29,7 @@ use function Blipper_Widget\bw_log;
 use function Blipper_Widget\bw_exception;
 
 if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
-  error_log( 'class Blipper_Widget\Widget\Blipper_Widget does not exist (yet)' );
+  // error_log( 'class Blipper_Widget\Widget\Blipper_Widget does not exist (yet)' );
   /**
    * The Blipper Widget class.
    *
@@ -3744,6 +3744,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     //   return $result;
     // }
   }
-} else {
-  error_log( 'class Blipper_Widget\Widget\Blipper_Widget does exist' );
+// } else {
+//   error_log( 'class Blipper_Widget\Widget\Blipper_Widget does exist' );
 }
