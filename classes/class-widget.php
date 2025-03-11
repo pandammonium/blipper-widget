@@ -935,12 +935,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     /**
      * Gets the display value of the given setting.
      */
-    private static function bw_get_display_value( $setting, $settings ) {
+    private static function bw_get_display_value( string $setting, array $settings ): string|null {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
       try {
-
         if ( array_key_exists( $setting, $settings ) ) {
           return esc_attr( $settings[$setting] );
         } else {
@@ -951,17 +950,18 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           } else {
             // bw_log( 'Invalid setting requested', $setting );
             throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>' );
-            return '';
           }
         }
 
       } catch ( \ErrorException $e ) {
 
         self::bw_display_error_msg( $e );
+        return null;
 
       } catch ( \Exception $e ) {
 
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the user settings' );
+        return null;
 
       }
     }
@@ -971,7 +971,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       *
       * @since    0.0.1
       */
-    private static function bw_load_dependencies() {
+    private static function bw_load_dependencies(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2082,7 +2082,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       * @access    private
       * @param     array         $settings       The settings saved in the database
       */
-    private function bw_display_form( array $settings ): void {
+    private function bw_display_form( array $settings ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2091,11 +2091,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       if ( empty( $oauth_settings['username'] ) || empty( $oauth_settings['access-token'] ) ) {
 
         echo '<p>You need to set the Blipfoto settings on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '">the Blipper Widget settings page</a> to continue.</p>';
+        return false;
 
       } else {
 
         $this->bw_display_form_display_settings( $settings );
         $this->bw_display_form_styling_settings( $settings );
+        return true;
 
       }
     }
