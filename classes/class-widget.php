@@ -977,9 +977,16 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      require_once( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
-
-      self::bw_load_blipfoto_dependencies();
+      if ( self::$dependencies_loaded ) {
+        error_log( 'dependencies already loaded' );
+      } else {
+        // error_log( 'loading dependencies' );
+        self::bw_load_blipfoto_dependencies();
+        if ( self::$blipfoto_dependencies_loaded ) {
+          require_once( plugin_dir_path( __FILE__ ) . 'class-settings.php' );
+          self::$dependencies_loaded = true;
+        }
+      }
     }
 
     /**
@@ -987,37 +994,43 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       *
       * @since    0.0.1
       */
-    private static function bw_load_blipfoto_dependencies() {
+    private static function bw_load_blipfoto_dependencies(): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $folders = [
-        'Traits' => [
-          'Helper'
-        ],
-        'Exceptions' => [
-          'BaseException',
-          'ApiResponseException',
-          'InvalidResponseException',
-          'NetworkException',
-          'OAuthException',
-          'FileException'
-        ],
-        'Api' => [
-            'Client',
-            'OAuth',
-            'Request',
-            'Response',
-            'File'
+      if ( self::$blipfoto_dependencies_loaded ) {
+        error_log( 'blipfoto dependencies already loaded' );
+      } else {
+        $folders = [
+          'Traits' => [
+            'Helper'
           ],
-        ];
+          'Exceptions' => [
+            'BaseException',
+            'ApiResponseException',
+            'InvalidResponseException',
+            'NetworkException',
+            'OAuthException',
+            'FileException'
+          ],
+          'Api' => [
+              'Client',
+              'OAuth',
+              'Request',
+              'Response',
+              'File'
+            ],
+          ];
 
-      $path = plugin_dir_path( __FILE__ ) . '../includes/Blipfoto/';
+        $path = plugin_dir_path( __FILE__ ) . '../includes/Blipfoto/';
 
-      foreach ( $folders as $folder => $files ) {
-        foreach ( $files as $file ) {
-          require_once( $path . $folder . '/' . $file . '.php' );
+        foreach ( $folders as $folder => $files ) {
+          foreach ( $files as $file ) {
+            require_once( $path . $folder . '/' . $file . '.php' );
+          }
         }
+        self::$blipfoto_dependencies_loaded = true;
+        // error_log( 'blipfoto dependencies loaded' );
       }
     }
 
