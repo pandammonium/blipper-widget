@@ -28,7 +28,7 @@ use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
 use function Blipper_Widget\bw_exception;
 
-if (!class_exists('Blipper_Widget')) {
+if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
   /**
    * The Blipper Widget class.
    *
