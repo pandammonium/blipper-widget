@@ -33,6 +33,9 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
   * @return void
   */
   function blipper_widget_uninstall() {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+    // bw_log( 'current filter', current_filter() );
 
     if ( current_user_can( 'edit_plugins' ) ) {
 
