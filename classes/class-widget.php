@@ -800,6 +800,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $new_settings = array_filter( $new_settings, function( $setting ) {
         return $setting !== 'hide' && !empty( $setting );
       });
+      ksort( $old_settings );
+      ksort( $new_settings );
       // bw_log( 'Old settings (manipulated)', $old_settings );
       // bw_log( 'New settings (manipulated)', $new_settings );
 
@@ -927,6 +929,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       }
 
+      ksort( $new_settings );
       // bw_log( 'new settings', $new_settings );
 
       return $new_settings;
