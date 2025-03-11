@@ -551,6 +551,8 @@ if (!function_exists('bw_exception')) {
   set_exception_handler( 'Blipper_Widget\bw_exception' );
 }
 
+// --- Other methods -------------------------------------------------------- //
+
 if ( !function_exists( 'bw_delete_all_cached_blips')) {
   function bw_delete_all_cached_blips( string $prefix ): bool {
     // // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
