@@ -254,6 +254,16 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // echo '<p><b>' . $this->id . '</b></p>';
       // error_log( 'widget id: ' . var_export( $this->id, true ) );
 
+      if ( empty( $user_attributes ) ) {
+        $user_attributes = self::bw_get_default_attributes( true );
+        error_log( 'user attributes set to defaults: ' . var_export( $user_attributes, true ) );
+      } else {
+        $user_attributes = array_merge( self::bw_get_default_attributes( true ), $user_attributes );
+        error_log( 'using provided user attributes' );
+      }
+      // $this->bw_update_option( $user_attributes );
+
+      echo $widget_settings['before_widget'];
       echo self::bw_render_the_blip(
         user_attributes: $user_attributes,
         the_blip_title: self::bw_get_the_blip_title( $user_attributes ),
