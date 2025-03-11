@@ -2691,7 +2691,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * well; false not to. Default is false.
      * @since    1.1.1
     */
-    private static function bw_display_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false, bool $write_to_log = false ): void {
+    private static function bw_display_error_msg( \Throwable $e, string $additional_info = '', bool $request_limit_reached = false, bool $write_to_log = true ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
