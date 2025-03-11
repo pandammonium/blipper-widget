@@ -55,15 +55,15 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
         foreach ( $sidebar_widgets as $key => $value ) {
           if ( is_array( $value ) ) {
             foreach ( $value as $inner_key => $inner_value ) {
+              // Don't want to mess with any widget that isn't the Blipper Widget:
               if ( false !== strpos( $inner_value, 'blipper_widget' ) ||
                    false !== strpos( $inner_value, 'blipper-widget' ) ||
                    false !== strpos( $inner_value, BW_PREFIX ) ) {
-                // Don't want to mess with any widget that isn't the Blipper Widget.
                 // error_log( 'sidebar widgets [key][0]: ' . var_export( $sidebar_widgets[$key][0], true ) );
                 unset( $sidebar_widgets[$key][0] );
               }
             }
-            // Tidy up the array
+            // Tidy up the array:
             $sidebar_widgets[$key] = array_values( $sidebar_widgets[$key] );
           }
         }
