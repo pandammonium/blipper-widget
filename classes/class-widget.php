@@ -295,7 +295,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // echo '<p><b>' . $this->id . '</b></p>';
       // error_log( 'widget id: ' . var_export( $this->id, true ) );
 
-      $this->bw_display_form( self::bw_get_display_values( $settings ) );
+      $user_attributes = self::bw_get_display_values( $settings );
+      // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
+      // $this->bw_update_option( $user_attributes );
+      $result = $this->bw_display_form( $user_attributes );
       // error_log( 'form() this: ' . var_export( $this, true ) );
       return '';
     }
