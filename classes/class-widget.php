@@ -3646,13 +3646,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $indent = str_repeat( '  ', $indent_by );
 
       $circular_ref_text = function( mixed $input ): string {
-        return '⛔️ ' . ( 'object' === gettype( $input ) ? gettype( $input ) . ' (' . get_class( $input ) . ')' : gettype( $input ) );
+        return '⛔️ ' . ( 'object' === gettype( $input ) ? gettype( $input ) . ' ' . get_class( $input ) : gettype( $input ) );
       };
       $output_data = function( mixed $input, string $indent, int $indent_by = 0 ): string {
         $output = '';
         foreach ( $input as $key => $value ) {
           // error_log( 'key: ' . var_export( $key, true ) );
-          $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+          $output .= $indent . '  ' . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
         }
         return $output;
       };
@@ -3677,7 +3677,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         case 'object':
           // error_log( 'input is object' );
           if ( 'Closure' === get_class( $input ) ) {
-            $output .= 'object ' . get_class( $input ) . ')';
+            $output .= 'object ' . get_class( $input );
             $seen[] = $input;
           } else {
             if ( in_array( $input, $seen, true ) ) {
