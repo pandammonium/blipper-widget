@@ -2661,7 +2661,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       return $styled_title;
     }
 
-// --- Output: logging, error tracking and debugging ---------------------- //
+    // --- Output: logging, error tracking and debugging ------------------- //
 
     private static function bw_log_display_values( $settings, $display_element, $function_name ) {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2836,7 +2836,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       }
     }
 
-    // --- Action hooks ------------------------------------------------------- //
+    // --- Action hooks ---------------------------------------------------- //
 
     /**
      * Does stuff that needs doing if a widget setting is changed in the
