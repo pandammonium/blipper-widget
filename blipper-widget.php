@@ -114,11 +114,19 @@ if (!function_exists('bw_register_widget')) {
     // bw_log( 'arguments', func_get_args() );
     // bw_log( 'current filter', current_filter() );
 
-    register_widget( 'Blipper_Widget\Widget\Blipper_Widget' );
+    if ( class_exists( 'Blipper_Widget\Widget\Blipper_Widget' ) ) {
+      // error_log( 'registering Blipper_Widget' );
+      register_widget( 'Blipper_Widget\Widget\Blipper_Widget' );
+    } else {
+      throw new \Exception( 'class Blipper_Widget\Widget\Blipper_Widget does not exist' );
+    }
+    // register_widget( 'Blipper_Widget\Widget\Blipper_Widget' );
   }
   add_action(
-    hook_name:'widgets_init',
-    callback: 'Blipper_Widget\bw_register_widget'
+    hook_name: 'widgets_init',
+    callback: 'Blipper_Widget\bw_register_widget',
+    priority: 10,
+    accepted_args: 0
   );
 }
 
