@@ -917,7 +917,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $new_settings['link-color'] = self::bw_get_display_value( 'link-color', $settings );
         $new_settings['padding'] = self::bw_get_display_value( 'padding', $settings );
         $new_settings['style-control'] = self::bw_get_display_value( 'style-control', $settings );
-        // $new_settings['updated'] = self::bw_get_display_value( 'updated', $settings );
 
       } catch ( \ErrorException $e ) {
 
