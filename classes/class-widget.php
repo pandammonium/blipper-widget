@@ -1122,7 +1122,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } finally {
         if ( !$credentials_exist ) {
           error_log( 'credentials don\'t exist' );
-          // bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_cached_blips( BW_PREFIX );
         }
       }
       return $credentials_exist;
@@ -1172,7 +1172,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } finally {
         if ( !$client_ok ) {
           error_log( 'client is not ok' );
-          // bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_cached_blips( BW_PREFIX );
         }
       }
       return $client_ok;
