@@ -2892,7 +2892,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $inactive_widget_ids = self::get_inactive_widget_ids();
       foreach ( $inactive_widget_ids as $widget_id ) {
         // error_log( 'inactive widget id: ' . $widget_id );
-        $result = $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', BW_ID_BASE );
+        $result = $this->bw_on_delete_widget_from_backend( $widget_id, 'wp_inactive_widgets', $this->id_base );
         // error_log( 'inactive widget ' . var_export( $widget_id, true ) . ' cleaned up: ' . var_export( $result, true ) );
       }
 
@@ -2948,7 +2948,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $cache_is_clean = false;
       $option_is_gone = false;
 
-      $needle = BW_ID_BASE;// . '-';
+      $needle = $this->id_base;// . '-';
       if ( str_starts_with( haystack: $widget_id, needle: $needle ) ) {
 
         $widget_settings = [];
