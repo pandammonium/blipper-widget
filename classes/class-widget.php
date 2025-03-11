@@ -2890,6 +2890,124 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       }
     }
 
+    public static function bw_on_widget_setting_change_in_customiser( $arg ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+    }
+
+    public function bw_on_delete_widget_from_customiser( $wp_customize ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'type of argument', gettype( $wp_customize ) );
+      // bw_log( 'argument is empty', empty( $wp_customize ) ? 'yes' : 'no' );
+      // bw_log( 'Called from', current_filter() );
+
+      // error_log( 'widget id: ' . var_export( $this->id, true ) );
+
+      // // Get the old and new settings:
+
+      // $old_widget_settings = get_option( 'old_widget_settings_' . $this->id_base );
+      // // ksort( $old_widget_settings );
+      // error_log( 'old widget settings: ' . var_export( $old_widget_settings, true ) );
+      // $new_widget_settings = get_option( 'widget_' . $this->id_base );
+      // // ksort( $new_widget_settings );
+      // error_log( 'new widget settings: ' . var_export( $new_widget_settings, true ) );
+
+      // // Check if the widget settings have changed:
+      // if ( $old_widget_settings === $new_widget_settings ) {
+      //   // error_log( 'the new settings are the same as the old settings' );
+      // } else {
+      //   // error_log( 'the new widget settings are different to the old widget settings' );
+
+      //   // Compare the old and new settings to detect widget deletion
+      //   $old_widget_settings = maybe_unserialize( $old_widget_settings );
+      //   // error_log( 'old widget settings (maybe unserialised): ' . var_export( $old_widget_settings, true ) );
+      //   $new_widget_settings = maybe_unserialize( $new_widget_settings );
+      //   // error_log( 'new widget settings (maybe unserialised): ' . var_export( $new_widget_settings, true ) );
+
+      // //   if ( is_array( $old_widget_settings ) && is_array( $new_widget_settings ) ) {
+      // //     // error_log( 'old and new widget settings are arrays' );
+      // //     // Find widgets that are in the old settings but not in the new settings
+      // //     $deleted_widgets = array_diff_key( $old_widget_settings, $new_widget_settings );
+      // //     // error_log( 'deleted widgets: ' . var_export( $deleted_widgets, true ) );
+
+      // //     if ( !empty( $deleted_widgets ) ) {
+      // //       // Widgets have been deleted, perform your actions here
+      // //       foreach ( $deleted_widgets as $widget_id => $widget_data ) {
+      // //         // Perform actions for each deleted widget
+      // //         // For example, you can log the widget ID
+      // //         // error_log( 'deleted widget id: ' . $widget_id );
+      // //         // error_log( 'deleted widget data: ' . $widget_data );
+      // //       }
+      // //     } else {
+      // //       // error_log( 'no deleted widgets' );
+      // //     }
+      // //   } else {
+      // //     // error_log( 'old/new widgets is not an array' );
+      // //   }
+      // }
+      // // // Clear the stored old widget settings
+      // // delete_option( 'old_widget_settings_' . $this->id_base );
+
+      // // ------------------------------------------------------------------- //
+
+      // // // ChatGPT
+
+      // // // Check if the widget settings exist
+      // // // $widgets = get_option( 'sidebars_widgets' );
+      // // $widgets = wp_get_sidebars_widgets();
+      // // // Loop through the widget areas
+      // // foreach ( $widgets as $sidebar => $widget_ids ) {
+      // //   // error_log( $sidebar . ' ' . var_export( $widget_ids, true ) );
+      // //   // Check if the sidebar is the one you are interested in
+      // //   if ( 'wp_inactive_widgets' === $sidebar ) {
+      // //     // Loop through the widget IDs
+      // //     foreach ( $widget_ids as $widget_id ) {
+      // //       // Check if the widget is deleted
+      // //       if ( ! isset( $wp_customize->settings[ 'widget_' . $widget_id ] ) ) {
+      // //         // Clean up associated settings or data
+      // //         // For example, delete the widget's options
+      // //         delete_option( $widget_id );
+      // //       }
+      // //     }
+      // //   }
+      // // }
+      // // ------------------------------------------------------------------- //
+
+      // // // Llama
+
+      // // // Get the current widget instances
+      // // $current_widgets = wp_get_sidebars_widgets();
+      // // // $current_widgets = get_option( 'sidebars_widgets' );
+      // error_log( 'current widgets: ' . var_export( $current_widgets, true ) );
+
+      // // // Get the previous widget instances (e.g. from a transient or option)
+      // // $previous_widgets = get_transient( 'my_widget_instances' );
+      // error_log( 'previous widgets: ' . var_export( $previous_widgets, true ) );
+
+      // // // If there are no previous widget instances, set the current instances as the previous instances
+      // // if ( empty( $previous_widgets ) ) {
+      // //   set_transient( 'my_widget_instances', $current_widgets );
+      // //   return;
+      // // }
+
+      // // // Loop through the previous widget instances to find deleted widgets
+      // // foreach ( $previous_widgets as $sidebar_id => $widgets ) {
+      // //   foreach ( $widgets as $widget_id ) {
+      // //     // Check if the widget instance has been deleted
+      // //     if ( !isset( $current_widgets[$sidebar_id] ) || !in_array( $widget_id, $current_widgets[$sidebar_id] ) ) {
+      // //       // Remove any unnecessary data associated with the deleted widget instance
+      // //       // For example, you can remove any custom metadata or settings
+      // //       delete_option( 'my_widget_setting_' . $widget_id );
+      // //     }
+      // //   }
+      // // }
+
+      // // // Update the previous widget instances
+      // // set_transient( 'my_widget_instances', $current_widgets );
+    }
+
     /**
      * Deletes all the Blipper Widget widgets from Appearance > Widgets on
      * pressing the Clear Inactive Widgets button.
