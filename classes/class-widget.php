@@ -193,16 +193,26 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       //   // bw_log( ++$i, $function );
       // }
       // bw_log( 'debug backtrace', debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 8 ) );
+      try {
         // if ( ++self::$instance_count > 1 ) {
         //   throw new \ErrorException( 'Blipper_Widget instance count: ' . self::$instance_count );
         // }
         // error_log( 'number of instances: ' . var_export( ++self::$instance_count, true ) );
+        $widget_options = [
+          'classname' => 'widget_' . BW_ID_BASE,
+          'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
+          'show_instance_in_rest' => true,
+        ];
+        $control_options = [
+          'id_base' => BW_ID_BASE,
+        ];
+        parent::__construct(
+          id_base: $control_options['id_base'],
+          name: __( 'Blipper Widget', 'blipper-widget' ),
+          widget_options: $widget_options,
+          control_options: $control_options
+        );
 
-      $params = [
-        'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
-        'name'        => __( 'Blipper Widget', 'blipper-widget' ),
-      ];
-      parent::__construct( 'blipper_widget', 'Blipper Widget', $params );
         self::bw_load_dependencies();
         // error_log( 'dependencies loaded: ' . var_export( self::$dependencies_loaded, true ) );
 
