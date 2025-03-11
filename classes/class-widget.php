@@ -3170,7 +3170,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $option_name = $this->option_name;
 
       // error_log( 'widget id: ' . var_export( $this->id, true ) );
-      $key_string = str_replace( BW_ID_BASE . '-', '', $this->id );
+      $key_string = str_replace( $this->id_base . '-', '', $this->id );
       // error_log( 'key string: ' . var_export( $key_string, true ) );
       // $widget_key = (int)$key_string;
       // error_log( 'widget key: ' . var_export( $widget_key, true ) );
@@ -3369,7 +3369,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           callback: function( $arg ) {
             // error_log( current_filter() );
             // error_log( var_export( func_get_args(), true ) );
-            if ( str_starts_with( $arg0, BW_ID_BASE ) ) {
+            if ( str_starts_with( $arg0, $this->id_base ) ) {
               // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET!' . PHP_EOL );
             }
             return true;
