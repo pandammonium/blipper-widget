@@ -823,7 +823,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'Old settings (manipulated)', $old_settings );
       // bw_log( 'New settings (manipulated)', $new_settings );
 
-      $updated = empty( $old_cache_key ) || self::bw_compare_old_and_new_attributes( $new_settings, $old_settings, true );
+      $updated = empty( $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_settings, $new_settings, true );
 
       if ( $updated ) {
         // Delete the cache so there isn't an unnecessary build-up of transients.
