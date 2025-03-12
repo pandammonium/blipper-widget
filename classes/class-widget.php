@@ -225,9 +225,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        // if ( false !== $this->id ) {
-          // error_log( 'widget id: ' . var_export( $this->id, true ) );
-        // }
+        if ( false !== $this->id ) {
+          error_log( 'widget id: ' . var_export( $this->id, true ) );
+        }
         // error_log( 'this: ' . var_export( $this, true ) );
       }
     }
@@ -247,12 +247,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       * empty on adding the widget to a widget area.
       */
     public function widget( $widget_settings, $user_attributes ) {
-      // bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
       // bw_log( 'current filter', current_filter() );
+      bw_log( 'widget id', $this->id );
 
-      // echo '<p><b>' . $this->id . '</b></p>';
-      // error_log( 'widget id: ' . var_export( $this->id, true ) );
+      echo '<p><b>' . $this->id . '</b></p>';
 
       if ( empty( $user_attributes ) ) {
         $user_attributes = self::bw_get_default_attributes( true );
@@ -288,12 +288,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       * @return string An empty string. The parent function returns 'noform'.
       */
     public function form( $settings ): string {
-      // bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
       // bw_log( 'current filter', current_filter() );
+      bw_log( 'widget id', $this->id );
 
-      // echo '<p><b>' . $this->id . '</b></p>';
-      // error_log( 'widget id: ' . var_export( $this->id, true ) );
+      echo '<p><b>' . $this->id . '</b></p>';
 
       $user_attributes = self::bw_get_display_values( $settings );
       // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
