@@ -550,8 +550,8 @@ if (!function_exists('bw_exception')) {
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
     if ( BW_DEBUG ) {
-      error_log( BW_PREFIX_DEBUG . 'Current filter: ' . current_filter() );
-      error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 7 ), true ) );
+      error_log( BW_PREFIX_DEBUG . 'Current filter: ' . var_export( current_filter(), true ) );
+      error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 5 ), true ) );
       error_log( BW_PREFIX_DEBUG . wp_strip_all_tags( $e->getMessage() ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
@@ -621,13 +621,18 @@ if ( !function_exists( 'bw_log' ) ) {
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
 
     if ( BW_DEBUG ) {
-      if ( $is_html && 'string' === gettype( $data ) ) {
-        function bw_pretty_print_html( string $html ): string {
-          // Use regex to add a newline after each HTML tag
-          $pretty_html = preg_replace('/(>)(<)/', "$1\n$2", $html);
-          return "\n" . $pretty_html;
+      if ( $is_html ) {
+        if ( 'string' === gettype( $data ) ) {
+          function bw_pretty_print_html( string $html ): string {
+            // Use regex to add a newline after each HTML tag
+            $pretty_html = preg_replace('/(>)(<)/', "$1\n$2", $html);
+            return "\n" . $pretty_html;
+          }
+          $data = bw_pretty_print_html( $data );
+        } else {
+          // error_log( 'html is ' . var_export( gettype( $data ), true ) );
+          $data = ' ' . var_export( $data, true );
         }
-        $data = bw_pretty_print_html( $data );
       }
       if ( $echo ) {
         $string = 'Blipper Widget | ' . print_r( $data_name, true );
