@@ -258,17 +258,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $user_attributes = self::bw_get_default_attributes( true );
         error_log( 'using default attributes:' );
       } else {
-        // $blip_title = null;
-        // if ( array_key_exists( 'title', $user_attributes ) ) {
-        //   $blip_title = $user_attributes['title'];
-        // }
-        // $user_attributes = array_merge( self::bw_get_default_attributes( true ), $user_attributes );
-        // if ( array_key_exists( 'title', $user_attributes ) ) {
-        //   $user_attributes['title'] = $blip_title;
-        // }
-        // if ( !isset( $user_attributes['padding'] ) ) {
-        //   $user_attributes['padding'] = self::DEFAULT_SETTING_VALUES['widget']['padding'];
-        // }
         error_log( 'using provided user attributes:' );
       }
       // $this->bw_update_option( $user_attributes );
@@ -309,12 +298,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       $user_attributes = self::bw_get_display_values( $user_attributes );
       // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
-      // $this->bw_update_option( $user_attributes );
       $result = $this->bw_display_form( $user_attributes );
-
-      // $option_name = 'widget_' . $this->id_base;
-      // $result = update_option( $option_name, $settings );
-      // error_log( 'updated widget ' . $this->id . ' ' . $option_name . ': ' . var_export( $result, true ) . ( $result ? ' ' . var_export( get_option( $option_name ), true ) : '' ) );
 
       // error_log( 'form() this: ' . var_export( $this, true ) );
       return '';
@@ -334,10 +318,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public function update( $new_settings, $old_settings ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-
-      // error_log( 'update(): widget id: ' . var_export( $this->id, true ) );
-
       // bw_log( 'debug backtrace', debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 7 ) );
+
+      // error_log( 'widget id: ' . var_export( $this->id, true ) );
+
 
       // Save the old settings so any cache created from them, eg in the Customiser, can be deleted later:
       // $updated = update_option(
@@ -358,9 +342,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public static function bw_save_old_shortcode_attributes( int $post_id ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-
-      // Find out which action hook invoked this method:
-      // error_log( 'Method ' . __METHOD__ . '() was called by: ' . var_export( current_filter() . '()', true ) );
+      // bw_log( 'current filter', current_filter() );
 
       // Check if this is a valid post or page type and if it's not an autosave:
       $post_type = get_post_type( $post_id );
@@ -506,25 +488,15 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $result = false;
+
       $old_attributes = self::bw_standardise_settings_format( $old_attributes );
       $new_attributes = self::bw_standardise_settings_format( $new_attributes );
-      // If the old or new title is an empty string, it'll be blatted by the default one, I think, so save – and use – the originals:
-      // $old_title = array_key_exists( 'title', $old_attributes ) ? $old_attributes['title'] : '';
-      // $new_title = array_key_exists( 'title', $new_attributes ) ? $new_attributes['title'] : '';
-      // if ( $old_title === $new_title ) {
-      //   error_log( 'title has not changed: ' . var_export( $old_title, true ) . ' === ' . var_export( $new_title, true ) );
-      //   $result = true;
-      // } else {
-      //   error_log( 'title has changed: ' . var_export( $old_title, true ) . ' --> ' . var_export( $new_title, true ) );
-      // }
-      $old_attributes = array_merge( self::bw_get_default_attributes( true ), $old_attributes );
-      $new_attributes = array_merge( self::bw_get_default_attributes( true ), $new_attributes );
-      // $old_attributes['title'] = $old_title;
-      // $new_attributes['title'] = $new_title;
+
+      // $old_attributes = array_merge( self::bw_get_default_attributes( true ), $old_attributes );
+      // $new_attributes = array_merge( self::bw_get_default_attributes( true ), $new_attributes );
+
       // Need to perform array_diff_assoc() both ways round because it's not known whether there'll be settings missing from the new one or the old one or whatever. The results of each operation need merging. If the resulting array is empty, there have been no changes to the settings:
       $updated_attributes_only = array_merge( array_diff_assoc( $new_attributes, $old_attributes ), array_diff_assoc( $old_attributes, $new_attributes ) );
-      // $old_title = self::bw_get_the_blip_title( $old_attributes );
-      // $new_title = self::bw_get_the_blip_title( $new_attributes );
       $result = $result || empty( $updated_attributes_only ) ? false : true;
       // bw_log( ( $is_widget ? 'Widget' : 'Shortcode' ) . ' attributes changed', $result );
       return $result;
@@ -814,39 +786,21 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       return $normalised_attributes;
     }
 
-    private static function bw_validate_widget_settings( $new_settings, $old_settings ): array {
+    private static function bw_validate_widget_settings( array $new_settings, array $old_settings ): array {
       bw_log( 'method', __METHOD__ . '()' );
       bw_log( 'arguments', func_get_args() );
 
-      // // Get the new cache key:
-      // $new_cache_key = self::bw_get_a_cache_key( $new_settings );
-      // error_log( 'new cache key: ' . var_export( $new_cache_key, true ) );
+      $validated_settings = self::bw_validate_the_widget_settings( $new_settings, $old_settings );
 
       // Get the old cache key:
       $old_cache_key = self::bw_get_a_cache_key( $old_settings );
       error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
 
-      $settings = [];
-      $settings['title']                   = self::bw_validate_widget_setting( $new_settings, $old_settings, 'title' );
-      $settings['display-date']            = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-date' );
-      $settings['display-journal-title']   = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-journal-title' );
-      $settings['add-link-to-blip']        = self::bw_validate_widget_setting( $new_settings, $old_settings, 'add-link-to-blip' );
-      $settings['display-powered-by']      = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-powered-by' );
-      $settings['border-style']            = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-style' );
-      $settings['border-width']            = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-width' );
-      $settings['border-color']            = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-color' );
-      $settings['background-color']        = self::bw_validate_widget_setting( $new_settings, $old_settings, 'background-color' );
-      $settings['color']                   = self::bw_validate_widget_setting( $new_settings, $old_settings, 'color' );
-      $settings['link-color']              = self::bw_validate_widget_setting( $new_settings, $old_settings, 'link-color' );
-      $settings['padding']                 = self::bw_validate_widget_setting( $new_settings, $old_settings, 'padding' );
-      $settings['style-control']           = self::bw_validate_widget_setting( $new_settings, $old_settings, 'style-control');
-      $settings = self::bw_standardise_settings_format( $settings );
-
       // Get the validated cache key:
-      $validated_cache_key = self::bw_get_a_cache_key( $settings );
+      $validated_cache_key = self::bw_get_a_cache_key( $validated_settings );
       error_log( 'validated cache key: ' . var_export( $validated_cache_key, true ) );
 
-      $updated = ( $validated_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_settings, $settings, true );
+      $updated = ( $validated_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_settings, $validated_settings, true );
 
       if ( $updated ) {
         // Delete the cache so there isn't an unnecessary build-up of transients.
@@ -855,8 +809,32 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       //   error_log( 'widget settings haven\'t changed' );
       }
       self::$cache_key = $validated_cache_key;
-      // bw_log( 'Updated widget settings', $settings );
-      return $settings;
+      // bw_log( 'Updated widget settings', $validated_settings );
+      return $validated_settings;
+    }
+
+    private static function bw_validate_the_widget_settings( array $new_settings, array $old_settings ): array {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      $validated_settings = [];
+
+      $validated_settings['title'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'title' );
+      $validated_settings['display-date'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-date' );
+      $validated_settings['display-journal-title']  = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-journal-title' );
+      $validated_settings['add-link-to-blip'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'add-link-to-blip' );
+      $validated_settings['display-powered-by'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'display-powered-by' );
+      $validated_settings['border-style'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-style' );
+      $validated_settings['border-width'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-width' );
+      $validated_settings['border-color'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'border-color' );
+      $validated_settings['background-color'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'background-color' );
+      $validated_settings['color'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'color' );
+      $validated_settings['link-color']   = self::bw_validate_widget_setting( $new_settings, $old_settings, 'link-color' );
+      $validated_settings['padding'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'padding' );
+      $validated_settings['style-control'] = self::bw_validate_widget_setting( $new_settings, $old_settings, 'style-control');
+      $validated_settings = self::bw_standardise_settings_format( $validated_settings );
+
+      return $validated_settings;
     }
 
     /**
@@ -871,6 +849,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @return array The standardised aettings.
      */
     private static function bw_standardise_settings_format( array $settings ): array {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $settings = array_filter( $settings, function( $setting ) {
         return $setting !== 'hide' && !empty( $setting );
