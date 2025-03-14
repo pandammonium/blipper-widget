@@ -1765,7 +1765,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       $html = '';
       // Link back to the blip on the Blipfoto site.
-      self::bw_log_display_values( $user_attributes, 'add-link-to-blip', 'bw_get_blip' );
       if ( ! array_key_exists( 'add-link-to-blip' , $user_attributes ) ) {
         // Necessary for when Blipper Widget is added via the Customiser
         $user_attributes['add-link-to-blip'] = self::DEFAULT_SETTING_VALUES['common']['add-link-to-blip'];
@@ -1837,7 +1836,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       $html = '';
       // Date (optional), title and username
-      self::bw_log_display_values( $user_attributes, 'display-date', 'bw_get_blip' );
       if ( $user_attributes['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
         $html .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $user_attributes ) . ">";
       }
@@ -1949,8 +1947,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       // Journal title and/or display-powered-by link.
-      self::bw_log_display_values( $user_attributes, 'display-journal-title', 'bw_get_blip' );
-      self::bw_log_display_values( $user_attributes, 'display-powered-by', 'bw_get_blip' );
       if ( ! array_key_exists( 'display-journal-title' , $user_attributes ) ) {
         // Necessary for when Blipper Widget is added via the Customiser.
         $user_attributes['display-journal-title'] = self::DEFAULT_SETTING_VALUES['common']['display-journal-title'];
@@ -2679,8 +2675,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static function bw_get_style( $settings, $style_element ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-
-      self::bw_log_display_values( $settings, $style_element, 'blipper_widget_get_style' );
 
       $element = $style_element;
 
