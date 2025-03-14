@@ -175,7 +175,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static $dependencies_loaded = false;
     private static $blipfoto_dependencies_loaded = false;
     private static $hooks_and_filters_added = false;
-    private static $instance_count = 0;
 
     /**
       * Constructs an instance of the widget.
@@ -194,10 +193,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // }
       // bw_log( 'debug backtrace', debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 8 ) );
       try {
-        // if ( ++self::$instance_count > 1 ) {
-        //   throw new \ErrorException( 'Blipper_Widget instance count: ' . self::$instance_count );
-        // }
-        // error_log( 'number of instances: ' . var_export( ++self::$instance_count, true ) );
         $widget_options = [
           'classname' => 'widget_' . BW_ID_BASE,
           'description' => __( 'The latest blip from your Blipfoto account.', 'blipper-widget' ),
@@ -225,9 +220,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        if ( false !== $this->id ) {
-          error_log( 'widget id: ' . var_export( $this->id, true ) );
-        }
+        // if ( false !== $this->id ) {
+          // error_log( 'widget id: ' . var_export( $this->id, true ) );
+        // }
         // error_log( 'this: ' . var_export( $this, true ) );
       }
     }
@@ -247,27 +242,28 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       * empty on adding the widget to a widget area.
       */
     public function widget( $widget_settings, $user_attributes ) {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
       // bw_log( 'current filter', current_filter() );
       // bw_log( 'widget id', $this->id );
 
       echo '<p><b>' . $this->id . '</b></p>';
 
+      // error_log( 'initial user attributes: ' . var_export( $user_attributes, true ) );
+
       if ( empty( $user_attributes ) ) {
         $user_attributes = self::bw_get_default_attributes( true );
-        error_log( 'using default attributes:' );
-      } else {
-        error_log( 'using provided user attributes:' );
+        // error_log( 'using default attributes:' );
+      // } else {
+        // error_log( 'using provided user attributes:' );
       }
       // $this->bw_update_option( $user_attributes );
       $user_attributes = self::bw_standardise_settings_format( $user_attributes );
-      error_log( var_export( $user_attributes, true ) );
+      // error_log( var_export( $user_attributes, true ) );
 
       echo $widget_settings['before_widget'];
       echo self::bw_render_the_blip(
         user_attributes: $user_attributes,
-        // the_blip_title: self::bw_get_the_blip_title( $user_attributes ),
         is_widget: true,
         widget_settings: $widget_settings
       );
@@ -297,6 +293,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       echo '<p><b>' . $this->id . '</b></p>';
 
       $user_attributes = self::bw_get_display_values( $user_attributes );
+      ksort( $user_attributes );
       // error_log( 'user attributes: ' . var_export( $user_attributes, true ) );
       $result = $this->bw_display_form( $user_attributes );
 
@@ -330,7 +327,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // );
       // error_log( 'updated ' . BW_DB_WIDGET_OLD_SETTINGS . ': ' . var_export( $updated, true ) );
       // if ( $updated ) {
-      //   error_log( var_export( get_option( BW_DB_WIDGET_OLD_SETTINGS ) ) );
+        // error_log( var_export( get_option( BW_DB_WIDGET_OLD_SETTINGS ) ) );
       // }
 
       $new_settings = self::bw_standardise_settings_format( $new_settings );
@@ -445,7 +442,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         }
         return self::bw_render_the_blip(
           user_attributes: $current_attributes,
-          // the_blip_title: $the_blip_title,
           is_widget: false,
           content: $content,
           cache_key: $old_cache_key
@@ -455,7 +451,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       }
     }
 
-    private static function bw_get_default_attributes( bool $is_widget ): array {
+    private static function bw_get_default_attributes( bool $is_widget, bool $standardise = true ): array {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -465,7 +461,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } else {
         $default_attributes = array_merge( self::DEFAULT_SETTING_VALUES['shortcode'], $default_attributes );
       }
-      $default_attributes = self::bw_standardise_settings_format( $default_attributes );
+      if ( $standardise ) {
+        $default_attributes = self::bw_standardise_settings_format( $default_attributes );
+      }
       // error_log( 'default settings: ' . var_export( $default_attributes, true ) );
       return $default_attributes;
     }
@@ -542,7 +540,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * settings.
      * @param string[] $settings The array of BW settings from either the
      * widget or the shortcode (set by the user).
-     * @param string The formatted title to be used for this blip.
+     * @param string $the_blip_title Deprecated since 1.2.6.
      * @param bool $cache_key If the shortcode has been cached, the cache key
      * that was generated will not match that of the shortcode with the
      * current settings. This is really only needed when coming from the
@@ -555,8 +553,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * failure.
      */
     private static function bw_render_the_blip( array $user_attributes, bool $is_widget, ?string $the_blip_title = null, ?array $widget_settings = null, ?string $content = null, ?string $cache_key = null ) {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
+
+      if ( null !== $the_blip_title ) {
+        _deprecated_argument( __METHOD__, '1.2.6' );
+      }
 
       $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
@@ -571,7 +573,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
 
           if ( empty( $the_cache ) ) {
-            bw_log( data_name: 'Generating ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from scratch with cache key', data: self::$cache_key );
+            // bw_log( data_name: 'Generating ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from scratch with cache key', data: self::$cache_key );
             // The blip does not exist in the cache, so it needs to be generated:
             $the_blip = self::bw_generate_blip(
               widget_settings: $widget_settings,
@@ -580,7 +582,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
               content: $content
             );
           } else {
-            bw_log( 'Rendering ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from cache', self::$cache_key );
+            // bw_log( 'Rendering ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from cache', self::$cache_key );
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
             $the_blip = $the_cache;
           }
@@ -619,7 +621,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $transient = get_transient( $cache_key ?? self::$cache_key );
-      bw_log( data_name: 'Cache', data: $transient, is_html: true );
+      // bw_log( data_name: 'Cache ' . var_export( $cache_key ?? self::$cache_key, true ), data: $transient, is_html: true );
       return $transient;
     }
 
@@ -642,7 +644,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             widget_settings: $widget_settings,
             content: $content
           ) . '</div>';
-        bw_log( 'Creating blip with user attributes', $user_attributes );
+        // bw_log( 'Creating blip with user attributes', $user_attributes );
         // bw_log( 'The blip', $the_blip );
 
         // Save the blip in the cache for next time it's loaded before it expires:
@@ -673,8 +675,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @return bool True if the data was successfully cached; otherwise false.
      */
     private static function bw_set_cache( string $data_to_cache, $is_widget ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       // bw_log( 'Cache key', self::$cache_key );
       // bw_log( 'Cache expiry', self::CACHE_EXPIRY );
@@ -685,10 +687,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         if ( self::CACHE_EXPIRY ?? is_numeric( self::CACHE_EXPIRY ) ) {
           // error_log( 'cache expiry is null or numeric: ' . gettype( self::CACHE_EXPIRY ) );
           if ( empty( self::$cache_key ) ) {
-            error_log( 'cache key is empty' );
+            // error_log( 'cache key is empty' );
             throw new \LogicException( 'The cache key has not yet been set.' );
           } else if ( false === strpos( BW_PREFIX, substr( self::$cache_key, 0, strlen( BW_PREFIX ) ) ) ) {
-            error_log( 'cache key does not start with ' . BW_PREFIX );
+            // error_log( 'cache key does not start with ' . BW_PREFIX );
             throw new \InvalidArgumentException( 'The cache key is invalid.' );
           }
           $transient = get_transient( self::$cache_key );
@@ -696,13 +698,14 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
             // error_log( 'cache set: ' . var_export( $result, true ) );
             $transient = get_transient( self::$cache_key );
-            error_log( 'cache ' . var_export( self::$cache_key, true ) . ': ' . ( false === $transient ? 'does not exist' : 'exists' ) );
+            // error_log( 'cache ' . var_export( self::$cache_key, true ) . ': ' . ( false === $transient ? 'does not exist' : 'exists' ) );
           } else {
+            // error_log( 'cache already exists' );
             // Don't fail if the cache already exists:
             $result = true;
           }
         } else {
-          error_log( 'cache expiry is neither null nor numeric: ' . gettype( self::CACHE_EXPIRY ) );
+          // error_log( 'cache expiry is neither null nor numeric: ' . gettype( self::CACHE_EXPIRY ) );
           throw new \TypeError( 'Cache expiry time is invalid. Expected null or integer; got ' . var_export( gettype( self::CACHE_EXPIRY ), true ) . ' with value ' . var_export( self::CACHE_EXPIRY, true ) . '.' );
         }
       } catch ( \LogicException $e ) {
@@ -712,7 +715,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch ( \TypeError $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        bw_log( ( $is_widget ? 'Widget' : 'Shortcode' ) . ' blip ' . ( isset( $data_to_cache['title'] ) ? var_export( $data_to_cache['title'], true ) : var_export( $data_to_cache['title'], true ) ) . ' cached with key ' . var_export( self::$cache_key, true ), $result );
+        // bw_log( ( $is_widget ? 'Widget' : 'Shortcode' ) . ' blip ' . ( isset( $data_to_cache['title'] ) ? var_export( $data_to_cache['title'], true ) : var_export( $data_to_cache['title'], true ) ) . ' cached with key ' . var_export( self::$cache_key, true ), $result );
       }
 
       try {
@@ -734,15 +737,16 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $transient = get_transient( $cache_key );
-      error_log( 'cache ' . var_export( $cache_key, true ) . ' exists: ' . var_export( false !== $transient, true ) );
+      // error_log( 'cache ' . var_export( $cache_key, true ) . ' exists: ' . var_export( false !== $transient, true ) );
       $result = ( false !== $transient ) && delete_transient( $cache_key );
-      bw_log( 'Deleted cache ' . var_export( $cache_key, true ), $result );
+      // bw_log( 'Deleted cache ' . var_export( $cache_key, true ), $result );
       return $result;
     }
 
     /**
      * Normalises the arguments from the shortcode.
      *
+     * @since <1.2.6
      * @deprecated 1.2.6 Isn't necessary any more.
      */
     private static function bw_normalise_attributes( string|array|null $shortcode_attributes, $shortcode = '' ): string|array|null {
@@ -787,18 +791,18 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     private static function bw_validate_widget_settings( array $new_settings, array $old_settings ): array {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       $validated_settings = self::bw_validate_the_widget_settings( $new_settings, $old_settings );
 
       // Get the old cache key:
       $old_cache_key = self::bw_get_a_cache_key( $old_settings );
-      error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
+      // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
 
       // Get the validated cache key:
       $validated_cache_key = self::bw_get_a_cache_key( $validated_settings );
-      error_log( 'validated cache key: ' . var_export( $validated_cache_key, true ) );
+      // error_log( 'validated cache key: ' . var_export( $validated_cache_key, true ) );
 
       $updated = ( $validated_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_settings, $validated_settings, true );
 
@@ -806,7 +810,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         // Delete the cache so there isn't an unnecessary build-up of transients.
         $deleted = self::bw_delete_cache( $old_cache_key );
       // } else {
-      //   error_log( 'widget settings haven\'t changed' );
+        // error_log( 'widget settings haven\'t changed' );
       }
       self::$cache_key = $validated_cache_key;
       // bw_log( 'Updated widget settings', $validated_settings );
@@ -890,7 +894,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       if ( array_key_exists( $setting_field, $old_settings ) && array_key_exists( $setting_field, $new_settings ) ) {
         if ( $new_settings[$setting_field] === $old_settings[$setting_field] ) {
-          $setting =  $old_settings[$setting_field];
+          $setting = $old_settings[$setting_field];
           // bw_log( 'setting unchanged', $setting );
           return $setting;
         }
@@ -916,11 +920,18 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         case 'display-journal-title':
         case 'add-link-to-blip':
         case 'display-powered-by':
-          $setting = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'show' : 'hide' ) : 'hide';
+          // $setting = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'show' : 'hide' ) : 'hide';
+          if ( array_key_exists( $setting_field, $new_settings ) ) {
+            if ( empty( $new_settings[$setting_field] ) ) {
+              $setting = 'hide';
+            } else {
+              $setting = 'show';
+            }
+          } else {
+            $setting = 'hide';
+          }
+          // error_log( var_export( $setting_field, true ) . ': ' . var_export( $setting, true ) );
         break;
-        // case 'padding':
-        //   $setting = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'inherit' : $new_settings[$setting_field] ) : 'inherit';
-        // break;
         default:
           if ( array_key_exists( $setting_field, $new_settings ) ) {
             if ( ! empty( $new_settings[$setting_field] ) ) {
@@ -976,9 +987,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         self::bw_display_error_msg( $e, __( 'Something has gone wrong getting the user settings', 'blipper-widget' ) );
 
       }
-
       ksort( $new_settings );
-      // bw_log( 'new settings', $new_settings );
+      // bw_log( 'new display settings', $new_settings );
 
       return $new_settings;
     }
@@ -994,13 +1004,33 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         if ( array_key_exists( $setting, $settings ) ) {
           return esc_attr( $settings[$setting] );
         } else {
-          if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['widget'] ) ) {
-            return self::DEFAULT_SETTING_VALUES['widget'][$setting];
-          } else if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['common'] ) ) {
-            return self::DEFAULT_SETTING_VALUES['common'][$setting];
-          } else {
-            // bw_log( 'Invalid setting requested', $setting );
-            throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ':  <strong>' . $setting . '</strong>' );
+          switch ( $setting ) {
+            case 'background-color':
+            case 'border-color':
+            case 'border-style':
+            case 'border-width':
+            case 'color':
+            case 'link-color':
+            case 'padding':
+            case 'style-control':
+              if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['widget'] ) ) {
+                return self::DEFAULT_SETTING_VALUES['widget'][$setting];
+              } else if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['common'] ) ) {
+                return self::DEFAULT_SETTING_VALUES['common'][$setting];
+              } else {
+                // bw_log( 'Invalid setting requested', $setting );
+                throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
+              }
+            break;
+            case 'title':
+            return '';
+            case 'add-link-to-blip':
+            case 'display-date':
+            case 'display-journal-title':
+            case 'display-powered-by':
+            return 'hide';
+            default:
+            throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
           }
         }
 
@@ -1027,7 +1057,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       if ( self::$dependencies_loaded ) {
-        error_log( 'dependencies already loaded' );
+        // error_log( 'dependencies already loaded' );
       } else {
         // error_log( 'loading dependencies' );
         self::bw_load_blipfoto_dependencies();
@@ -1048,7 +1078,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       if ( self::$blipfoto_dependencies_loaded ) {
-        error_log( 'blipfoto dependencies already loaded' );
+        // error_log( 'blipfoto dependencies already loaded' );
       } else {
         $folders = [
           'Traits' => [
@@ -1800,14 +1830,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static function bw_get_blip_display_blip_add_date( array $user_attributes, bool $is_widget, bool $style_control, array $data ): string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'user attributes', $user_attributes );
 
       $html = '';
       // Date (optional), title and username
       self::bw_log_display_values( $user_attributes, 'display-date', 'bw_get_blip' );
-      if ( ! array_key_exists( 'display-date' , $user_attributes ) ) {
-        // Necessary for when Blipper Widget is added via the Customiser
-        $user_attributes['display-date'] = self::DEFAULT_SETTING_VALUES['common']['display-date'];
-      }
       if ( $user_attributes['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
         $html .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $user_attributes ) . ">";
       }
@@ -2283,6 +2310,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private function bw_display_form_display_date( array $settings ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
+
+      // error_log( 'display date: ' . var_export( $settings['display-date'], true ) );
+      // error_log( 'checked: ' . var_export( checked( 'show', esc_attr( $settings['display-date'] ), false ), true ) );
       ?>
       <div class="option">
         <p class="description">
@@ -2308,6 +2338,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private function bw_display_form_display_link_to_blip( array $settings ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
+
       ?>
       <div class="option">
         <p class="description">
@@ -2686,9 +2717,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $the_blip_title = '';
       if ( array_key_exists( 'title', $user_attributes ) ) {
         $the_blip_title = $user_attributes['title'];
-        error_log( 'the blip title (from settings): ' . var_export( $the_blip_title, true ) );
+        // error_log( 'the blip title (from settings): ' . var_export( $the_blip_title, true ) );
       } else {
-        error_log( 'the blip title (using empty string): ' . var_export( $the_blip_title, true ) );
+        // error_log( 'the blip title (using empty string): ' . var_export( $the_blip_title, true ) );
       }
       return $the_blip_title;
     }
@@ -2736,7 +2767,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           ? ( "key has no value; using default (widget): " . self::bw_get_default_setting_value( 'widget', $display_element ) )
           : ( $settings[$display_element] )
           )
-        : ( "No key, no value; adding default (common): " . self::bw_get_default_setting_value( 'common', 'display-journal-title' ) );
+        : ( "No key, no value; adding default (common): " . self::bw_get_default_setting_value( 'common', $display_element ) );
       // bw_log( $display_element, $message );
     }
 
@@ -3116,7 +3147,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @param string $widget_id The identifier of this instance of the widget.
      * @param string sidebar_id The identifier of the sidebar on which the
      * widget was placed.
-l     * @param ?string $id_base The identifier of the Blipper Widget widget.
+     * @param ?string $id_base The identifier of the Blipper Widget widget.
      * Default: null.
      * @return bool True if the given widget is absent from the cache and the
      * database. False if it could not be removed or if the widget is not a
@@ -3150,7 +3181,7 @@ l     * @param ?string $id_base The identifier of the Blipper Widget widget.
               $cache_is_clean = true;
             } else {
               $cache_is_clean = self::bw_delete_cache( self::$cache_key );
-              error_log( 'deleted cache key ' . var_export( self::$cache_key, true ) . ': ' . var_export( $cache_is_clean, true ) );
+              // error_log( 'deleted cache key ' . var_export( self::$cache_key, true ) . ': ' . var_export( $cache_is_clean, true ) );
             }
           }
           // bw_log( 'Widget ' . var_export( $widget_id, true ) . ' on sidebar ' . var_export( $sidebar_id, true ) . ' cache cleaned', $cache_is_clean );
@@ -3698,5 +3729,5 @@ l     * @param ?string $id_base The identifier of the Blipper Widget widget.
     }
   }
 // } else {
-//   error_log( 'class Blipper_Widget\Widget\Blipper_Widget does exist' );
+  // error_log( 'class Blipper_Widget\Widget\Blipper_Widget does exist' );
 }
