@@ -1018,7 +1018,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
               } else if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES['common'] ) ) {
                 return self::DEFAULT_SETTING_VALUES['common'][$setting];
               } else {
-                // bw_log( 'Invalid setting requested', $setting );
                 throw new \ErrorException( __( 'Invalid setting requested', 'blipper-widget' ) . ': ' . $setting );
               }
             break;
@@ -1128,39 +1127,43 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $create_new_client = empty( self::$client ) ? true : false;
-      $client_ok = !$create_new_client && empty( self::$client->accessToken() ) ? false : true;
-      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
-      // error_log( 'create new client: ' . var_export( $create_new_client, true ) );
+      try {
+        $create_new_client = empty( self::$client ) ? true : false;
+        $client_ok = !$create_new_client && empty( self::$client->accessToken() ) ? false : true;
+        // error_log( 'create new client: ' . var_export( $create_new_client, true ) );
+        // error_log( 'client ok: ' . var_export( $client_ok, true ) );
 
-      // Get the settings from the back-end form:
-      $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
+        // Get the settings from the back-end form:
+        $oauth_settings = Blipper_Widget_Settings::bw_get_settings();
 
-      if ( empty( $oauth_settings ) ) {
-        throw new Blipper_Widget_OAuthException();
+        if ( empty( $oauth_settings ) ) {
+          throw new Blipper_Widget_OAuthException();
+        }
+
+        if ( !$client_ok || $create_new_client ) {
+          $client_ok = self::bw_check_oauth_credentials_exist( $oauth_settings );
+        }
+
+        if ( $client_ok && $create_new_client ) {
+          $client_ok = self::bw_create_blipfoto_client_create_new_client( $oauth_settings );
+        }
+
+        if ( $client_ok ) {
+          $client_ok = self::bw_create_blipfoto_client_get_user_profile( $oauth_settings );
+        }
+
+        if ( !$client_ok ) {
+          bw_delete_all_cached_blips( BW_PREFIX );
+          throw new \ErrorException( 'Could not create new Blipfoto client.' );
+        }
+      } catch ( \ErrorException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e );
+      } finally {
+        // error_log( 'client ok: ' . var_export( $client_ok, true ) );
+        return $client_ok;
       }
-
-      if ( !$client_ok || $create_new_client ) {
-        $client_ok = self::bw_check_oauth_credentials_exist( $oauth_settings );
-      }
-
-      if ( $client_ok && $create_new_client ) {
-        $client_ok = self::bw_create_blipfoto_client_create_new_client( $oauth_settings );
-      }
-
-      if ( $client_ok ) {
-        $client_ok = self::bw_create_blipfoto_client_get_user_profile( $oauth_settings );
-      }
-
-      if ( !$client_ok ) {
-        error_log( 'could not create new client' );
-        bw_delete_all_cached_blips( BW_PREFIX );
-        // if ( BW_DEBUG ) {
-        //   trigger_error( 'The Blipper Widget client is ' . var_export( self::$client, true ), 0, E_USER_WARNING );
-        // }
-      }
-      // error_log( 'client ok: ' . var_export( $client_ok, true ) );
-      return $client_ok;
     }
 
     /**
@@ -1192,12 +1195,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
         // bw_log( 'Blipper_Widget_OAuthException thrown in ' . $e->getFile() . ' on line ' . $e->getLine(), $e->getMessage() );
-        self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue' );
+        self::bw_display_error_msg( $e, 'You are attempting to display your latest blip with Blipper Widget, but your OAuth credentials are invalid.  Please check these credentials on <a href="' . esc_url( admin_url( 'options-general.php?page=blipper-widget' ) ) . '" rel="nofollow nopopener noreferral">the Blipper Widget settings page</a> to continue.<br/>If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem, and include any useful information from the WordPress error log' );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e, 'Something has gone wrong getting the Blipfoto account' );
       } finally {
         if ( !$credentials_exist ) {
-          error_log( 'credentials don\'t exist' );
+          bw_log( 'OAuth credentials not set', data: $oauth_settings, includes_data: true, php_error: E_USER_WARNING );
           bw_delete_all_cached_blips( BW_PREFIX );
         }
       }
@@ -1244,10 +1247,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch ( Blipper_Widget_ApiResponseException $e ) {
         self::bw_display_error_msg( $e, 'Please try again later' );
       } catch ( \Exception $e ) {
-        self::bw_display_error_msg( $e, 'Something has gone wrong creating the Blipfoto client' );
+        self::bw_display_error_msg( $e, 'Something has gone wrong when trying to create the Blipfoto client' );
       } finally {
         if ( !$client_ok ) {
-          error_log( 'client is not ok' );
+          bw_log( 'Client is not ok', includes_data: false, php_error: E_USER_WARNING );
           bw_delete_all_cached_blips( BW_PREFIX );
         }
       }
@@ -2621,7 +2624,21 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       <?php
     }
 
-    private static function bw_get_default_setting_value( $setting_type, $setting, $is_color = false ) {
+    /**
+     * Gets the default value for the given setting.
+     *
+     * @since <1.2.6
+     * @author pandammonium
+     *
+     * @param string $setting_type Indicates what type of setting it is; one of
+     * 'widget', 'shortcode', 'common'.
+     * @param string $setting The setting whose default value is to be
+     * obtained.
+     * @param bool $is_colour Colours need to be handled differently. True if
+     * the setting is a colour; otherwise false. Default is false.
+     * @return mixed The default value of the given setting.
+     */
+    private static function bw_get_default_setting_value( $setting_type, $setting, $is_colour = false ): mixed {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
@@ -2629,7 +2646,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
         if ( array_key_exists( $setting, self::DEFAULT_SETTING_VALUES[$setting_type] ) ) {
 
-          if ( $is_color ) {
+          if ( $is_colour ) {
             if ( 'inherit' === self::DEFAULT_SETTING_VALUES[$setting_type][$setting] ) {
               // The default behaviour is to inherit the theme's colour, but the colour picker doesn't like 'inherit' as a default colour choice.  Therefore, if the theme's colour is desired, then CSS will have to be used, unless the user knows the default colour and can set it in the colour picker.
               switch ( $setting ) {
@@ -2647,9 +2664,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           } else {
             $default_setting = esc_attr( self::DEFAULT_SETTING_VALUES[$setting_type][$setting] );
           }
-
-          // bw_log( 'default ' . $setting_type . ' ' . $setting, $default_setting );
-
+          // bw_log( 'Default ' . $setting_type . ' ' . $setting, $default_setting );
           return $default_setting;
 
         } else {
@@ -2669,44 +2684,48 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       $element = $style_element;
 
-      switch( $style_element ) {
-        case 'link-color':
-          $element = 'color';
-          $style = array_key_exists( $style_element, $settings )
-            ? ( empty( $settings[$style_element] )
-              ? $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';'
-              : $element . ':' . $settings[$style_element] . ';'
-              )
-            : $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
-          // bw_log( 'style', $style );
-          return $style;
-        case 'padding':
-        case 'border-width':
-        $style = '';
-          if ( array_key_exists( $style_element, $settings ) ){
-            if ( empty( $settings[$style_element] ) ) {
-              $style = $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
-            } else {
-              $style = $element . ':' . $settings[$style_element];
-              if ( is_numeric( $settings[$style_element] ) ) {
-                $style .= 'px';
+      try {
+        switch( $style_element ) {
+          case 'link-color':
+            $element = 'color';
+            $style = array_key_exists( $style_element, $settings )
+              ? ( empty( $settings[$style_element] )
+                ? $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';'
+                : $element . ':' . $settings[$style_element] . ';'
+                )
+              : $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
+            // bw_log( 'style', $style );
+            return $style;
+          case 'padding':
+          case 'border-width':
+            $style = '';
+            if ( array_key_exists( $style_element, $settings ) ){
+              if ( empty( $settings[$style_element] ) ) {
+                $style = $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
+              } else {
+                $style = $element . ':' . $settings[$style_element];
+                if ( is_numeric( $settings[$style_element] ) ) {
+                  $style .= 'px';
+                }
+                $style .= ';';
               }
-              $style .= ';';
+            } else {
+              $style = $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . 'px' . ';';
             }
-          } else {
-            $style = $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . 'px' . ';';
-          }
-          // bw_log( 'style', $style );
-        return $style;
-        default:
-          $style = array_key_exists( $style_element, $settings )
-            ? ( empty( $settings[$style_element] )
-              ? $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';'
-              : $element . ':' . $settings[$style_element] . ';'
-              )
-            : $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
-          // bw_log( 'style', $style );
-        return $style;
+            // bw_log( 'style', $style );
+          return $style;
+          default:
+            $style = array_key_exists( $style_element, $settings )
+              ? ( empty( $settings[$style_element] )
+                ? $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';'
+                : $element . ':' . $settings[$style_element] . ';'
+                )
+              : $element . ':' . self::bw_get_default_setting_value( 'widget', $style_element ) . ';';
+            // bw_log( 'style', $style );
+          return $style;
+        }
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e );
       }
     }
 
@@ -2858,10 +2877,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         // Translators: do not translate Blipfoto: it's the name of a service.
         echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' .  __( 'The Blipfoto request limit has been reached. Please try again in 15 minutes.', 'blipper-widget' ) . '</p>';
       } else {
+        echo '';
         if ( current_user_can( 'manage_options' ) ) {
-          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
+          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem, and include any useful information from the WordPress error log.', 'blipper-widget' ) . '</p>';
         } else {
-          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please check your settings and try again. If your settings are ok, try again later. If it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem', 'blipper-widget' ) . '.</p>';
+          echo '<p class="' . self::bw_get_css_class( 'error' ) . '">' . __( 'There is a problem with Blipper Widget or a service it relies on. Please try again later; if it still doesn\'t work, please consider informing the owner of this website or <a href="https://github.com/pandammonium/blipper-widget/issues" rel="nofollow noopener noreferrer external">adding an issue to Blipper Widget on GitHub</a>. If you do add an issue on GitHub, please give instructions to reproduce the problem, and include any useful information from the WordPress error log.', 'blipper-widget' ) . '</p>';
         }
       }
     }
