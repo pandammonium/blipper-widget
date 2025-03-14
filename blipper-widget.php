@@ -543,18 +543,22 @@ if (!function_exists('bw_exception')) {
   *
   * @since 0.0.1
   */
-  function bw_exception( $e ) {
+  function bw_exception( \Throwable $e ): string {
     // // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // // bw_log( 'arguments', func_get_args() );
 
     $trace = $e->getTrace();
     $function = $trace[ 0 ][ 'function' ];
+    $message = preg_replace( '/(.*)\.$/', '$1', $e->getMessage() );
     if ( BW_DEBUG ) {
-      error_log( BW_PREFIX_DEBUG . 'Current filter: ' . var_export( current_filter(), true ) );
-      error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 5 ), true ) );
-      error_log( BW_PREFIX_DEBUG . wp_strip_all_tags( $e->getMessage() ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
+      $current_filter = current_filter();
+      if ( $current_filter ) {
+        error_log( BW_PREFIX_DEBUG . 'Current filter: ' . var_export( $current_filter, true ) );
+      }
+      // error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 5 ), true ) );
+      error_log( BW_PREFIX_DEBUG . wp_strip_all_tags( $message ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
-    return __('<p class="blipper-widget error">Blipper Widget | ' . $e->getMessage() . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
+    return __('<p class="blipper-widget error">Blipper Widget | ' . $message . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
   }
   set_exception_handler( 'Blipper_Widget\bw_exception' );
 }
@@ -615,10 +619,24 @@ if ( !function_exists( 'bw_log' ) ) {
    * data must be given. Default is true.
    * @param bool $is_html Treat HTML as a special case if true; treat it as
    * any other data if false. Default is false.
+   * @param ?int $php_error One of the PHP user error constants. If present, uses trigger_error() to trigger a PHP error of that type.
    */
-  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true, bool $is_html = false ): string {
+  function bw_log( string $data_name, mixed $data = null, bool $echo = false, bool $includes_data = true, bool $is_html = false, ?int $php_error = null ): string {
     // error_log( 'function: ' . var_export( __FILE__ . '::' . __FUNCTION__ . '()', true ) );
     // error_log( 'arguments: ' . var_export( func_get_args(), true ) );
+
+    if ( current_user_can( 'manage_options' ) ) {
+      switch ( $php_error ) {
+        case E_USER_ERROR:
+        case E_USER_WARNING:
+        case E_USER_NOTICE:
+        case E_USER_DEPRECATED:
+          trigger_error( print_r( $data_name, true ) . ( $includes_data ? ( ': ' . var_export( $data, true ) ) : '' ), $php_error );
+        break;
+        default:
+          // Do nothing.
+      }
+    }
 
     if ( BW_DEBUG ) {
       if ( $is_html ) {
@@ -646,6 +664,7 @@ if ( !function_exists( 'bw_log' ) ) {
           echo $string;
         }
       } else {
+        $data_name = preg_replace( '/(.*)\.$/', '$1', $data_name );
         $string = BW_PREFIX_DEBUG . print_r( $data_name, true );
         if ( $includes_data ) {
           if ( $is_html ) {
