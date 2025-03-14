@@ -2757,18 +2757,27 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
     // --- Output: logging, error tracking and debugging ------------------- //
 
-    private static function bw_log_display_values( $settings, $display_element, $function_name ) {
+    /**
+     * Logs the value of the given display element. If there is none, the
+     * default is logged instead.
+     *
+     * @since <1.2.6
+     * @deprecated 1.2.6 Overly complicated.
+     */
+    private static function bw_log_display_values( $settings, $display_element, $function_name ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      $message =
-        array_key_exists( $display_element, $settings )
-        ? ( empty( $settings[$display_element] )
-          ? ( "key has no value; using default (widget): " . self::bw_get_default_setting_value( 'widget', $display_element ) )
-          : ( $settings[$display_element] )
-          )
-        : ( "No key, no value; adding default (common): " . self::bw_get_default_setting_value( 'common', $display_element ) );
-      // bw_log( $display_element, $message );
+      _deprecated_function( __METHOD__, '1.2.6' );
+
+      // $message =
+      //   array_key_exists( $display_element, $settings )
+      //   ? ( empty( $settings[$display_element] )
+      //     ? ( "key has no value; using default (widget): " . self::bw_get_default_setting_value( 'widget', $display_element ) )
+      //     : ( $settings[$display_element] )
+      //     )
+      //   : ( "No key, no value; adding default (common): " . self::bw_get_default_setting_value( 'common', $display_element ) );
+      // // bw_log( $display_element, $message );
     }
 
     /**
