@@ -697,8 +697,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           if ( false === $transient ) {
             $result = set_transient( self::$cache_key, $data_to_cache, self::CACHE_EXPIRY );
             // error_log( 'cache set: ' . var_export( $result, true ) );
-            $transient = get_transient( self::$cache_key );
+            // $transient = get_transient( self::$cache_key );
             // error_log( 'cache ' . var_export( self::$cache_key, true ) . ': ' . ( false === $transient ? 'does not exist' : 'exists' ) );
+            self::bw_display_cache_status( self::$cache_key, 'Created cache', $result );
           } else {
             // error_log( 'cache already exists' );
             // Don't fail if the cache already exists:
@@ -736,12 +737,20 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      // $transient = get_transient( $cache_key );
+      $transient = get_transient( $cache_key );
+      self::bw_display_cache_status( $cache_key, 'Cache exists ', false !==$transient );
       // error_log( 'cache ' . var_export( $cache_key, true ) . ' exists: ' . var_export( false !== $transient, true ) );
-      // $result = ( false !== $transient ) && delete_transient( $cache_key );
-      $result = delete_transient( $cache_key );
-      bw_log( 'Deleted cache ' . var_export( $cache_key, true ), $result );
+      $result = ( false !== $transient ) && delete_transient( $cache_key );
+      // $result = delete_transient( $cache_key );
+      self::bw_display_cache_status( $cache_key, 'Deleted cache', $result );
       return $result;
+    }
+
+    private static function bw_display_cache_status( string $cache_key, string $message, $status ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+
+      bw_log( $message . ' ' . var_export( mb_strimwidth( $cache_key, 0, 7, '…' ), true ), $status );
     }
 
     /**
@@ -799,11 +808,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       // Get the old cache key:
       $old_cache_key = self::bw_get_a_cache_key( $old_settings );
-      error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
+      // error_log( 'old cache key: ' . var_export( $old_cache_key, true ) );
 
       // Get the validated cache key:
       $validated_cache_key = self::bw_get_a_cache_key( $validated_settings );
-      error_log( 'validated cache key: ' . var_export( $validated_cache_key, true ) );
+      // error_log( 'validated cache key: ' . var_export( $validated_cache_key, true ) );
 
       $updated = ( $validated_cache_key !== $old_cache_key ) || self::bw_compare_old_and_new_attributes( $old_settings, $validated_settings, true );
 
