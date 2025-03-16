@@ -1846,13 +1846,15 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
 
       $html = '';
       // Date (optional), title and username
-      if ( $user_attributes['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
-        $html .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $user_attributes ) . ">";
-      }
-      if ( $user_attributes['display-date'] === 'show' ) {
-          $html .= date( get_option( 'date_format' ), $data['blip']['date_stamp'] );
-        if ( !empty( $data['blip']['title'] ) ) {
-          $html .= '<br>';
+      if ( array_key_exists( 'display-date', $user_attributes ) ) {
+        if ( $user_attributes['display-date'] === 'show' || ! empty( $data['blip']['title'] ) ) {
+          $html .= "<header" . self::bw_get_styling( 'header', $is_widget, $style_control, $user_attributes ) . ">";
+        }
+        if ( $user_attributes['display-date'] === 'show' ) {
+            $html .= date( get_option( 'date_format' ), $data['blip']['date_stamp'] );
+          if ( !empty( $data['blip']['title'] ) ) {
+            $html .= '<br>';
+          }
         }
       }
       return $html;
