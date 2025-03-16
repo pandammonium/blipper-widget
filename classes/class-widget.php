@@ -27,6 +27,7 @@ use Blipper_Widget\Settings\Blipper_Widget_Settings;
 use function Blipper_Widget\bw_delete_all_cached_blips;
 use function Blipper_Widget\bw_log;
 use function Blipper_Widget\bw_exception;
+use function Blipper_Widget\bw_array_to_string;
 
 if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
   // error_log( 'class Blipper_Widget\Widget\Blipper_Widget does not exist (yet)' );
@@ -268,7 +269,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         widget_settings: $widget_settings
       );
       echo $widget_settings['after_widget'];
-
       // error_log( 'widget() this: ' . var_export( $this, true ) );
     }
 
@@ -3619,8 +3619,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         add_action(
           hook_name: 'customize_save_after',
           callback: function( $arg ) {
-            // error_log( current_filter() );
-            // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+            error_log( current_filter() );
+            error_log( '$arg: ' . bw_array_to_string( $arg ) );
             return true;
           },
           priority: 10,
@@ -3671,86 +3671,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           accepted_args: 1
         );
 
-
         self::$hooks_and_filters_added = true;
       }
     }
 
-    private static function bw_array_to_string( mixed $input, int $indent_by = 0 ) {
-
-      $output = '';
-      static $seen = [];
-      $indent = str_repeat( '  ', $indent_by );
-
-      $circular_ref_text = function( mixed $input ): string {
-        return '⛔️ ' . ( 'object' === gettype( $input ) ? gettype( $input ) . ' ' . get_class( $input ) : gettype( $input ) );
-      };
-      $output_data = function( mixed $input, string $indent, int $indent_by = 0 ): string {
-        $output = '';
-        foreach ( $input as $key => $value ) {
-          // error_log( 'key: ' . var_export( $key, true ) );
-          $output .= $indent . '  ' . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
-        }
-        return $output;
-      };
-
-      switch ( gettype( $input ) ) {
-        case 'array':
-          // error_log( 'input is array' );
-          if ( in_array( $input, $seen, true ) ) {
-            // error_log( 'found a circular reference' );
-            $output .= $circular_ref_text( $input );
-          } else {
-            $seen[] = $input;
-            $output .= PHP_EOL . $indent . 'array ' . '(' . PHP_EOL;
-            // foreach ( $input as $key => $value ) {
-            //   // error_log( 'key: ' . var_export( $key, true ) );
-            //   $output .= $indent . var_export( $key, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
-            // }
-            $output .= $output_data( $input, $indent, $indent_by );
-            $output .= $indent . ')';
-          }
-        break;
-        case 'object':
-          // error_log( 'input is object' );
-          if ( 'Closure' === get_class( $input ) ) {
-            $output .= 'object ' . get_class( $input );
-            $seen[] = $input;
-          } else {
-            if ( in_array( $input, $seen, true ) ) {
-              // error_log( 'found a circular reference' );
-              $output .= $circular_ref_text( $input );
-            } else {
-              $seen[] = $input;
-              $properties = get_object_vars( $input );
-              if ( empty( $properties ) ) {
-                // error_log( '  … with no public properties' );
-              } else {
-                // error_log( '  … with these public properties:' );
-                $output .= PHP_EOL . $indent . 'object ' . get_class( $input ) . ' {' . PHP_EOL;
-                // foreach ( $properties as $property => $value ) {
-                //   // error_log( 'property: ' . var_export( $property, true ) . ' (value type ' . gettype( $value ) . ')' . self::bw_array_to_string( $value ) );
-                //   $output .= $indent . var_export( $property, true ) . ' => ' . self::bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
-                // }
-                $output .= $output_data( $properties, $indent, $indent_by );
-                $output .= $indent . '}';
-              }
-            }
-          }
-        break;
-        default:
-          // error_log( 'input is ' . gettype( $input ) );
-          if ( in_array( $input, $seen, true ) ) {
-            // error_log( 'found a circular reference' );
-            $output .= $circular_ref_text( $input );
-          } else {
-            // error_log( $indent . 'value: ' . var_export( $input, true ) );
-            $output .= var_export( $input, true );
-          }
-        break;
-      }
-      return $output;
-    }
   }
 // } else {
   // error_log( 'class Blipper_Widget\Widget\Blipper_Widget does exist' );

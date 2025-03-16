@@ -167,11 +167,28 @@ if (!function_exists('bw_add_settings_link')) {
 
 // ------ Testing Customiser hooks ------------------------------------------ //
 
+add_action(
+  hook_name: 'customize_save_after',
+  callback: function( $arg ) {
+    error_log( current_filter() );
+    error_log( '$arg: ' . bw_array_to_string( $arg ) );
+    return true;
+  },
+  priority: 10,
+  accepted_args: 1
+);
+add_action(
+  hook_name: 'customize_save_after',
+  callback: [ Widget\Blipper_Widget::class, 'bw_save_customiser_widget' ],
+  priority: 11,
+  accepted_args: 1
+);
+
 // add_action(
 //   hook_name: 'customize_save',
 //   callback: function( $arg ) {
 //     // // // error_log( current_filter() );
-//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 //     return true;
 //   },
 //   priority: 10,
@@ -182,7 +199,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   hook_name: 'customize_register',
 // //   callback: function( $arg ) {
 // //     // // error_log( current_filter() );
-// //     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+// //     // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -204,7 +221,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   hook_name: 'customize_render_panel',
 // //   callback: function( $arg ) {
 // //     // // error_log( current_filter() );
-// //     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+// //     // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -238,7 +255,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
 // //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
-// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     // // error_log( '$arg1: ' . bw_array_to_string( $arg1 ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -250,7 +267,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
 // //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
-// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     // // error_log( '$arg1: ' . bw_array_to_string( $arg1 ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -274,7 +291,7 @@ if (!function_exists('bw_add_settings_link')) {
 //     // // error_log( current_filter() );
 //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
 //     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
-//     // // error_log( '$arg2: ' . self::bw_array_to_string( $arg2 ) );
+//     // // error_log( '$arg2: ' . bw_array_to_string( $arg2 ) );
 
 //     if ( str_starts_with( $arg0, 'widget_' . BW_ID_BASE ) ) {
 //       // // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET (arg0)!' . PHP_EOL );
@@ -303,7 +320,7 @@ if (!function_exists('bw_add_settings_link')) {
 //   hook_name: 'customize_render_control',
 //   callback: function( $arg ) {
 //     // // // error_log( current_filter() );
-//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 //     return true;
 //   },
 //   priority: 10,
@@ -314,7 +331,7 @@ if (!function_exists('bw_add_settings_link')) {
 //   hook_name: 'customize_render_section',
 //   callback: function( $arg ) {
 //     // // // error_log( current_filter() );
-//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 //     return true;
 //   },
 //   priority: 10,
@@ -348,7 +365,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
 // //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
-// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     // // error_log( '$arg1: ' . bw_array_to_string( $arg1 ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -360,7 +377,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
 // //     // // error_log( '$arg0: ' . var_export( $arg0, true ) );
-// //     // // error_log( '$arg1: ' . self::bw_array_to_string( $arg1 ) );
+// //     // // error_log( '$arg1: ' . bw_array_to_string( $arg1 ) );
 // //     return true;
 // //   },
 // //   priority: 10,
@@ -382,7 +399,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   hook_name: 'customize_dynamic_partial_args',
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
-// //     // // error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+// //     // // error_log( '$arg0: ' . bw_array_to_string( $arg0 ) );
 // //     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
 // //     return true;
 // //   },
@@ -395,7 +412,7 @@ if (!function_exists('bw_add_settings_link')) {
 // //   hook_name: 'widget_customizer_setting_args',
 // //   callback: function( $arg0, $arg1 ) {
 // //     // // error_log( current_filter() );
-// //     // // error_log( '$arg0: ' . self::bw_array_to_string( $arg0 ) );
+// //     // // error_log( '$arg0: ' . bw_array_to_string( $arg0 ) );
 // //     // // error_log( '$arg1: ' . var_export( $arg1, true ) );
 // //     return true;
 // //   },
@@ -449,7 +466,7 @@ if (!function_exists('bw_add_settings_link')) {
 //   hook_name: 'customize_save_validation_before',
 //   callback: function( $arg ) {
 //     // // error_log( current_filter() );
-//     // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 //     return true;
 //   },
 //   priority: 10,
@@ -481,7 +498,7 @@ if (!function_exists('bw_add_settings_link')) {
 //   hook_name: 'customize_render_control_' . $this->id,
 //   callback: function( $arg ) {
 //     // // // error_log( current_filter() );
-//     // // // error_log( '$arg: ' . self::bw_array_to_string( $arg ) );
+//     // // // error_log( '$arg: ' . bw_array_to_string( $arg ) );
 //     // // // error_log( 'this id: ' . $this->id );
 //     return true;
 //   },
@@ -680,5 +697,85 @@ if ( !function_exists( 'bw_log' ) ) {
     } else {
       return '';
     }
+  }
+}
+
+if ( !function_exists( 'bw_array_to_string' ) ) {
+  function bw_array_to_string( mixed $input, int $indent_by = 0 ) {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+
+    $output = '';
+    static $seen = [];
+    $indent = str_repeat( '  ', $indent_by );
+
+    $circular_ref_text = function( mixed $input ): string {
+      return '⛔️ ' . ( 'object' === gettype( $input ) ? gettype( $input ) . ' ' . get_class( $input ) : gettype( $input ) );
+    };
+    $output_data = function( mixed $input, string $indent, int $indent_by = 0 ): string {
+      $output = '';
+      foreach ( $input as $key => $value ) {
+        // error_log( 'key: ' . var_export( $key, true ) );
+        $output .= $indent . '  ' . var_export( $key, true ) . ' => ' . bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+      }
+      return $output;
+    };
+
+    switch ( gettype( $input ) ) {
+      case 'array':
+        // error_log( 'input is array' );
+        if ( in_array( $input, $seen, true ) ) {
+          // error_log( 'found a circular reference' );
+          $output .= $circular_ref_text( $input );
+        } else {
+          $seen[] = $input;
+          $output .= PHP_EOL . $indent . 'array ' . '(' . PHP_EOL;
+          // foreach ( $input as $key => $value ) {
+          //   // error_log( 'key: ' . var_export( $key, true ) );
+          //   $output .= $indent . var_export( $key, true ) . ' => ' . bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+          // }
+          $output .= $output_data( $input, $indent, $indent_by );
+          $output .= $indent . ')';
+        }
+      break;
+      case 'object':
+        // error_log( 'input is object' );
+        if ( 'Closure' === get_class( $input ) ) {
+          $output .= 'object ' . get_class( $input );
+          $seen[] = $input;
+        } else {
+          if ( in_array( $input, $seen, true ) ) {
+            // error_log( 'found a circular reference' );
+            $output .= $circular_ref_text( $input );
+          } else {
+            $seen[] = $input;
+            $properties = get_object_vars( $input );
+            if ( empty( $properties ) ) {
+              // error_log( '  … with no public properties' );
+            } else {
+              // error_log( '  … with these public properties:' );
+              $output .= PHP_EOL . $indent . 'object ' . get_class( $input ) . ' {' . PHP_EOL;
+              // foreach ( $properties as $property => $value ) {
+              //   // error_log( 'property: ' . var_export( $property, true ) . ' (value type ' . gettype( $value ) . ')' . bw_array_to_string( $value ) );
+              //   $output .= $indent . var_export( $property, true ) . ' => ' . bw_array_to_string( $value, $indent_by + 1 ) . PHP_EOL;
+              // }
+              $output .= $output_data( $properties, $indent, $indent_by );
+              $output .= $indent . '}';
+            }
+          }
+        }
+      break;
+      default:
+        // error_log( 'input is ' . gettype( $input ) );
+        if ( in_array( $input, $seen, true ) ) {
+          // error_log( 'found a circular reference' );
+          $output .= $circular_ref_text( $input );
+        } else {
+          // error_log( $indent . 'value: ' . var_export( $input, true ) );
+          $output .= var_export( $input, true );
+        }
+      break;
+    }
+    return $output;
   }
 }
