@@ -111,6 +111,10 @@ define( 'BW_ID_BASE', 'blipper_widget' );
  */
 define( 'BW_DB_PREFIX', 'blipper-widget' );
 
+/**
+ */
+define( 'BW_CACHE_KEY_CACHE_KEY_SUFFIX', '--' . 'cache_key-old' );
+
 // --- Action hooks --------------------------------------------------------- //
 
 if (!function_exists('bw_register_widget')) {
