@@ -107,9 +107,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @author pandammonium
      *
      * @see https://developer.wordpress.org/reference/functions/set_transient/
-     *  WordPress developer documentation for set_transient().
+     * WordPress developer documentation for set_transient().
      * @see https://developer.wordpress.org/reference/functions/get_transient/
-     *   WordPress developer documentation for get_transient().
+     * WordPress developer documentation for get_transient().
      */
     private const WP_TRANSIENT_KEY_LIMIT = 172;
 
