@@ -129,6 +129,8 @@ if (!function_exists('bw_register_widget')) {
       throw new \Exception( 'class Blipper_Widget\Widget\Blipper_Widget does not exist' );
     }
     // register_widget( 'Blipper_Widget\Widget\Blipper_Widget' );
+    bw_add_action_hooks();
+    bw_add_filter_hooks();
   }
   add_action(
     hook_name: 'widgets_init',
@@ -165,24 +167,95 @@ if (!function_exists('bw_add_settings_link')) {
   );
 }
 
+if ( !function_exists( 'bw_add_action_hooks' ) ) {
+  function bw_add_action_hooks() {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+    // bw_log( 'current filter', current_filter() );
+
+    $blipper_widget = Widget\Blipper_Widget::bw_get_registration_instance();
+
+    add_action(
+      hook_name: 'customize_preview_init',
+      callback: [ $blipper_widget, 'bw_on_customise_preview_init' ],
+      priority: 10,
+      accepted_args: 1
+    );
+    add_action(
+      hook_name: 'customize_save_after',
+      callback: [ Widget\Blipper_Widget::class, 'bw_on_customise_save_after' ],
+      priority: 11,
+      accepted_args: 1
+    );
+  }
+}
+
+if ( !function_exists( 'bw_add_filter_hooks' ) ) {
+  function bw_add_filter_hooks() {
+    // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
+    // bw_log( 'arguments', func_get_args() );
+    // bw_log( 'current filter', current_filter() );
+
+    // NB Filters need to return the filtered version of the data they were given to filter.
+
+    $blipper_widget = Widget\Blipper_Widget::bw_get_registration_instance();
+
+    add_filter(
+      hook_name: 'pre_update_option_widget_' . BW_ID_BASE,
+      callback: [ $blipper_widget, 'bw_capture_old_widget_settings' ],
+      priority: 10,
+      accepted_args: 2
+    );
+  }
+}
+
 // ------ Testing Customiser hooks ------------------------------------------ //
 
-add_action(
-  hook_name: 'customize_save_after',
-  callback: function( $arg ) {
-    error_log( current_filter() );
-    error_log( '$arg: ' . bw_array_to_string( $arg ) );
-    return true;
-  },
-  priority: 10,
-  accepted_args: 1
-);
-add_action(
-  hook_name: 'customize_save_after',
-  callback: [ Widget\Blipper_Widget::class, 'bw_save_customiser_widget' ],
-  priority: 11,
-  accepted_args: 1
-);
+// add_action(
+//   hook_name: 'customize_save_after',
+//   callback: function( $arg ) {
+//     error_log( current_filter() );
+//     error_log( '$arg: ' . bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_preview_init',
+//   callback: function() {
+//     // error_log( current_filter() );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 0
+// );
+
+// add_action(
+//   hook_name: 'customize_save_after',
+//   callback: function( $arg ) {
+//     // error_log( current_filter() );
+//     // error_log( '$arg: ' . bw_array_to_string( $arg ) );
+//     return true;
+//   },
+//   priority: 10,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'customize_publish_after',
+//   callback: [ Widget\Blipper_Widget::class, 'bw_on_delete_widget_from_customiser' ],
+//   priority: 9999,
+//   accepted_args: 1
+// );
+
+// add_action(
+//   hook_name: 'updated_widget',
+//   callback: [ Widget\Blipper_Widget::class, 'bw_on_widget_setting_change_in_backend' ],
+//   accepted_args: 3
+// );
+
 
 // add_action(
 //   hook_name: 'customize_save',
