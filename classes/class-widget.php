@@ -3493,6 +3493,200 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // }
     }
 
+    public static function bw_on_customise_save_after( \WP_Customize_Manager $wp_customise ) {
+      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      bw_log( 'Called from', current_filter() );
+
+      self::bw_save_customiser_widget( $wp_customise );
+    }
+
+    private static function bw_save_customiser_widget( \WP_Customize_Manager $wp_customise ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      // $settings = $wp_customise->settings();
+      // // error_log( 'customiser settings: ' . bw_array_to_string( $settings ) );
+      // foreach ( $settings as $setting_id => $setting ) {
+      //   // error_log( 'customiser setting: ' . bw_array_to_string( $setting ) );
+      //   if ( str_starts_with( $setting_id, 'widget_' . BW_ID_BASE ) ) {
+      //     // error_log( 'setting id: ' . var_export( $setting_id, true ) );
+      //     // error_log( 'class: ' . var_export( get_class( $setting ), true ) );
+      //     // error_log( 'id data: ' . var_export( $setting->id_data(), true ) );
+      //     // The keys give the number in the widget id string, for example blipper_widget-3. Use it and the id base to get the widget id:
+      //     $keys = $setting->id_data()['keys'];
+      //     foreach ( $keys as $key_id => $instance_key ) {
+      //       // error_log( 'id data - key ' . $key_id . ': ' . var_export( $instance_key, true ) );
+      //       $widget_id = BW_ID_BASE . '-' . $key;
+      //       // error_log( 'widget id: ' . var_export( $widget_id, true ) );
+      //       $cache_key_cache_key = BW_PREFIX . $this->id . BW_CACHE_KEY_CACHE_KEY_SUFFIX;
+      //       // error_log( 'cache-key cache key: ' . var_export( $cache_key_cache_key, true ) );
+      //       $blip_cache_key = get_transient( $cache_key_cache_key );
+      //       // error_log( 'blip cache key: ' . var_export( $blip_cache_key, true ) );
+      //       $deleted = self::bw_delete_cache( $blip_cache_key );
+      //     }
+      //     // error_log( 'id data - base: ' . var_export( $setting->id_data()['base'], true ) . PHP_EOL );
+      //   }
+      // }
+    }
+
+    public function bw_on_customise_preview_init( \WP_Customize_Manager $wp_customise ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      $this->bw_delete_old_widget_customiser_cache( $wp_customise );
+    }
+
+    private function bw_delete_old_widget_customiser_cache( \WP_Customize_Manager $wp_customise ) {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      $settings = $wp_customise->settings();
+      // error_log( 'customiser settings: ' . bw_array_to_string( $settings ) );
+      foreach ( $settings as $setting_id => $setting ) {
+        // error_log( 'customiser setting id: ' . bw_array_to_string( $setting_id ) );
+        if ( str_starts_with( $setting_id, 'widget_' . BW_ID_BASE ) ) {
+          // error_log( 'setting id: ' . var_export( $setting_id, true ) );
+          // error_log( 'class: ' . var_export( get_class( $setting ), true ) );
+          // error_log( 'id data: ' . var_export( $setting->id_data(), true ) );
+          // The keys give the number in the widget id string, for example blipper_widget-3. Use it and the id base to get the widget id:
+          $keys = $setting->id_data()['keys'];
+          foreach ( $keys as $key_id => $instance_key ) {
+            $deleted = false;
+            // error_log( 'id data - key ' . $key_id . ': ' . var_export( $instance_key, true ) );
+            $widget_id = BW_ID_BASE . '-' . $instance_key;
+            // error_log( 'widget id: ' . var_export( $widget_id, true ) );
+            $cache_key_cache_key = BW_PREFIX . $this->id . BW_CACHE_KEY_CACHE_KEY_SUFFIX;
+            // error_log( 'cache-key cache key: ' . var_export( $cache_key_cache_key, true ) );
+            $blip_cache_key = get_transient( $cache_key_cache_key );
+            // error_log( 'stored cache key: ' . var_export( self::bw_get_truncated_cache_key( $blip_cache_key ), true ) );
+            if ( false === $blip_cache_key ) {
+              // self::bw_display_cache_status( $cache_key_cache_key, 'Did not find old blip cache key in' );
+            } else {
+              // self::bw_display_cache_status( $blip_cache_key, 'Found old blip cache key in ' . var_export( $cache_key_cache_key, true ) );
+              $current_settings = [];
+              $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $current_settings );
+                // error_log( 'got current settings: ' . var_export( $result, true ) );
+              if ( false === $result ) {
+              } else {
+                $current_cache_key = self::bw_get_a_cache_key( $current_settings );
+                // error_log( 'current cache key: ' . var_export( self::bw_get_truncated_cache_key( $current_cache_key ), true ) );
+                if ( $current_settings === $blip_cache_key ) {
+                  // error_log( 'new cache key equals old cache key' );
+                } else {
+                  $result = self::bw_get_cache( $blip_cache_key );
+                  // error_log( 'found old blip cached as: ' . var_export( self::bw_get_truncated_cache_key( $blip_cache_key ), true ) . ': ' . var_export( $result, true ) );
+                  $deleted = false === $result ? false : self::bw_delete_cache( $blip_cache_key );
+                }
+              }
+            }
+            // error_log( 'deleted old blip cache ' . var_export( self::bw_get_truncated_cache_key( $blip_cache_key ), true ) . ': ' . var_export( $deleted, true ) );
+            // self::bw_display_cache_status( $blip_cache_key, 'Deleted old blip cache key', $deleted );
+          }
+          // error_log( 'id data - base: ' . var_export( $setting->id_data()['base'], true ) . PHP_EOL );
+        }
+      }
+    }
+
+    public function bw_capture_old_widget_settings( array $new_settings, array $old_settings ): array {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      try {
+        $new_settings_extracted = [];
+        $old_settings_extracted = [];
+
+        foreach ( $new_settings as $key => $value ) {
+          if ( BW_ID_BASE . '-' . $key === $this->id ) {
+            $new_settings_extracted = $value;
+            break;
+          }
+        }
+        foreach ( $old_settings as $key => $value ) {
+          if ( BW_ID_BASE . '-' . $key === $this->id ) {
+            $old_settings_extracted = $value;
+            break;
+          }
+        }
+        if ( $old_settings_extracted !== $new_settings_extracted ) {
+          $result = $this->bw_cache_blip_cache_key(
+            settings: $old_settings_extracted
+          );
+          if ( !$result ) {
+            throw new \Exception( 'Cache key of blip not cached.' );
+          }
+        } else {
+          error_log( 'old settings are the same as new settings' );
+        }
+      } catch ( \Exception $e ) {
+        self::bw_display_error_msg( $e );
+      }
+
+      return $new_settings;
+    }
+
+    /**
+     * Caches the cache key used for the old settings.
+     */
+    private function bw_cache_blip_cache_key( ?array $settings = null, ?string $data_to_cache = null ): bool {
+      bw_log( 'method', __METHOD__ . '()' );
+      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'Called from', current_filter() );
+
+      $result = false;
+      try {
+        if ( ( null === $settings && null === $data_to_cache ) ||
+             ( null !== $settings && null !== $data_to_cache ) ) {
+          throw new \InvalidArgumentException('Either the widget settings or the ready-to-cache data must be provided, but not both.');
+        }
+
+        $cache_key = BW_PREFIX . $this->id . BW_CACHE_KEY_CACHE_KEY_SUFFIX;
+
+        $data_to_cache = $data_to_cache ?? self::bw_get_a_cache_key( $settings );
+
+        // self::bw_display_cache_status( $data_to_cache, 'Cache ' . var_export( $cache_key, true ) . ' will contain' );
+        // error_log( 'going to cache this old cache key: ' . var_export( $data_to_cache, true ) . ' under cache key ' . var_export( $cache_key, true ) );
+
+        $cached_data_to_delete = get_transient( $cache_key );
+        $old_cache_exists = false !== get_transient( $cached_data_to_delete );
+        if ( $old_cache_exists ) {
+          $result = delete_transient( $cached_data_to_delete );
+          // error_log( 'deleted cache ' .  var_export( self::bw_get_truncated_cache_key( $cache_key ), true ) . ': ' . var_export( $result, true ) );
+        } else {
+          // error_log( 'cache ' .  var_export( self::bw_get_truncated_cache_key( $cache_key ), true ) . ' doesn\'t exist' );
+        }
+        $result = self::bw_set_cache( $cache_key, $data_to_cache, true );
+        // error_log( 'cache ' . var_export( $cache_key, true ) . ' containing ' . var_export( self::bw_get_truncated_cache_key( $cached_data_to_delete ), true ) . ' deleted: ' . var_export( $result, true ) );
+        // $result = set_transient( $cache_key, $data_to_cache, self::CACHE_EXPIRY );
+        // // $result = set_transient( $cache_key, $data_to_cache, null );
+        // // self::bw_display_cache_status( $data_to_cache, 'In ' . var_export( $cache_key, true ) . ' is' );
+        // error_log( 'old cache key ' . var_export( self::bw_get_truncated_cache_key( $data_to_cache ), true ) . ' cached in cache key ' . var_export( self::bw_get_truncated_cache_key( $cache_key, 21 ), true ) . ': ' . var_export( $result, true ) );
+
+        $stored_cache_key = get_transient( $cache_key );
+        // error_log( 'cache key === data to cache: ' . var_export( $data_to_cache === $stored_cache_key ), true );
+        if ( $data_to_cache !== $stored_cache_key ) {
+          // error_log( 'data to cache: ' . var_export( gettype( $data_to_cache ), true ) );
+          // error_log( 'cache key:     ' . var_export( gettype( $stored_cache_key ), true ) );
+          // error_log( 'data to cache: ' . var_export( strlen( $data_to_cache ), true ) );
+          // error_log( 'cache key:     ' . var_export( strlen( $stored_cache_key ), true ) );
+          // error_log( 'data to cache: ' . var_export( $data_to_cache, true ) );
+          // error_log( 'cache key:     ' . var_export( $stored_cache_key, true ) );
+          throw new \UnexpectedValueException( 'The old blip\'s cache key was not saved correctly: expected ' . $data_to_cache . ' but got ' . $stored_cache_key . '. The cache key of this incorrectly stored cache is ' . var_export( $cache_key, true ) );
+        }
+      } catch ( \InvalidArgumentException $e ) {
+        self::bw_display_error_msg( $e );
+      } catch ( \UnexpectedValueException $e ) {
+        self::bw_display_error_msg( $e );
+      } finally {
+        // error_log( __METHOD__ . ' returning ' . var_export( $result, true ) );
+        return $result;
+      }
+    }
+
     public function bw_update_option( ?array $bw_option = null ): void {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
@@ -3620,12 +3814,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           accepted_args: 1
         );
 
-        add_action(
-          hook_name: 'customize_save_after',
-          callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
-          priority: 9999,
-          accepted_args: 1
-        );
+        // add_action(
+        //   hook_name: 'customize_save_after',
+        //   callback: [ $this, 'bw_on_delete_widget_from_customiser' ],
+        //   priority: 9999,
+        //   accepted_args: 1
+        // );
 
         add_action(
           hook_name: 'delete_widget',
@@ -3684,40 +3878,40 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           accepted_args: 1
         );
 
-        add_action(
-          hook_name: 'customize_preview_init',
-          callback: function() {
-            // error_log( current_filter() );
-            return true;
-          },
-          priority: 10,
-          accepted_args: 0
-        );
+        // add_action(
+        //   hook_name: 'customize_preview_init',
+        //   callback: function() {
+        //     // error_log( current_filter() );
+        //     return true;
+        //   },
+        //   priority: 10,
+        //   accepted_args: 0
+        // );
 
-        add_action(
-          hook_name: 'customize_publish_after',
-          callback: function( $arg ) {
-            // error_log( current_filter() );
-            // error_log( var_export( func_get_args(), true ) );
-            if ( str_starts_with( $arg0, $this->id_base ) ) {
-              // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET!' . PHP_EOL );
-            }
-            return true;
-          },
-          priority: 9999,
-          accepted_args: 1
-        );
+        // add_action(
+        //   hook_name: 'customize_publish_after',
+        //   callback: function( $arg ) {
+        //     // error_log( current_filter() );
+        //     // error_log( var_export( func_get_args(), true ) );
+        //     if ( str_starts_with( $arg0, $this->id_base ) ) {
+        //       // error_log( PHP_EOL . PHP_EOL . 'BLIPPER WIDGET!' . PHP_EOL );
+        //     }
+        //     return true;
+        //   },
+        //   priority: 9999,
+        //   accepted_args: 1
+        // );
 
-        add_action(
-          hook_name: 'customize_save_after',
-          callback: function( $arg ) {
-            error_log( current_filter() );
-            error_log( '$arg: ' . bw_array_to_string( $arg ) );
-            return true;
-          },
-          priority: 10,
-          accepted_args: 1
-        );
+        // add_action(
+        //   hook_name: 'customize_save_after',
+        //   callback: function( $arg ) {
+        //     // error_log( current_filter() );
+        //     // error_log( '$arg: ' . bw_array_to_string( $arg ) );
+        //     return true;
+        //   },
+        //   priority: 10,
+        //   accepted_args: 1
+        // );
 
         add_action(
           hook_name: 'delete_widget',
