@@ -178,6 +178,16 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static $hooks_and_filters_added = false;
 
     /**
+     * The instance of this class instantiated by the widget registration
+     * process.
+     *
+     * According to the o3-mini chatbot, the way WP works will prevent this
+     * property being overwritten by instances constructed later to be put on
+     * sidebars.
+     */
+    private static $instance = null;
+
+    /**
       * Constructs an instance of the widget.
       *
       * @since    0.0.1
@@ -221,6 +231,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
       } finally {
+        self::$instance = $this;
         // if ( false !== $this->id ) {
           // error_log( 'widget id: ' . var_export( $this->id, true ) );
         // }
@@ -334,6 +345,25 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       $old_settings = self::bw_standardise_settings_format( $old_settings );
 
       return self::bw_validate_widget_settings( $new_settings, $old_settings );
+    }
+
+    /**
+     * Get this instance of this widget.
+     *
+     * Should only ever be the instance created on registration of Blipper
+     * Widget, according to the o3-mini chatbot.
+     *
+     * @since 1.2.6
+     * @author pandammonium
+     *
+     * @return self $instance
+     */
+    public static function bw_get_registration_instance() {
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
+      // bw_log( 'current filter', current_filter() );
+
+      return self::$instance;
     }
 
     public static function bw_save_old_shortcode_attributes( int $post_id ): void {
