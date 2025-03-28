@@ -86,7 +86,7 @@ define( 'BW_ID', 'bw' );
  * @author pandammonium
  * @since 1.2.3
  */
-define( 'BW_PREFIX', BW_ID . '_' );
+define( 'BW_PREFIX', BW_ID . '-' );
 
 /**
  * @var string BW_PREFIX_DEBUG The prefix used to identify Blipper Widget debug notices.
