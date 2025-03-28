@@ -3070,7 +3070,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // error_log( 'widget id (arg): ' . var_export( $widget_id, true ) );
 
       $widget_settings = [];
-      $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
+      $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $widget_settings );
       if ( false !== $result ) {
         foreach ( $widget_settings as $setting ) {
           // Check if it's a widget setting:
@@ -3280,7 +3280,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       if ( str_starts_with( haystack: $widget_id, needle: $needle ) ) {
 
         $widget_settings = [];
-        $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
+        $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $widget_settings );
         // error_log( 'widget settings (' . var_export( $result, true ) . '): ' . var_export( $widget_settings, true ) );
         if ( false === $result ) {
           // An error occurred; cannot delete cache (if it exists).
