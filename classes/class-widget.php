@@ -622,7 +622,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
         // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
-          $the_cache = self::bw_get_cache();
+          $cache_key = self::bw_get_a_cache_key( $user_attributes );
+          $the_cache = self::bw_get_cache( $cache_key );
           // error_log( 'rendering blip with cache key: ' . var_export( self::$cache_key, true ) );
 
           // bw_log( 'This blip has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
