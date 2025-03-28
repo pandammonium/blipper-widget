@@ -608,16 +608,17 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      if ( null !== $the_blip_title ) {
-        _deprecated_argument( __METHOD__, '1.2.6' );
-      }
-      if ( null !== $cache_key ) {
-        _deprecated_argument( __METHOD__, '1.2.6' );
-      }
-
-      $the_blip = '';
-      // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
       try {
+        if ( null !== $the_blip_title ) {
+          _deprecated_argument( __METHOD__, '1.2.6' );
+        }
+        if ( null !== $cache_key ) {
+          _deprecated_argument( __METHOD__, '1.2.6' );
+        }
+
+        $the_blip = '';
+
+        // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
         $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
         // error_log( 'client ok: ' . var_export( $client_ok, true ) );
         if ( $client_ok ) {
@@ -655,8 +656,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         );
       } catch ( \Exception $e ) {
         self::bw_display_error_msg( $e );
+      } finally {
+        return $the_blip;
       }
-      return $the_blip;
     }
 
     /**
@@ -2842,13 +2844,14 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $the_blip_title = $user_attributes['title'];
         if ( !empty( $user_attributes['title'] ) ) {
           if ( empty( $widget_settings ) ) {
-            if ( ! ( $user_attributes['title-level'] === 'h1' ||
+            if ( ! array_key_exists( 'title-level', $user_attributes ) ||
+               ( ! ( $user_attributes['title-level'] === 'h1' ||
                      $user_attributes['title-level'] === 'h2' ||
                      $user_attributes['title-level'] === 'h3' ||
                      $user_attributes['title-level'] === 'h4' ||
                      $user_attributes['title-level'] === 'h5' ||
                      $user_attributes['title-level'] === 'h6' ||
-                     $user_attributes['title-level'] === 'p' ) ) {
+                     $user_attributes['title-level'] === 'p' ) ) ) {
               $user_attributes['title-level'] = self::bw_get_default_setting_value( 'shortcode', 'title-level' );
             }
             $styled_title = '<' . $user_attributes['title-level'] . '>' . apply_filters( 'widget_title', $the_blip_title ) . '</' . $user_attributes['title-level'] . '>';
