@@ -24,7 +24,7 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_InvalidRespo
 use \WP_Widget;
 use Blipper_Widget\Settings\Blipper_Widget_Settings;
 
-use function Blipper_Widget\bw_delete_all_cached_blips;
+use function Blipper_Widget\bw_delete_all_blipper_widget_caches;
 use function Blipper_Widget\bw_log;
 use function Blipper_Widget\bw_exception;
 use function Blipper_Widget\bw_array_to_string;
@@ -618,11 +618,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           }
         } else {
           // If the client isn't ok, then we don't want to display any blips, including cached ones; delete them all:
-          bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_blipper_widget_caches( BW_PREFIX );
           self::$client = null;
         }
       } catch ( Blipper_Widget_OAuthException $e ) {
-        bw_delete_all_cached_blips( BW_PREFIX );
+        bw_delete_all_blipper_widget_caches( BW_PREFIX );
         self::bw_display_error_msg( $e, __( 'Please check your OAuth credentials are valid and try again', 'blipper-widget' ) );
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg(
@@ -1193,7 +1193,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         }
 
         if ( !$client_ok ) {
-          bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_blipper_widget_caches( BW_PREFIX );
           throw new \ErrorException( 'Could not create new Blipfoto client.' );
         }
       } catch ( \ErrorException $e ) {
@@ -1241,7 +1241,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } finally {
         if ( !$credentials_exist ) {
           bw_log( 'OAuth credentials not set', data: $oauth_settings, includes_data: true, php_error: E_USER_WARNING );
-          bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_blipper_widget_caches( BW_PREFIX );
         }
       }
       return $credentials_exist;
@@ -1291,7 +1291,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } finally {
         if ( !$client_ok ) {
           bw_log( 'Client is not ok', includes_data: false, php_error: E_USER_WARNING );
-          bw_delete_all_cached_blips( BW_PREFIX );
+          bw_delete_all_blipper_widget_caches( BW_PREFIX );
         }
       }
       return $client_ok;
@@ -1339,7 +1339,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } finally {
         if ( !$user_profile_ok ) {
           // error_log( 'user profile is not ok' );
-          // bw_delete_all_cached_blips( BW_PREFIX );
+          // bw_delete_all_blipper_widget_caches( BW_PREFIX );
         }
       }
       return $user_profile_ok;

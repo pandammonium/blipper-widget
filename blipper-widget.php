@@ -657,8 +657,8 @@ if (!function_exists('bw_exception')) {
 
 // --- Other methods -------------------------------------------------------- //
 
-if ( !function_exists( 'bw_delete_all_cached_blips')) {
-  function bw_delete_all_cached_blips( string $prefix ): bool {
+if ( !function_exists( 'bw_delete_all_blipper_widget_caches')) {
+  function bw_delete_all_blipper_widget_caches( string $prefix ): bool {
     // // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // // bw_log( 'arguments', func_get_args() );
 
@@ -668,7 +668,7 @@ if ( !function_exists( 'bw_delete_all_cached_blips')) {
     // Get all the Blipper Widget transients:
     $transients = $wpdb->get_col( $wpdb->prepare(
         "SELECT option_name FROM $wpdb->options WHERE option_name LIKE %s",
-        $wpdb->esc_like('_transient_' . $prefix ) . '%'
+        $wpdb->esc_like( '_transient_' . $prefix ) . '%'
     ));
     // error_log( 'transients: ' . var_export( $transients, true ) );
 

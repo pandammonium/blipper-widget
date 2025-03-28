@@ -23,7 +23,7 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 require_once( plugin_dir_path(__FILE__ ) . 'blipper-widget.php' );
 
 // use Blipper_Widget;
-use function Blipper_Widget\bw_delete_all_cached_blips;
+use function Blipper_Widget\bw_delete_all_blipper_widget_caches;
 use function Blipper_Widget\bw_exception;
 
 if (!function_exists( 'blipper_widget_uninstall' )) {
@@ -100,10 +100,14 @@ if (!function_exists( 'blipper_widget_uninstall' )) {
       }
 
       try {
-        // Delete all Blipper Widget transients (cached blips):
-        $result = bw_delete_all_cached_blips( BW_PREFIX );
+        // Delete all Blipper Widget transients (cached blips and cached cache keys):
+        $result = bw_delete_all_blipper_widget_caches( BW_PREFIX );
         if ( !$result ) {
           throw new \Exception( 'Failed to delete all cached blips. Please check your transients and delete all those that start with ' . BW_PREFIX );
+        }
+        $result = bw_delete_all_cached_cache_keys();
+        if ( !$result ) {
+          throw new \Exception( 'Failed to delete all cached cache keys. Please check your transients and delete all those that end with ' . BW_CACHE_KEY_CACHE_KEY_SUFFIX );
         }
       } catch ( \TypeError $e ) {
         bw_exception( $e );

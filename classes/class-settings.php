@@ -26,7 +26,7 @@ use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseE
 use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
 
 use Blipper_Widget;
-use function Blipper_Widget\bw_delete_all_cached_blips;
+use function Blipper_Widget\bw_delete_all_blipper_widget_caches;
 use function Blipper_Widget\bw_log;
 
 
@@ -404,7 +404,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
 
         if ( $is_valid ) {
           if ( !self::bw_test_connection( $output ) ) {
-            bw_delete_all_cached_blips( BW_PREFIX );
+            bw_delete_all_blipper_widget_caches( BW_PREFIX );
           }
         }
       }
