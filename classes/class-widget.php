@@ -3159,7 +3159,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // //     // Loop through the widget IDs
       // //     foreach ( $widget_ids as $widget_id ) {
       // //       // Check if the widget is deleted
-      // //       if ( ! isset( $wp_customize->settings[ 'widget_' . $widget_id ] ) ) {
+      // //       if ( ! isset( $wp_customise->settings[ 'widget_' . $widget_id ] ) ) {
       // //         // Clean up associated settings or data
       // //         // For example, delete the widget's options
       // //         delete_option( $widget_id );
