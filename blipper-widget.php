@@ -52,20 +52,22 @@ use Blipper_Widget\Widget\Blipper_Widget;
 
 // -------------------------------------------------------------------------- //
 
-/**
- * @var bool $status True if WordPress is set to log debug information.
- * @ignore This variable is used to determine the debug status of WordPress
- * and should not be accessed elsewhere.
- * @since 1.2.6
- */
-$status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG_LOG' ) && true === WP_DEBUG_LOG );
-/**
- * @var bool BW_DEBUG Indicates whether Blipper Widget debug output should be turned on (true) or off (false). Depends on WP debug and debug log settings, as given by $status.
- * @ignore This constant is used for debug purposes only.
- * @since <1.2.6
- */
-define( 'BW_DEBUG', true && $status );
-// error_log( 'debug status: ' . var_export( BW_DEBUG, true ) );
+if ( wp_get_development_mode() || 'development' === wp_get_environment_type() ) {
+  /**
+   * @var bool $status True if WordPress is set to log debug information.
+   * @ignore This variable is used to determine the debug status of WordPress
+   * and should not be accessed elsewhere.
+   * @since 1.2.6
+   */
+  $status = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) && ( defined( 'WP_DEBUG_LOG' ) && true === WP_DEBUG_LOG );
+  /**
+   * @var bool BW_DEBUG Indicates whether Blipper Widget debug output should be turned on (true) or off (false). Depends on WP debug and debug log settings, as given by $status.
+   * @ignore This constant is used for debug purposes only.
+   * @since <1.2.6
+   */
+  define( 'BW_DEBUG', true && $status );
+  // error_log( 'debug status: ' . var_export( BW_DEBUG, true ) );
+}
 
 /**
  * @var string BW_ID The prefix used to identify Blipper Widget strings.
@@ -728,7 +730,7 @@ if ( !function_exists( 'bw_log' ) ) {
       }
     }
 
-    if ( BW_DEBUG ) {
+    if ( defined( 'BW_DEBUG') && BW_DEBUG ) {
       if ( $is_html ) {
         if ( 'string' === gettype( $data ) ) {
           function bw_pretty_print_html( string $html ): string {
