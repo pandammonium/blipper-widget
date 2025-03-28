@@ -3272,15 +3272,34 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
+      switch ( $id_base ) {
+        case null:
+          error_log( 'id base not supplied' );
+        break;
+        case $this->id_base:
+          if ( $this->id_base === BW_ID_BASE ) {
+            error_log( 'id base is the same as this id base and defined id base' );
+          } else {
+            error_log( 'id base is the same as this id base but not defined id base' );
+          }
+        break;
+        case BW_ID_BASE:
+          error_log( 'id base is the same as defined id base' );
+        break;
+        default:
+          error_log( 'id base is ' . var_export( $id_base, true ) );
+        break;
+      }
+
       $deleted = false;
       $cache_is_clean = false;
       $option_is_gone = false;
 
-      $needle = $this->id_base;
-      if ( str_starts_with( haystack: $widget_id, needle: $needle ) ) {
+      $id_base = $id_base ?? ( $this->id_base ?? BW_ID_BASE );
+      if ( str_starts_with( haystack: $widget_id, needle: $id_base ) ) {
 
         $widget_settings = [];
-        $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $widget_settings );
+        $result = $this->bw_get_widget_settings( $widget_id, $id_base, $widget_settings );
         // error_log( 'widget settings (' . var_export( $result, true ) . '): ' . var_export( $widget_settings, true ) );
         if ( false === $result ) {
           // An error occurred; cannot delete cache (if it exists).
