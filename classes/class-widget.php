@@ -611,6 +611,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       if ( null !== $the_blip_title ) {
         _deprecated_argument( __METHOD__, '1.2.6' );
       }
+      if ( null !== $cache_key ) {
+        _deprecated_argument( __METHOD__, '1.2.6' );
+      }
 
       $the_blip = '';
       // error_log( 'cache key: ' . var_export( self::$cache_key, true ) );
