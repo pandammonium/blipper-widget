@@ -430,10 +430,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           foreach ( $old_attributes as $attribute ) {
             $key_value = explode( '=', $attribute, 2 );
             // error_log( var_export( $key_value, true ) );
-            // Check if we have both key and value
+            // Check if we have both key and value (ie two items):
             if ( count( $key_value ) === 2 ) {
               // error_log( $key_value[0] . ' => ' . $key_value[1] );
-              // Trim the key and value, and handle quotes for the title
+              // Trim the key and value, and handle quotes for the title:
               $key = trim( $key_value[0] );
               $value = trim( $key_value[1], "'" ); // Remove single quotes from the value if present
               $temp_atts[$key] = $value;
