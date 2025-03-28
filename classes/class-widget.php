@@ -3090,11 +3090,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'Called from', current_filter() );
     }
 
-    public function bw_on_delete_widget_from_customiser( $wp_customize ) {
+    public function bw_on_delete_widget_from_customiser( $wp_customise ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'type of argument', gettype( $wp_customize ) );
-      // bw_log( 'argument is empty', empty( $wp_customize ) ? 'yes' : 'no' );
+      // bw_log( 'type of argument', gettype( $wp_customise ) );
+      // bw_log( 'argument is empty', empty( $wp_customise ) ? 'yes' : 'no' );
       // bw_log( 'Called from', current_filter() );
 
       // error_log( 'widget id: ' . var_export( $this->id, true ) );
