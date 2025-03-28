@@ -776,7 +776,21 @@ if ( !function_exists( 'bw_log' ) ) {
 }
 
 if ( !function_exists( 'bw_array_to_string' ) ) {
-  function bw_array_to_string( mixed $input, int $indent_by = 0 ) {
+  /**
+   * Outputs as much information as possible from data with circular references
+   * that var_export() and similar can't handle.
+   *
+   * Recursive.
+   *
+   * @since 1.2.6
+   * @author pandammonium
+   *
+   * @param mixed $input The data to display as well as possible.
+   * @param int $indent_by A factor by which to multiply the number of spaces
+   * by. This only needs to be used upon recursive invocations.
+   * @return string The data as converted to a string, ready for display.
+   */
+  function bw_array_to_string( mixed $input, int $indent_by = 0 ): string {
     // bw_log( 'function', __FILE__ . '::' . __FUNCTION__ . '()' );
     // bw_log( 'arguments', func_get_args() );
 
