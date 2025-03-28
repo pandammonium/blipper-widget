@@ -564,7 +564,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         // bw_log( 'Cache key ' . var_export( $cache_key, true ) . ' generated from', [ self::CACHE_EXPIRY, $settings, wp_strip_all_tags( $the_blip_title ), ] );
         $length = strlen( $cache_key );
         if ( self::WP_TRANSIENT_KEY_LIMIT < $length ) {
-          bw_log( 'Cache key length (must be <' . self::WP_TRANSIENT_KEY_LIMIT + 1 . ' chars)', var_export( $length, true ) );
+          bw_log( 'Cache key length must be <' . self::WP_TRANSIENT_KEY_LIMIT + 1 . ' characters, but is: ', var_export( $length, true ) );
           $cache_key = substr( $cache_key, 0, self::WP_TRANSIENT_KEY_LIMIT );
           throw new \LengthException( 'Too long a cache key generated; it should be less than ' . self::WP_TRANSIENT_KEY_LIMIT + 1 . ' characters, but it is ' . var_export( $length, true ) . ' characters. Cache key has been truncated, which may cause errors later.' );
         }
