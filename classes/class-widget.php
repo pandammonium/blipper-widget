@@ -898,7 +898,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static function bw_validate_widget_settings( array $new_settings, array $old_settings ): array {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       $validated_settings = self::bw_validate_the_widget_settings( $new_settings, $old_settings );
 
@@ -3130,7 +3130,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public static function bw_on_widget_setting_change_in_customiser( $arg ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
     }
 
     public function bw_on_delete_widget_from_customiser( $wp_customise ) {
@@ -3138,7 +3138,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
       // bw_log( 'type of argument', gettype( $wp_customise ) );
       // bw_log( 'argument is empty', empty( $wp_customise ) ? 'yes' : 'no' );
-      // bw_log( 'Called from', current_filter() );
+      bw_log( 'filter/action', current_filter() );
 
       // error_log( 'widget id: ' . var_export( $this->id, true ) );
 
@@ -3538,7 +3538,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public static function bw_save_old_customiser_settings() {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       // // Get the current old option, if there is one:
       // $old_option = get_option( BW_DB_WIDGET_OLD_SETTINGS );
@@ -3562,7 +3562,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public function bw_on_customise_save_after( \WP_Customize_Manager $wp_customise ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       $this->bw_save_customiser_widget( $wp_customise );
     }
@@ -3570,7 +3570,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private function bw_save_customiser_widget( \WP_Customize_Manager $wp_customise ) {
       bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       if ( self::bw_should_cache_blip() ) {
 
@@ -3623,7 +3623,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public function bw_on_customise_preview_init( \WP_Customize_Manager $wp_customise ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       // $this->bw_delete_old_widget_customiser_cache( $wp_customise );
     }
@@ -3631,7 +3631,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private function bw_delete_old_widget_customiser_cache( \WP_Customize_Manager $wp_customise ) {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       $settings = $wp_customise->settings();
       // error_log( 'customiser settings: ' . bw_array_to_string( $settings ) );
@@ -3683,7 +3683,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     public function bw_capture_old_widget_settings( array $new_settings, array $old_settings ): array {
       bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       try {
         $new_settings_extracted = [];
@@ -3751,7 +3751,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static function bw_cache_blip_cache_key( string $widget_id, ?array $settings = null, ?string $data_to_cache = null ): bool {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      // bw_log( 'Called from', current_filter() );
+      // bw_log( 'filter/action', current_filter() );
 
       $result = false;
       try {
