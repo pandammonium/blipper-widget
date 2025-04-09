@@ -3358,7 +3358,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
               // If there's no cached blip, then there's nothing to tidy up:
               $cache_is_clean = true;
             } else {
-              $cache_is_clean = self::bw_delete_cache( self::$cache_key );
+              $cache_is_clean = self::bw_delete_cache( $cache_key );
               // error_log( 'deleted cache key ' . var_export( self::$cache_key, true ) . ': ' . var_export( $cache_is_clean, true ) );
             }
           }
