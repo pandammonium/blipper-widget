@@ -189,7 +189,7 @@ if ( !function_exists( 'bw_add_action_hooks' ) ) {
     );
     add_action(
       hook_name: 'customize_save_after',
-      callback: [ Widget\Blipper_Widget::class, 'bw_on_customise_save_after' ],
+      callback: [ $blipper_widget, 'bw_on_customise_save_after' ],
       priority: 11,
       accepted_args: 1
     );
@@ -204,14 +204,14 @@ if ( !function_exists( 'bw_add_filter_hooks' ) ) {
 
     // NB Filters need to return the filtered version of the data they were given to filter.
 
-    $blipper_widget = Widget\Blipper_Widget::bw_get_registration_instance();
+    // $blipper_widget = Widget\Blipper_Widget::bw_get_registration_instance();
 
-    add_filter(
-      hook_name: 'pre_update_option_widget_' . BW_ID_BASE,
-      callback: [ $blipper_widget, 'bw_capture_old_widget_settings' ],
-      priority: 10,
-      accepted_args: 2
-    );
+    // add_filter(
+    //   hook_name: 'pre_update_option_widget_' . BW_ID_BASE,
+    //   callback: [ $blipper_widget, 'bw_capture_old_widget_settings' ],
+    //   priority: 10,
+    //   accepted_args: 2
+    // );
   }
 }
 
