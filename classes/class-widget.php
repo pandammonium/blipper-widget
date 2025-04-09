@@ -2253,15 +2253,18 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       *                                         accessible from the widget settings
       *                                         when in a widgety area
       */
-    private function bw_display_blip( $user_attributes, $is_widget, $content = null ) {
+    private function bw_display_blip( $user_attributes, $is_widget, $content = null ): string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      return self::bw_get_blip(
-        user_attributes: $user_attributes,
-        is_widget: $is_widget,
-        content: $content
-      );
+      _deprecated_function( __METHOD__, '1.2.6' );
+
+      // return self::bw_get_blip(
+      //   user_attributes: $user_attributes,
+      //   is_widget: $is_widget,
+      //   content: $content
+      // );
+      return '';
     }
 
     /**
