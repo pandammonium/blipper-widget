@@ -63,7 +63,7 @@ if ( wp_get_development_mode() || 'development' === wp_get_environment_type() ) 
   /**
    * @var bool BW_DEBUG Indicates whether Blipper Widget debug output should be turned on (true) or off (false). Depends on WP debug and debug log settings, as given by $status.
    * @ignore This constant is used for debug purposes only.
-   * @since <1.2.6
+   * @since 0.x
    */
   define( 'BW_DEBUG', true && $status );
   // error_log( 'debug status: ' . var_export( BW_DEBUG, true ) );

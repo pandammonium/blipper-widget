@@ -114,11 +114,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private const WP_TRANSIENT_KEY_LIMIT = 172;
 
     /**
-      * @since    1.1.1
-      * @deprecated 1.2.6 Unused.
-      * @property array     $style_control_classes   The classes used for styling
-      *                                              the widget.
-      */
+     * Deprecated since 1.2.6.
+     *
+     * @since    1.1.1
+     * @deprecated Unused.
+     * @property array     $style_control_classes   The classes used for
+     * styling the widget.
+     */
     private $style_control_classes;
 
     /**
@@ -128,11 +130,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     private static ?Blipper_Widget_Client $client = null;
 
     /**
-      * @var Blipper_Widget_Settings $settings The Blipper Widget settings.
-      * @since    0.0.1
-      * @deprecated 1.2.6 Unnecessary because the settings class
-      * (Blipper_Widget_Settings) is now static.
-      */
+     * Deprecated since 1.2.6.
+     *
+     * @var Blipper_Widget_Settings $settings The Blipper Widget settings.
+     * @since    0.0.1
+     * @deprecated Unnecessary because the settings class
+     * (Blipper_Widget_Settings) is now static.
+     */
     private static ?Blipper_Widget_Settings $settings = null;
 
     /**
@@ -535,7 +539,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * The cache key is based on a hash of the widget settings and the desired
      * expiration length.
      *
-     * @since <1.2.6
+     * @since 0.x
      * @author pandammonium
      *
      * @param array $settings The settings to use as the basis for the cache
@@ -665,7 +669,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     /**
      * Gets the given cache (stored as a WP transient).
      *
-     * @since <1.2.6
+     * @since 0.x
      * @author pandammonium
      *
      * @param ?string $cache_key The key of the cache to find. If it's not
@@ -826,10 +830,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     /**
+     * Deprecated since 1.2.6.
+     *
      * Normalises the arguments from the shortcode.
      *
-     * @since <1.2.6
-     * @deprecated 1.2.6 Isn't necessary any more.
+     * @since 0.x
+     * @deprecated Isn't necessary any more.
      */
     private static function bw_normalise_attributes( string|array|null $shortcode_attributes, $shortcode = '' ): string|array|null {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -2239,20 +2245,23 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     /**
-      * Displays the blip using the settings stored in the database.
-      *
-      * @since    0.0.1
-      * @param    array     $settings         The settings saved in the database
-      * @param    bool      $is_widget        True if the blip is to be displayed in
-      *                                         a widget; false if it is to be
-      *                                         displayed elsewhere
-      * @param    string    $content          The content from the shortcode (i.e.
-      *                                         the stuff that comes between the
-      *                                         opening shortcode tag and the
-      *                                         closing shortcode tag).  Not
-      *                                         accessible from the widget settings
-      *                                         when in a widgety area
-      */
+     * Deprecated since 1.2.6.
+     *
+     * Displays the blip using the settings stored in the database.
+     *
+     * @since    0.0.1
+     * @deprecated Unused.
+     * @param    array     $settings         The settings saved in the database
+     * @param    bool      $is_widget        True if the blip is to be displayed in
+     *                                         a widget; false if it is to be
+     *                                         displayed elsewhere
+     * @param    string    $content          The content from the shortcode (i.e.
+     *                                         the stuff that comes between the
+     *                                         opening shortcode tag and the
+     *                                         closing shortcode tag).  Not
+     *                                         accessible from the widget settings
+     *                                         when in a widgety area
+     */
     private function bw_display_blip( $user_attributes, $is_widget, $content = null ): string {
       // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
@@ -2724,7 +2733,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     /**
      * Gets the default value for the given setting.
      *
-     * @since <1.2.6
+     * @since 0.x
      * @author pandammonium
      *
      * @param string $setting_type Indicates what type of setting it is; one of
@@ -2873,11 +2882,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     // --- Output: logging, error tracking and debugging ------------------- //
 
     /**
+     * Deprecated since 1.2.6.
+     *
      * Logs the value of the given display element. If there is none, the
      * default is logged instead.
      *
-     * @since <1.2.6
-     * @deprecated 1.2.6 Overly complicated.
+     * @since 0.x
+     * @deprecated Overly complicated.
      */
     private static function bw_log_display_values( $settings, $display_element, $function_name ): void {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -3407,10 +3418,12 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     /**
+     * Deprecated since 1.2.6.
+     *
      * Checks the Blipfoto OAuth settings have been set, otherwise displays a
      * message to the user.
      *
-     * @deprecated 1.2.6 Superseded by improved error handling.
+     * @deprecated Superseded by improved error handling.
      */
     public static function bw_settings_check(): void {
       // bw_log( 'method', __METHOD__ . '()' );
@@ -3428,9 +3441,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     /**
+     * Deprecated since 1.2.6.
+     *
      * Adds the WP colour picker.
      *
-     * @deprecated 1.2.6 Use bw_enqueue_scripts() instead.
+     * @deprecated Use bw_enqueue_scripts() instead.
      */
     public static function bw_load_colour_picker(): void {
       // bw_log( 'method', __METHOD__ . '()' );
