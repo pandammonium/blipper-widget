@@ -113,7 +113,7 @@ define( 'BW_DB_PREFIX', 'blipper-widget' );
 
 /**
  */
-define( 'BW_CACHE_KEY_CACHE_KEY_SUFFIX', '--' . 'cache_key-old' );
+define( 'BW_CACHE_KEY_CACHE_KEY_SUFFIX', '--' . 'blip-cache_key' );
 
 // --- Action hooks --------------------------------------------------------- //
 
