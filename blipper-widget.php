@@ -212,6 +212,13 @@ if ( !function_exists( 'bw_add_filter_hooks' ) ) {
     //   priority: 10,
     //   accepted_args: 2
     // );
+
+    // add_action(
+    //   hook_name: 'customize_preview_init',
+    //   callback: [ $blipper_widget, 'bw_on_delete_widget_from_customiser' ],
+    //   priority: 9999,
+    //   accepted_args: 1
+    // );
   }
 }
 
@@ -236,6 +243,12 @@ if ( !function_exists( 'bw_add_filter_hooks' ) ) {
 //   },
 //   priority: 10,
 //   accepted_args: 0
+// );
+// add_action(
+//   hook_name: 'customize_preview_init',
+//   callback: [ Widget\Blipper_Widget::class, 'bw_on_delete_widget_from_customiser' ],
+//   priority: 9999,
+//   accepted_args: 1
 // );
 
 // add_action(
