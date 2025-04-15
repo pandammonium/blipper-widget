@@ -181,12 +181,12 @@ if ( !function_exists( 'bw_add_action_hooks' ) ) {
 
     $blipper_widget = Widget\Blipper_Widget::bw_get_registration_instance();
 
-    add_action(
-      hook_name: 'customize_preview_init',
-      callback: [ $blipper_widget, 'bw_on_customise_preview_init' ],
-      priority: 10,
-      accepted_args: 1
-    );
+    // add_action(
+    //   hook_name: 'customize_preview_init',
+    //   callback: [ $blipper_widget, 'bw_on_customise_preview_init' ],
+    //   priority: 10,
+    //   accepted_args: 1
+    // );
     add_action(
       hook_name: 'customize_save_after',
       callback: [ $blipper_widget, 'bw_on_customise_save_after' ],
