@@ -1,0 +1,3 @@
+[submodule "includes/php-sdk"]
+	path = includes/php-sdk
+	url = https://github.com/Blipfoto/php-sdk.git
