@@ -21,9 +21,9 @@ namespace Blipper_Widget\Settings;
 defined( 'ABSPATH' ) or die();
 defined( 'WPINC' ) or die();
 
-use Blipper_Widget_Blipfoto\Blipper_Widget_Api\Blipper_Widget_Client;
-use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_ApiResponseException;
-use Blipper_Widget_Blipfoto\Blipper_Widget_Exception\Blipper_Widget_OAuthException;
+use Blipfoto\Api\Client;
+use Blipfoto\Exceptions\ApiResponseException;
+use Blipfoto\Exceptions\OAuthException;
 
 use Blipper_Widget;
 use function Blipper_Widget\bw_delete_all_blipper_widget_caches;
@@ -612,7 +612,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
       $user_profile = null;
       try {
         if ( array_key_exists( 'access-token', $oauth_settings ) && !empty( $oauth_settings['access-token'] ) ) {
-          $client = new Blipper_Widget_Client(
+          $client = new Client(
             '',
             '',
             $oauth_settings['access-token']
@@ -627,7 +627,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
           // translators: do not translate 'Blipfoto': it is the name of a service
           __( 'Unable to connect to Blipfoto. ' . $e->getMessage(), 'blipper-widget' )
         );
-      } catch ( Blipper_Widget_ApiResponseException $e ) {
+      } catch ( ApiResponseException $e ) {
         add_settings_error(
           'wp-blipper-settings-group',
           'invalid-oauth-credentials',
@@ -660,7 +660,7 @@ if (!class_exists( 'Blipper_Widget_Settings' )) {
             'invalid-oauth-credentials',
             __( 'Error. ' . $e->getMessage(), 'blipper-widget' )
           );
-        } catch ( Blipper_Widget_ApiResponseException $e ) {
+        } catch ( ApiResponseException $e ) {
           add_settings_error(
             'wp-blipper-settings-group',
             'invalid-oauth-credentials',
