@@ -1290,8 +1290,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         }
 
         if ( !$client_ok ) {
-          bw_delete_all_blipper_widget_caches( BW_PREFIX );
-          throw new \ErrorException( 'Could not create new Blipfoto client.' );
+          // If the client isn't ok, then we don't want to display any blips, including cached ones; delete them all:
+          $deleted = bw_delete_all_blipper_widget_caches( BW_PREFIX );
+          bw_log( 'Client is not ok. Any cached blips have been deleted', $deleted, php_error: E_USER_WARNING );
+          throw new \ErrorException( 'Could not create new Blipfoto client. Any cached blips have' . ( $deleted ? ' been deleted' : 'been retained' ) );
         }
       } catch ( \ErrorException $e ) {
         self::bw_display_error_msg( $e );
