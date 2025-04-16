@@ -664,7 +664,7 @@ if (!function_exists('bw_exception')) {
       if ( $current_filter ) {
         error_log( BW_PREFIX_DEBUG . 'Current filter: ' . var_export( $current_filter, true ) );
       }
-      // error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 5 ), true ) );
+      error_log( BW_PREFIX_DEBUG . 'Debug backtrace: ' . var_export( debug_backtrace( options: DEBUG_BACKTRACE_IGNORE_ARGS, limit: 5 ), true ) );
       error_log( BW_PREFIX_DEBUG . wp_strip_all_tags( $message ) . ' in '. $function . '() on line ' . $e->getLine() . ' in ' . $e->getFile() . '.' );
     }
     return __('<p class="blipper-widget error">Blipper Widget | ' . $message . ' in <code>'. $function . '()</code> on line ' . $e->getLine() . ' in ' . $e->getFile() . '.</p>', 'blipper-widget');
