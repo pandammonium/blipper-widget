@@ -605,11 +605,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @param string[] $settings The array of BW settings from either the
      * widget or the shortcode (set by the user).
      * @param string $the_blip_title Deprecated since 1.2.6.
-     * @param bool $cache_key If the shortcode has been cached, the cache key
-     * that was generated will not match that of the shortcode with the
-     * current settings. This is really only needed when coming from the
-     * shortcode, at least for now. Perhaps the shortcode code won't need to
-     * check this, but done here later.
+     * @param bool $cache_key Deprecated since 1.2.6.
      * @param bool $is_widget True if the blip is being rendered by the
      * widget; false if the blip is being rendered by a shortcode. Used for
      * debug purposes only.
