@@ -651,6 +651,20 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             // bw_log( 'Rendering ' . ( $is_widget ? 'widget' : 'shortcode' ) . ' blip from cache', self::$cache_key );
             // The blip has been cached recently and its settings have not changed, so return the cached blip:
             $the_blip = $the_cache;
+            // HAs the cache key been cached?
+            $cache_key_cache_key = self::bw_generate_cache_key_cache_key( $widget_id );
+            $the_cached_cache = self::bw_get_cache( $cache_key_cache_key );
+            error_log( 'the cached cache key: ' . var_export( $the_cached_cache, true ) );
+            if ( empty( $the_cached_cache ) ) {
+              $cache_key = self::bw_generate_cache_key( $user_attributes );
+              $status = self::bw_cache_blip_cache_key(
+                widget_id: $widget_id,
+                data_to_cache: $the_cached_cache
+              );
+              error_log( 'the blip was cached, but the cache key ' . var_export( $cache_key_cache_key, true ) . ' had not; now it ' . ( $status ? 'is' : 'still has not' ) );
+            } else {
+              error_log( 'not caching ' . var_export( $cache_key_cache_key, true ) . ': ' . var_export( $the_cached_cache, true ) );
+            }
           }
         } else {
           // If the client isn't ok, then we don't want to display any blips, including cached ones; delete them all:
@@ -1318,7 +1332,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         if ( !$client_ok ) {
           // If the client isn't ok, then we don't want to display any blips, including cached ones; delete them all:
           $deleted = bw_delete_all_blipper_widget_caches( BW_PREFIX );
-          bw_log( 'Client is not ok. Any cached blips have been deleted', $deleted, php_error: E_USER_WARNING );
+          bw_log( 'Client is not ok. Any cached blips have' . ( $deleted ? ' been deleted' : 'been retained' ), includes_data: false, php_error: E_USER_WARNING );
           throw new \ErrorException( 'Could not create new Blipfoto client. Any cached blips have' . ( $deleted ? ' been deleted' : 'been retained' ) );
         }
       } catch ( \ErrorException $e ) {
@@ -3250,32 +3264,28 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $settings = [];
         $result = $this->bw_get_widget_settings( $this->id, BW_ID_BASE, $settings );
         if ( $result ) {
-          error_log( 'using widget settings instead: ' . var_export( $settings, true ) );
+          error_log( 'using widget settings to generate cache key: ' . var_export( $settings, true ) );
           $settings_cache_key = self::bw_generate_cache_key( $settings );
           error_log( 'generated cache key ' . var_export( $settings_cache_key, true ) . ' from settings' );
           $deleted_cache_key = self::bw_delete_cache( $settings_cache_key );
+        } else {
+          error_log( 'settings not found; cannot generate cache key' );
         }
       } else {
-        $deleted_cache_key = self::bw_delete_cache( $cached_cache_key );
+        $settings = [];
+        $result = $this->bw_get_widget_settings( $this->id, BW_ID_BASE, $settings );
+        if ( $result ) {
+          $settings_cache_key = self::bw_generate_cache_key( $settings );
+          if ( $settings_cache_key === $cached_cache_key ) {
+            error_log( 'cache keys from settings and cache are both: ' . var_export( $settings_cache_key, true ) );
+          } else {
+            $deleted_cache_key = self::bw_delete_cache( $settings_cache_key );
+          }
+        } else {
+          $deleted_cache_key = self::bw_delete_cache( $cached_cache_key );
+        }
       }
       $deleted_cache_key_cache_key = self::bw_delete_cache( $cache_key_cache_key );
-
-      // if ( $cache ) {
-      // } else {
-      //   // Use the settings to get the cache key:
-      //   $settings = [];
-      //   $result = $this->bw_get_widget_settings( $this->id, BW_ID_BASE, $settings );
-      //   // error_log( 'widget settings (' . var_export( $result, true ) . '): ' . var_export( $settings, true ) );
-      //   if ( $result ) {
-      //     $cache_key = self::bw_generate_cache_key( $settings );
-      //   }
-      // }
-      //   // error_log( 'cache key: ' . var_export( $cache_key, true ) );
-      // if ( $cache_key ) {
-      //   self::bw_delete_cached_blip( $this->id, $cache_key );
-      // } else {
-      //   $deleted = self::bw_delete_cache( $cache_key );
-      // }
     }
 
     /**
