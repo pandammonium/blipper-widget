@@ -102,8 +102,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      *
      * @author pandammonium
      * @since 1.2.3
+     * @deprecated 1.2.6
      */
-    // private static string $cache_key = '';
+    private static string $cache_key = '';
 
     /**
      * @var number WP_TRANSIENT_KEY_LIMIT Reflects the maximum character
@@ -125,8 +126,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      *
      * @since    1.1.1
      * @deprecated Unused.
-     * @property array     $style_control_classes   The classes used for
-     * styling the widget.
+     * @property array     $style_control_classes Deprecated.
      */
     private $style_control_classes;
 
