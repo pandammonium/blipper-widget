@@ -276,7 +276,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       if ( empty( $user_attributes ) ) {
         $user_attributes = self::bw_get_default_attributes( true );
         // error_log( 'using default attributes:' );
-      // } else {
+      } else {
         // error_log( 'using provided user attributes:' );
       }
       // $this->bw_update_option( $user_attributes );
@@ -633,7 +633,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           $cache_key = self::bw_generate_cache_key( $user_attributes );
           $the_cache = self::bw_get_cache( $cache_key );
           // error_log( 'rendering blip with cache key: ' . var_export( self::$cache_key, true ) );
-          bw_log( 'Blip' . ( $widget_id ? ' ' . var_export( $widget_id, true ) . ' ' : ' ' ) . 'has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
+          // bw_log( 'Blip' . ( $widget_id ? ' ' . var_export( $widget_id, true ) . ' ' : ' ' ) . 'has been cached', ( empty( $the_cache ) ? 'no' : 'yes' ) );
 
           // error_log( var_export( $widget_id, true ) . ': cache key of cache key being rendered: ' . var_export( $cache_key_cache_key, true ) );
 
@@ -735,11 +735,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         } catch ( \Exception $e ) {
           self::bw_display_error_msg( $e );
         } finally {
-          error_log( 'caching generated blip ' . ( $is_widget ? var_export( $widget_id, true ) : 'shortcode' ) . ': ' . var_export( $cache_blip, true ) );
+          // error_log( 'caching generated blip ' . ( $is_widget ? var_export( $widget_id, true ) : 'shortcode' ) . ': ' . var_export( $cache_blip, true ) );
           if ( $cache_blip ) {
             try {
               $cache_key = self::bw_generate_cache_key( $user_attributes );
-              error_log( 'cache key: ' . var_export( $cache_key, true ) );
+              // error_log( 'cache key: ' . var_export( $cache_key, true ) );
               $result = self::bw_set_cache(
                 cache_key: $cache_key,
                 data_to_cache: $the_blip,
@@ -789,8 +789,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @return bool True if the data was successfully cached; otherwise false.
      */
     private static function bw_set_cache( string $cache_key, string $data_to_cache, bool $is_widget, ?bool $cache_the_key = null, ?string $widget_id = null ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
 
       // bw_log( 'Cache key', $cache_key );
       // bw_log( 'Cache expiry', self::CACHE_EXPIRY );
@@ -815,8 +815,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           $expiry = self::CACHE_EXPIRY;//str_starts_with( $cache_key, BW_PREFIX . '-' . BW_ID_BASE ) ? self::CACHE_EXPIRY + HOUR_IN_SECONDS : self::CACHE_EXPIRY;
           // error_log( 'expiry time: ' . var_export( $expiry, true ) . ' (' . var_export( gettype( $expiry ), true ) . ')' );
           $result = set_transient( $cache_key, $data_to_cache, $expiry ) || get_transient( $cache_key ) === $transient;
-          error_log( 'set transient ' . var_export( self::bw_get_truncated_cache_key( $cache_key, $limit ), true ) . ': ' . var_export( $result, true ) . ( ( !$result && get_transient( $cache_key ) === $transient ) ? ' – transient is unchanged' : ( $result ? ' – succeeded' : ' – failed' ) ) );
-          error_log( 'transient contents: ' . var_export( get_transient( $cache_key ), true ) );
+          // error_log( 'set transient ' . var_export( self::bw_get_truncated_cache_key( $cache_key, $limit ), true ) . ': ' . var_export( $result, true ) . ( ( !$result && get_transient( $cache_key ) === $transient ) ? ' – transient is unchanged' : ( $result ? ' – succeeded' : ' – failed' ) ) );
+          // error_log( 'transient contents: ' . var_export( get_transient( $cache_key ), true ) );
           // error_log( 'transient contents'  . ( false === $transient ? '' : ' (now)' ) . ': ' . var_export( get_transient( $cache_key ), true ) );
           // error_log( 'cache ' . var_export( self::bw_get_truncated_cache_key( $cache_key ), true, cutoff: strlen( $cache_key ) ) . ' set with ' . var_export( self::bw_get_truncated_cache_key( $data_to_cache ), true ) . ': ' . var_export( $result, true ) );
         } else {
@@ -845,9 +845,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       } catch( \Exception $e ) {
         self::bw_display_error_msg( $e );
       } finally {
-        error_log( 'widget id: ' . var_export( $widget_id, true ) );
-        error_log( 'result of set cache: ' . var_export( $result, true ) );
-        error_log( 'cache the key: ' . var_export( $cache_the_key, true ) );
+        // error_log( 'widget id: ' . var_export( $widget_id, true ) );
+        // error_log( 'result of set cache: ' . var_export( $result, true ) );
+        // error_log( 'cache the key: ' . var_export( $cache_the_key, true ) );
         $cache_the_key = $cache_the_key ?? throw new \Exception( 'Argument $cache_the_key not set' );
         if ( true === $result && true === $cache_the_key && !empty( $widget_id ) ) {
           self::bw_cache_blip_cache_key(
@@ -855,7 +855,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             data_to_cache: $cache_key
           );
         } else {
-          error_log( 'not caching cache key' );
+          // error_log( 'not caching cache key' );
         }
         // self::bw_display_cache_status( $cache_key, __METHOD__ . '()', $result );
         return $result;
@@ -875,7 +875,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         // error_log( 'cache ' . var_export( $cache_key, true ) . ' exists: ' . var_export( false !== $transient, true ) );
         // $result = ( false !== $transient ) && delete_transient( $cache_key );
         $result = false === $transient ? false : delete_transient( $cache_key );
-        error_log( 'deleted cache key ' . var_export( $cache_key, true ) . ': ' . var_export( $result, true ) . ( false === $transient ? ' – cache not found' : ( get_transient( $cache_key ) ? ' – cache still exists' : ' – cache deleted' ) ) );
+        // error_log( 'deleted cache key ' . var_export( $cache_key, true ) . ': ' . var_export( $result, true ) . ( false === $transient ? ' – cache not found' : ( get_transient( $cache_key ) ? ' – cache still exists' : ' – cache deleted' ) ) );
         // self::bw_display_cache_status( $cache_key, 'Deleted cache', $result );
         return $result;
       }
@@ -886,11 +886,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'arguments', func_get_args() );
 
       $includes_data = null === $status ? false : true;
-      bw_log(
-        data_name: $message . ' ' . var_export( self::bw_get_truncated_cache_key( $cache_key, $cutoff ), true ),
-        data: $status ?? '',
-        includes_data: $includes_data
-      );
+      // bw_log(
+      //   data_name: $message . ' ' . var_export( self::bw_get_truncated_cache_key( $cache_key, $cutoff ), true ),
+      //   data: $status ?? '',
+      //   includes_data: $includes_data
+      // );
     }
 
     private static function bw_get_truncated_cache_key( string $cache_key, ?int $cutoff = null ) {
@@ -1098,7 +1098,6 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         case 'display-journal-title':
         case 'add-link-to-blip':
         case 'display-powered-by':
-          // $setting = array_key_exists( $setting_field, $new_settings ) ? ( ! empty( $new_settings[$setting_field] ) ? 'show' : 'hide' ) : 'hide';
           if ( array_key_exists( $setting_field, $new_settings ) ) {
             if ( empty( $new_settings[$setting_field] ) ) {
               $setting = 'hide';
@@ -1201,8 +1200,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             break;
             case 'title':
             return '';
-            case 'add-link-to-blip':
             case 'display-date':
+            return 'show';
+            case 'add-link-to-blip':
             case 'display-journal-title':
             case 'display-powered-by':
             return 'hide';
@@ -3251,13 +3251,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     public function bw_delete_widget_from_customiser( ?\WP_Customize_Manager $wp_customise = null ): void {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'argument', bw_array_to_string( $wp_customise ) );
       // bw_log( 'filter/action', current_filter() );
 
       $inactive_widget_ids = self::bw_get_inactive_widget_ids();
       if ( in_array( $this->id, $inactive_widget_ids ) ) {
-        error_log( var_export( $this->id, true ) . ' is inactive; attempting to delete cache' );
+        // error_log( var_export( $this->id, true ) . ' is inactive; attempting to delete cache' );
 
         $cache_key_cache_key = self::bw_generate_cache_key_cache_key( $this->id );
         $cached_cache_key = self::bw_get_cache( $cache_key_cache_key );
@@ -3267,24 +3267,24 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $result = $this->bw_get_widget_settings( $this->id, BW_ID_BASE, $settings );
         $settings_cache_key = $result ? self::bw_generate_cache_key( $settings ) : null;
         if ( empty( $cached_cache_key ) ) {
-          error_log( 'widget ' . var_export( $this->id, true ) . ' has no cache key cached' );
+          // error_log( 'widget ' . var_export( $this->id, true ) . ' has no cache key cached' );
           // Use the settings to get the cache key:
           if ( $result ) {
-            error_log( 'using widget settings to generate cache key: ' . var_export( $settings, true ) );
-            error_log( 'generated cache key ' . var_export( $settings_cache_key, true ) . ' from settings' );
+            // error_log( 'using widget settings to generate cache key: ' . var_export( $settings, true ) );
+            // error_log( 'generated cache key ' . var_export( $settings_cache_key, true ) . ' from settings' );
             $deleted_cache_key = self::bw_delete_cache( $settings_cache_key );
           } else {
-            error_log( 'settings not found; cannot generate cache key' );
+            // error_log( 'settings not found; cannot generate cache key' );
           }
         } else {
           if ( $result ) {
             $settings_cache_key = self::bw_generate_cache_key( $settings );
             if ( $settings_cache_key === $cached_cache_key ) {
-              error_log( 'cache keys from settings and cache are both: ' . var_export( $settings_cache_key, true ) );
+              // error_log( 'cache keys from settings and cache are both: ' . var_export( $settings_cache_key, true ) );
               $deleted_cache_key = self::bw_delete_cache( $settings_cache_key );
             } else {
-              error_log( 'cache key from settings: ' . var_export( $settings_cache_key, true ) );
-              error_log( 'cache key from cache: ' . var_export( $cached_cache_key, true ) );
+              // error_log( 'cache key from settings: ' . var_export( $settings_cache_key, true ) );
+              // error_log( 'cache key from cache: ' . var_export( $cached_cache_key, true ) );
               $deleted_cache_key = self::bw_delete_cache( $cached_cache_key );
             }
           } else {
@@ -3293,7 +3293,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         }
         $deleted_cache_key_cache_key = self::bw_delete_cache( $cache_key_cache_key );
       } else {
-        error_log( var_export( $this->id, true ) . ' is active; not deleting cache' );
+        // error_log( var_export( $this->id, true ) . ' is active; not deleting cache' );
       }
     }
 
@@ -3354,6 +3354,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           }
         }
       }
+      // error_log( 'active widget ids: ' . var_export( $active_widget_ids, true ) );
       return $active_widget_ids;
     }
 
@@ -3385,7 +3386,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           }
         }
       }
-      error_log( 'inactive widget ids: ' . var_export( $inactive_widget_ids, true ) );
+      // error_log( 'inactive widget ids: ' . var_export( $inactive_widget_ids, true ) );
       return $inactive_widget_ids;
     }
 
@@ -3419,30 +3420,11 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
 
-      // switch ( $id_base ) {
-      //   case null:
-      //     error_log( 'id base not supplied' );
-      //   break;
-      //   case $this->id_base:
-      //     if ( $this->id_base === BW_ID_BASE ) {
-      //       error_log( 'id base is the same as this id base and default id base' );
-      //     } else {
-      //       error_log( 'id base is the same as this id base but not default id base' );
-      //     }
-      //   break;
-      //   case BW_ID_BASE:
-      //     error_log( 'id base is the same as default id base' );
-      //   break;
-      //   default:
-      //     error_log( 'id base is ' . var_export( $id_base, true ) );
-      //   break;
-      // }
-
       $deleted = false;
       $cache_is_clean = false;
       $option_is_gone = false;
 
-      $id_base = $id_base ?? ( $this->id_base ?? BW_ID_BASE );
+      $id_base = $id_base ?? BW_ID_BASE;
       if ( str_starts_with( haystack: $widget_id, needle: $id_base ) ) {
 
         $widget_settings = [];
@@ -3450,8 +3432,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         // error_log( 'widget settings (' . var_export( $result, true ) . '): ' . var_export( $widget_settings, true ) );
         if ( false === $result ) {
           // An error occurred; cannot delete cache (if it exists).
+          // error_log( var_export( $widget_id, true ) . ': an error occurred getting the settings' );
         } else {
           if ( empty( $widget_settings ) ) {
+            // error_log( var_export( $widget_id, true ) . ': settings are empty' );
             // Report success because there not being any settings isn't a failure:
             $cache_is_clean = true;
           } else {
@@ -3463,6 +3447,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
               $cache_is_clean = true;
             } else {
               $cache_is_clean = self::bw_delete_cache( $cache_key );
+              $cache_key_cache_key = self::bw_generate_cache_key_cache_key( $widget_id );
+              // Delete the cached cahe key, if there is one, even if the cached blip was not deleted, but use the success of each to determine the overall success:
+              $cache_is_clean = self::bw_delete_cache( $cache_key_cache_key ) && $cache_is_clean;
               // error_log( 'deleted cache key ' . var_export( self::$cache_key, true ) . ': ' . var_export( $cache_is_clean, true ) );
             }
           }
@@ -3664,10 +3651,10 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     public function bw_on_customise_save_after( \WP_Customize_Manager $wp_customise ) {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
-      bw_log( 'filter/action', current_filter() );
-      bw_log( 'THIS WIDGET ID', $this->id );
+      // bw_log( 'filter/action', current_filter() );
+      // bw_log( 'THIS WIDGET ID', $this->id );
 
       $this->bw_delete_widget_from_customiser( $wp_customise );
       $this->bw_cache_blip_in_customiser(
@@ -3692,7 +3679,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
     }
 
     public function bw_cache_blip_in_customiser( ?\WP_Customize_Manager $wp_customise = null, bool $cache_the_key = false ) {
-      bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'method', __METHOD__ . '()' );
       // bw_log( 'arguments', func_get_args() );
       // bw_log( 'filter/action', current_filter() );
 
@@ -3700,13 +3687,13 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
         $client_ok = empty( self::$client ) ? self::bw_create_blipfoto_client() : true;
         if ( $client_ok ) {
          $active_widget_ids = self::bw_get_active_widget_ids();
-          error_log( 'active widget ids: ' . var_export( $active_widget_ids, true ) );
+          // error_log( 'active widget ids: ' . var_export( $active_widget_ids, true ) );
           foreach ( $active_widget_ids as $widget_id ) {
-            error_log( var_export( $widget_id, true ) . ' is active; attempting to cache' );
+            // error_log( var_export( $widget_id, true ) . ' is active; attempting to cache' );
             $settings = [];
             $result = $this->bw_get_widget_settings( $widget_id, BW_ID_BASE, $settings );
             if ( false === $result ) {
-              error_log( 'failed to get widget settings: ' , var_export( $settings, true ) );
+              // error_log( 'failed to get widget settings: ' , var_export( $settings, true ) );
             } else {
               $styled_title = self::bw_get_styled_title(
                 user_attributes: $settings,
@@ -3719,7 +3706,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
                 widget_settings: null
               );
               $cache_key = self::bw_generate_cache_key( $settings );
-              error_log( 'cache key from settings: ' . var_export( $cache_key, true ) );
+              // error_log( 'cache key from settings: ' . var_export( $cache_key, true ) );
               $result = self::bw_set_cache(
                 cache_key: $cache_key,
                 data_to_cache: $the_blip,
@@ -3767,23 +3754,23 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * failure.
      */
     private static function bw_delete_cached_blip( string $widget_id, string $cache_key, bool $delete_only_if_different = false ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
       // bw_log( 'filter/action', current_filter() );
 
       $deleted = false;
       $cache_key_cache_key = self::bw_generate_cache_key_cache_key( $widget_id );
-      error_log( 'cache key cache key: ' . var_export( $cache_key_cache_key, true ) );
+      // error_log( 'cache key cache key: ' . var_export( $cache_key_cache_key, true ) );
       $cached_key = self::bw_get_cache( $cache_key_cache_key );
-      error_log( 'old cache key: ' . var_export( $cached_key, true ) );
-      error_log( 'new cache key: ' . var_export( $cache_key, true ) );
+      // error_log( 'old cache key: ' . var_export( $cached_key, true ) );
+      // error_log( 'new cache key: ' . var_export( $cache_key, true ) );
       $delete = $delete_only_if_different ? $cached_key !== $cache_key : true;
       if ( $delete ) {
         $deleted_cache_key = self::bw_delete_cache( $cached_key );
         $deleted_cache_key_cache_key = self::bw_delete_cache( $cache_key_cache_key );
         $deleted = $deleted_cache_key && $deleted_cache_key_cache_key;
       } else {
-        error_log( 'did not delete old and new cache keys' );
+        // error_log( 'did not delete old and new cache keys' );
       }
       return $deleted;
     }
@@ -3802,7 +3789,7 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
       // bw_log( 'filter/action', current_filter() );
 
       $cache_key_cache_key = BW_PREFIX . $widget_id . BW_CACHE_KEY_CACHE_KEY_SUFFIX;
-      bw_log( 'generated cache key cache key', $cache_key_cache_key );
+      // bw_log( 'Generated cache key cache key', $cache_key_cache_key );
       return $cache_key_cache_key;
     }
 
@@ -3930,8 +3917,8 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
      * @return bool True if the blip cache key was cached; otherwise false;
      */
     private static function bw_cache_blip_cache_key( string $widget_id, ?array $settings = null, ?string $data_to_cache = null ): bool {
-      bw_log( 'method', __METHOD__ . '()' );
-      bw_log( 'arguments', func_get_args() );
+      // bw_log( 'method', __METHOD__ . '()' );
+      // bw_log( 'arguments', func_get_args() );
       // bw_log( 'filter/action', current_filter() );
 
       $result = false;
@@ -3945,37 +3932,15 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
           // Generate the data for the new cache:
           $cache_key = BW_PREFIX . $widget_id . BW_CACHE_KEY_CACHE_KEY_SUFFIX;
           $data_to_cache = $data_to_cache ?? self::bw_generate_cache_key( $settings );
-          error_log( 'attempting to cache ' . var_export( $cache_key, true ) . ': ' . var_export( $data_to_cache, true ) );
+          // error_log( 'attempting to cache ' . var_export( $cache_key, true ) . ': ' . var_export( $data_to_cache, true ) );
           // $set_cache = true;
           // Delete the blip whose cache key is stored in the given cache key, if it exists:
           $cache_key_for_blip_to_delete = get_transient( $cache_key );
-          error_log( 'cache key ' . var_export( $cache_key, true ) . ' exists: ' . var_export( $cache_key_for_blip_to_delete, true ) );
+          // error_log( 'cache key ' . var_export( $cache_key, true ) . ' exists: ' . var_export( $cache_key_for_blip_to_delete, true ) );
           if ( $cache_key_for_blip_to_delete ) {
-          //   if ( $cache_key_for_blip_to_delete !== $data_to_cache ) {
-              $deleted = self::bw_delete_cache( cache_key_for_blip_to_delete );
-              error_log( 'deleted old blip stored in ' . var_export( $cache_key, true ) . ' (' . self::bw_get_truncated_cache_key( $cache_key_for_blip_to_delete ) . ')' );
-          //   } else {
-          //     error_log( 'cache key for blip to delete is the same as the data to cache:' );
-          //     error_log( var_export( $cache_key_for_blip_to_delete, true ) );
-          //     error_log( var_export( $data_to_cache, true ) );
-          //     $set_cache = false;
-          //   }
-          // } else {
-          //   error_log( 'no cached blip to delete' );
+            $deleted = self::bw_delete_cache( cache_key_for_blip_to_delete );
+            // error_log( 'deleted old blip stored in ' . var_export( $cache_key, true ) . ' (' . self::bw_get_truncated_cache_key( $cache_key_for_blip_to_delete ) . ')' );
           }
-
-          // self::bw_display_cache_status( $data_to_cache, 'Cache ' . var_export( $cache_key, true ) . ' will contain' );
-          // // error_log( 'going to cache this old cache key: ' . var_export( $data_to_cache, true ) . ' under cache key ' . var_export( $cache_key, true ) );
-
-          // $cached_data_to_delete = get_transient( $cache_key );
-          // $old_cache_exists = false !== get_transient( $cached_data_to_delete );
-          // if ( $old_cache_exists ) {
-          //   $result = delete_transient( $cached_data_to_delete );
-          //   error_log( 'deleted existing cache ' .  var_export( self::bw_get_truncated_cache_key( $cache_key ), true ) . ': ' . var_export( $result, true ) );
-          // } else {
-          //   error_log( 'cache ' .  var_export( self::bw_get_truncated_cache_key( $cache_key, cut_off: strlen( $cache_key ) ), true ) . ' doesn\'t exist' );
-          // }
-          // if ( $set_cache ) {
           $result = self::bw_set_cache(
             cache_key: $cache_key,
             data_to_cache: $data_to_cache,
@@ -3983,13 +3948,9 @@ if (!class_exists('Blipper_Widget\Widget\Blipper_Widget')) {
             widget_id: $widget_id,
             cache_the_key: false
           );
-          error_log( 'set cache ' . var_export( $cache_key, true ) . ': ' . var_export( $result, true ) );
-          // } else {
-          //   $deleted = self::bw_delete_cache( $cache_key );
-          //   error_log( 'deleted cache ' . var_export( $cache_key, true ) . ': ' . var_export( $deleted, true ) );
-          // }
+          // error_log( 'set cache ' . var_export( $cache_key, true ) . ': ' . var_export( $result, true ) );
         } else {
-          error_log( 'cache key should not be cached' );
+          // error_log( 'cache key should not be cached' );
           // Don't flag as an error:
           $result = true;
         }
